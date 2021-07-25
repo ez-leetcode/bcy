@@ -1,0 +1,26 @@
+server:
+  #使用https默认端口
+  port: 443
+  ssl:
+    #证书路径
+    key-store: classpath:rat403.cn.pfx
+    #证书密码
+    key-store-password: N2sjS3S3
+    #证书类型
+    key-store-type: PKCS12
+    #开启ssl
+    enabled: true
+
+spring:
+  application:
+    name: bcy-cloud-gateway
+
+eureka:
+  instance:
+    #服务网关注册名
+    hostname: bcy-cloud-gateway-service
+  client:
+    service-url:
+      register-with-eureka: true
+      fetch-registry: true
+      defaultZone: xxxx

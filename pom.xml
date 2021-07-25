@@ -7,15 +7,17 @@
   <groupId>org.bcy</groupId>
   <artifactId>bcy-cloud</artifactId>
   <version>1.0</version>
+  <modules>
+    <module>bcy-cloud-commons</module>
+    <module>bcy-cloud-gateway</module>
+    <module>bcy-cloud-provider-hystrix-userpart8001</module>
+    <module>bcy-cloud-eureka-server-8000</module>
+  </modules>
   <packaging>pom</packaging>
-
-  <name>Maven</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://maven.apache.org/</url>
-  <inceptionYear>2001</inceptionYear>
 
   <!-- 统一管理版本 -->
   <properties>
+    <java.version>8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -29,6 +31,7 @@
     <aliyun-sdk-oss.version>3.11.0</aliyun-sdk-oss.version>
     <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
     <springfox-swagger-ui.version>2.9.2</springfox-swagger-ui.version>
+    <jedis.version>3.3.0</jedis.version>
   </properties>
 
   <!-- 统一管理子项目的版本号 -->
@@ -93,6 +96,28 @@
         <artifactId>lombok</artifactId>
         <version>${lombok.version}</version>
       </dependency>
+
+      <!-- jedis -->
+      <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>${jedis.version}</version>
+      </dependency>
+
+      <!-- oss -->
+      <dependency>
+        <groupId>com.aliyun.oss</groupId>
+        <artifactId>aliyun-sdk-oss</artifactId>
+        <version>${aliyun-sdk-oss.version}</version>
+      </dependency>
+
+      <!-- fastjson -->
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>fastjson</artifactId>
+        <version>${fastjson.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -101,6 +126,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.4.3</version>
         <configuration>
           <fork>true</fork>
           <addResources>true</addResources>
