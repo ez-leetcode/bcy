@@ -12,6 +12,11 @@
     <module>bcy-cloud-gateway</module>
     <module>bcy-cloud-provider-hystrix-userpart8001</module>
     <module>bcy-cloud-eureka-server-8000</module>
+    <module>bcy-cloud-provider-hystrix-communitypart8002</module>
+    <module>bcy-cloud-provider-quartz</module>
+    <module>bcy-cloud-provider-rabbitmq</module>
+    <module>bcy-cloud-provider-hystrix-acgpart8003</module>
+    <module>bcy-cloud-provider-elasticsearch</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -23,7 +28,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <junit.version>4.12</junit.version>
     <log4j.version>1.2.17</log4j.version>
-    <lombok.version>1.16.18</lombok.version>
+    <lombok.version>1.18.8</lombok.version>
     <mysql.version>5.1.47</mysql.version>
     <druid.version>1.1.20</druid.version>
     <fastjson.version>1.2.73</fastjson.version>

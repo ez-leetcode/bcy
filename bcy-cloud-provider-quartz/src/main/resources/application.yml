@@ -1,9 +1,5 @@
 server:
-  port: 8001
-
-spring:
-  application:
-    name: bcy-cloud-hystrix-userpart
+  port: 8010
 
 eureka:
   client:

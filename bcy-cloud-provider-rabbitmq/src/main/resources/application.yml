@@ -1,9 +1,5 @@
 server:
-  port: 8001
-
-spring:
-  application:
-    name: bcy-cloud-hystrix-userpart
+  port: 8009
 
 eureka:
   client:
@@ -12,3 +8,4 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://47.115.128.193:8000/eureka
+
