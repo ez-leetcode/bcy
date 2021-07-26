@@ -34,6 +34,8 @@ public class ResultUtils {
         //支付过程中失败 -2
         resultMap.put("payFail",-2);
         resultMap.put("refundFail",-2);
+        //超时处理->用于hystrix过度负载或超时返回
+        resultMap.put("busyOrWrong",503);
     }
 
 

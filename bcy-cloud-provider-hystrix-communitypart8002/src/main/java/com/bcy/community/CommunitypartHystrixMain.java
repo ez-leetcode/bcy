@@ -1,4 +1,4 @@
-package com.bcy.acgpart;
+package com.bcy.community;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,10 +8,10 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @SpringBootApplication
 @EnableEurekaClient
 @EnableCircuitBreaker
-public class AcgpartHystrixMain {
+public class CommunitypartHystrixMain {
 
     public static void main(String[] args) {
-        SpringApplication.run(AcgpartHystrixMain.class,args);
+        SpringApplication.run(CommunitypartHystrixMain.class,args);
     }
 
 }

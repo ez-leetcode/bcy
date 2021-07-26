@@ -7,3 +7,11 @@ eureka:
     register-with-eureka: false
     service-url:
       defaultZone: http://47.115.128.193:8000/eureka
+
+ribbon:
+  #建立连接后从服务器读到可用资源时间限制（空是显示bug）
+  RedTimeout: 3000
+  #建立连接所用的时间，适用于网络状况正常的情况下，两端连接所用时间限制
+  ConnectTimeout: 3000
+
+

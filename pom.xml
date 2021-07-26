@@ -18,6 +18,7 @@
     <module>bcy-cloud-provider-hystrix-acgpart8003</module>
     <module>bcy-cloud-provider-elasticsearch</module>
     <module>bcy-cloud-consumer-feign-8004</module>
+    <module>bcy-cloud-hystrix-dashboard8005</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -122,6 +123,19 @@
         <groupId>com.alibaba</groupId>
         <artifactId>fastjson</artifactId>
         <version>${fastjson.version}</version>
+      </dependency>
+
+      <!-- swagger -->
+      <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+        <version>${springfox-swagger2.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger-ui</artifactId>
+        <version>${springfox-swagger-ui.version}</version>
       </dependency>
 
     </dependencies>
