@@ -17,6 +17,7 @@
     <module>bcy-cloud-provider-rabbitmq</module>
     <module>bcy-cloud-provider-hystrix-acgpart8003</module>
     <module>bcy-cloud-provider-elasticsearch</module>
+    <module>bcy-cloud-consumer-feign-8004</module>
   </modules>
   <packaging>pom</packaging>
 
