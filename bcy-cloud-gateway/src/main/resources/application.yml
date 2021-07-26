@@ -14,6 +14,21 @@ server:
 spring:
   application:
     name: bcy-cloud-gateway
+  cloud:
+    gateway:
+      routes:
+          #路由ID，唯一
+        - id: userpart_routh
+          #匹配后提供服务的路由地址
+          uri: http://47.115.128.193:8004
+          predicates:
+            #userpart发给consumer
+            - Path=/user/**
+        - id: community_routh
+          uri: http://47.115.128.193:8004
+          predicates:
+            - Path=/community/**
+
 
 eureka:
   instance:
@@ -23,4 +38,4 @@ eureka:
     service-url:
       register-with-eureka: true
       fetch-registry: true
-      defaultZone: xxxx
+      defaultZone: http://47.115.128.193:8000/eureka

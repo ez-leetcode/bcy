@@ -13,6 +13,14 @@ spring:
 
 
 eureka:
+  instance:
+    #用ip代替实例名
+    prefer-ip-address: true
+    #实例的主机名
+    hostname: ${spring.cloud.client.ip-address}
+      # 实例的 ID 规则
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+
   client:
     #不是注册中心都是true
     register-with-eureka: true

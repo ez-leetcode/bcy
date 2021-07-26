@@ -6,7 +6,6 @@ import com.google.common.hash.Hashing;
 
 public class BloomFilterUtils<T> {
 
-
     private final int numHashFunctions;
 
     private final int bitSize;

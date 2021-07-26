@@ -2,7 +2,6 @@ package com.bcy.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -11,12 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 //接入阿里云第三方api，进行垃圾话检测
-@Slf4j
 public class CommentUtils {
 
     public static boolean judgeComment(String comment){
-        log.info("正在进行垃圾话文本检测");
-        log.info("comment：" + comment);
         //直接用官方文档的样例代码就好啦~
         String host = "https://textfilter.xiaohuaerai.com";
         String path = "/textfilter";
@@ -36,20 +32,14 @@ public class CommentUtils {
             HttpResponse response = HttpUtils.doPost(host, path, method, headers, querys, bodys);
             //获取response的body
             String realResponse = EntityUtils.toString(response.getEntity());
-            log.info(unicode2String(realResponse));
             JSONObject jsonObject = JSON.parseObject(realResponse);
-            log.info(jsonObject.toString());
             String res = jsonObject.getString("res");
-            log.info("res：" + res);
             if(res.equals("1")){
-                log.info("文本检测为正常文本");
                 return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("垃圾话文本检测发生错误");
         }
-        log.info("文本检测为异常文本");
         return true;
     }
 

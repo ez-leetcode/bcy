@@ -21,5 +21,4 @@ public class TencentSmsUtils {
         TEMPLATE.put(4,"959522");
     }
 
-
 }

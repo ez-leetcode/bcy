@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 //根据eureka里的微服务客户端信息转交给对应微服务提供者
 //feign自带负载均衡，会在微服务提供者之间进行轮询或其他负载均衡办法
 @Component
-@FeignClient(value = "bcy-cloud-hystrix-userpart")
+@FeignClient(value = "BCY-CLOUD-HYSTRIX-USERPART")
 public interface UserFeignService {
 
     @GetMapping("/user/test")
