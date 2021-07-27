@@ -1,4 +1,4 @@
-package com.bcy.userpart.utils;
+package com.bcy.quartz.utils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +22,22 @@ public class RedisUtils {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    //获取xx_*下的全部数据
+    public Map<Long,Integer> getAllRedisDataByKeys(String keys){
+        Map<Long,Integer> map = new HashMap<>();
+        Set<String> set = redisTemplate.keys(keys + "_*");
+        if(set != null){
+            for(String x:set){
+                //获取次数
+                String value = redisTemplate.opsForValue().get(x);
+                if(value != null){
+                    //存入map
+                    map.put(Long.parseLong(x.substring(x.lastIndexOf("_") + 1)),Integer.parseInt(value));
+                }
+            }
+        }
+        return map;
+    }
 
     //次数加1
     public void addKeyByTime(String key,int hours){
@@ -50,6 +66,8 @@ public class RedisUtils {
         //存入redis
         redisTemplate.opsForValue().set(key,String.valueOf(cnt),hours * 3600L,TimeUnit.SECONDS);
     }
+
+
 
     //存带有过期时间的key-value
     public void saveByHoursTime(String key,String value,int hours){

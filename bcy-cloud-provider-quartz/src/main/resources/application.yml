@@ -10,6 +10,19 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   application:
     name: bcy-cloud-provider-quartz
+    #redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+    connect-timeout: 30000
+    client-type: jedis
 
 eureka:
   client:
