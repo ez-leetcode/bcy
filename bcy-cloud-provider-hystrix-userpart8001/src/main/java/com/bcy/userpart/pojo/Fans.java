@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -17,7 +18,7 @@ import java.util.Date;
 @ToString
 @Data
 @ApiModel(description = "粉丝实例类")
-public class Fans {
+public class Fans implements Serializable {
 
     @ApiModelProperty("关注者id")
     @JsonFormat(shape = JsonFormat.Shape.STRING)

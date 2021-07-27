@@ -40,7 +40,7 @@ public class FansController {
             @ApiImplicitParam(name = "fromId",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "被关注用户id",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "关注别的用户",notes = "repeatWrong：已成功关注（重复请求） success：成功")
+    @ApiOperation(value = "关注别的用户（关注在线的话，会有推送）",notes = "repeatWrong：已成功关注（重复请求） success：成功")
     @PostMapping("/follow")
     public Result<JSONObject> addFollow(@RequestParam("fromId") Long fromId,@RequestParam("toId") Long toId){
         log.info("正在添加关注，用户：" + fromId + " 被关注用户：" + toId);
@@ -57,5 +57,18 @@ public class FansController {
         log.info("正在取消关注，用户：" + fromId + " 被关注用户：" + toId);
         return ResultUtils.getResult(new JSONObject(),fansService.deleteFollow(fromId,toId));
     }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "fromId",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "toId",value = "对方用户id",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "判断用户的关注情况",notes = "返回data中 status：0未关注 1已关注 2已相互关注")
+    @PostMapping("/judgeFollow")
+    public Result<JSONObject> judgeFollow(@RequestParam("fromId") Long fromId,@RequestParam("toId") Long toId){
+        log.info("正在判断用户的关注情况，用户id：" + fromId + " 对方id：" + toId);
+        return ResultUtils.getResult(new JSONObject(),fansService.judgeFollow(fromId,toId));
+    }
+
+
 
 }
