@@ -6,4 +6,5 @@ public interface AskService {
 
     String addAsk(Long fromId,Long toId,String question);
 
+    String addAnswer(Long id,Long number,String answer);
 }

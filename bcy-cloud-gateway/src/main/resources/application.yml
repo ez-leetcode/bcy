@@ -32,7 +32,8 @@ spring:
           uri: http://47.115.128.193:8004
           predicates:
             - Path=/acg/**
-        - id:
+        - id: websocket_routh
+          uri: ws://47.115.128.193:8004
 
 
 eureka:

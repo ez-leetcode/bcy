@@ -39,7 +39,7 @@ public class AskController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "提问编号",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "用户删除问答",notes = "existWrong：问答不存在 userWrong：用户不匹配（只有被提问的才能删除） success：成功")
+    @ApiOperation(value = "用户删除问答",notes = "existWrong：问答不存在或用户不匹配 success：成功")
     @DeleteMapping("/ask")
     public Result<JSONObject> deleteAsk(@RequestParam("id") Long id,@RequestParam("number") Long number){
         log.info("正在删除用户问答，用户：" + id + " 提问编号：" + number);
@@ -64,11 +64,12 @@ public class AskController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "answer",value = "回答内容",required = true,dataType = "String",paramType = "query")
     })
-    @ApiOperation(value = "用户回答问题",notes = "blackWrong：被对方拉入黑名单 success：成功")
+    @ApiOperation(value = "用户回答问题（有推送）",notes = "existWrong：提问不存在或已被回答或用户不对 success：成功")
     @DeleteMapping("/answer")
     public Result<JSONObject> addAnswer(@RequestParam("number") Long number,@RequestParam("id") Long id,
                                      @RequestParam("answer") String answer){
-        return null;
+        log.info("用户正在回答问题，问题编号：" + number + " 用户id：" + id + " 回答内容：" + answer);
+        return ResultUtils.getResult(new JSONObject(),askService.addAnswer(id,number,answer));
     }
 
 }
