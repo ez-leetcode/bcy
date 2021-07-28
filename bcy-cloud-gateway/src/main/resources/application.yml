@@ -28,6 +28,11 @@ spring:
           uri: http://47.115.128.193:8004
           predicates:
             - Path=/community/**
+        - id: acgpart_routh
+          uri: http://47.115.128.193:8004
+          predicates:
+            - Path=/acg/**
+        - id:
 
 
 eureka:
