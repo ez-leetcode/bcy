@@ -12,10 +12,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Api(tags = "用户个人信息管理类")
@@ -33,7 +30,7 @@ public class PersonalController {
 
     //超时或内部出错调用方法，进行服务降级
     public Result<JSONObject> timeoutHandler(){
-        log.error("用户帮助服务超时或发生错误");
+        log.error("用户个人信息管理服务超时或发生错误");
         return timeoutService.timeoutHandler();
     }
 
@@ -62,7 +59,7 @@ public class PersonalController {
             @ApiImplicitParam(name = "city",value = "市",dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "birthday",value = "生日（请传yyyy-mm-dd格式）",dataType = "string",paramType = "query")
     })
-    @ApiOperation(value = "用户修改基本个人信息",notes = "existWrong：账号不存在或已被冻结 success：成功")
+    @ApiOperation(value = "用户修改基本个人信息（修改头像在上传头像那个接口会自动修改）",notes = "existWrong：账号不存在或已被冻结 success：成功")
     @PatchMapping("/personalInfo")
     public Result<JSONObject> changeInfo(@RequestParam("id") Long id,
                                          @RequestParam(value = "sex",required = false) String sex,
@@ -75,14 +72,53 @@ public class PersonalController {
         return ResultUtils.getResult(new JSONObject(),personalService.changeInfo(id, sex, description, username, province, city, birthday));
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取用户基本个人信息（个人主页）",notes = "existWrong：账号不存在或已被冻结 success：成功 返回data personalInfo（id：用户id username：昵称 sex：用户性别 photo：头像url description：用户简介 province：省 city：市 birthday：生日）")
+    @GetMapping("/personalInfo")
+    public Result<JSONObject> getPersonalInfo(@RequestParam("id") Long id){
+        log.info("正在获取用户基本个人信息，用户：" + id);
+        JSONObject jsonObject = personalService.getPersonalInfo(id);
+        if(jsonObject == null){
+            return ResultUtils.getResult(new JSONObject(),"existWrong");
+        }
+        return ResultUtils.getResult(jsonObject,"success");
+    }
+
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "pushComment",value = "推送评论",dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "pushLike",value = "推送点赞",dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "pushFans",value = "推送粉丝",dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "pushSystem",value = "推送系统通知",dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "pushInfo",value = "推送聊天",dataType = "int",paramType = "query"),
+    })
+    @ApiOperation(value = "修改个人设置",notes = "existWrong：账号不存在或已被冻结 success：成功")
+    @PatchMapping("/personalSetting")
+    public Result<JSONObject> changeSetting(@RequestParam("id") Long id,
+                                            @RequestParam(value = "pushComment",required = false) Integer pushComment,
+                                            @RequestParam(value = "pushLike",required = false) Integer pushLike,
+                                            @RequestParam(value = "pushFans",required = false) Integer pushFans,
+                                            @RequestParam(value = "pushSystem",required = false) Integer pushSystem,
+                                            @RequestParam(value = "pushInfo",required = false) Integer pushInfo){
+        log.info("正在修改用户个人设置，用户：" + id + " 推送评论：" + pushComment + " 推送点赞：" + pushLike + " 推送粉丝：" + pushFans + " 推送系统通知：" + pushSystem + " 推送聊天：" + pushInfo);
+        return ResultUtils.getResult(new JSONObject(),personalService.changeSetting(id,pushComment,pushLike,pushFans,pushSystem,pushInfo));
+    }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "修改个人设置",notes = "existWrong：账号不存在或已被冻结 success：成功")
-    @PatchMapping("/personalSetting")
-    public Result<JSONObject> changeSetting(@RequestParam("id") Long id){
-        return null;
+    @ApiOperation(value = "获取用户个人设置",notes = "existWrong：用户不存在或已被冻结 success：成功 返回data：personalSetting（id：用户id pushComment：推送评论 pushLike：推送点赞 pushFans：推送粉丝 pushSystem：推送系统通知 pushInfo：推送聊天）")
+    @GetMapping("/personalSetting")
+    public Result<JSONObject> getPersonalSetting(@RequestParam("id") Long id){
+        log.info("正在获取用户个人设置，用户id：" + id);
+        JSONObject jsonObject = personalService.getPersonalSetting(id);
+        if(jsonObject == null){
+            return ResultUtils.getResult(new JSONObject(),"existWrong");
+        }
+        return ResultUtils.getResult(jsonObject,"success");
     }
 
 }

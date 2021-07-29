@@ -3,7 +3,7 @@ package com.bcy.community.service;
 import com.alibaba.fastjson.JSONObject;
 import com.bcy.community.mapper.UserMapper;
 import com.bcy.community.pojo.User;
-import com.bcy.msg.UserInfo;
+import com.bcy.vo.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

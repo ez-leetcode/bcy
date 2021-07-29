@@ -1,5 +1,6 @@
 package com.bcy.userpart.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bcy.userpart.mapper.FansMapper;
 import com.bcy.userpart.pojo.Fans;
@@ -60,4 +61,16 @@ public class FansServiceImpl implements FansService{
         log.info("用户已相互关注");
         return "2";
     }
+
+    @Override
+    public JSONObject getFansList(Long id, String keyword, Long cnt, Long page) {
+        return null;
+    }
+
+
+    @Override
+    public JSONObject getFollowList(Long id, String keyword, Long cnt, Long page) {
+        return null;
+    }
+
 }

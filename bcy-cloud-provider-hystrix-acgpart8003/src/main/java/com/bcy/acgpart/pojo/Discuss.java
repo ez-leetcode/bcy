@@ -1,4 +1,5 @@
-package com.bcy.userpart.pojo;
+package com.bcy.acgpart.pojo;
+
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -12,31 +13,38 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "粉丝实例类")
-public class Fans implements Serializable {
+@ApiModel(description = "圈子讨论类")
+public class Discuss {
 
-    @ApiModelProperty("粉丝编号")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @TableId(type = IdType.ID_WORKER)
+    @ApiModelProperty("讨论编号")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
-    @ApiModelProperty("关注者id")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long fromId;
+    @ApiModelProperty("提问者id")
+    private Long id;
 
-    @ApiModelProperty("被关注者id")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long toId;
+    @ApiModelProperty("讨论标题")
+    private String title;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty("讨论内容")
+    private String description;
+
+    @ApiModelProperty("评论数")
+    private Integer commentCounts;
+
     @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty("创建时间")
     private Date createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
 
 }
