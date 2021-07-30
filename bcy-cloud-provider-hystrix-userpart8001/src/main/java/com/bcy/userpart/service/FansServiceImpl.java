@@ -2,12 +2,17 @@ package com.bcy.userpart.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.userpart.mapper.FansMapper;
 import com.bcy.userpart.pojo.Fans;
 import com.bcy.userpart.utils.RedisUtils;
+import com.bcy.vo.FansInfo;
+import com.bcy.vo.FollowInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -64,13 +69,39 @@ public class FansServiceImpl implements FansService{
 
     @Override
     public JSONObject getFansList(Long id, String keyword, Long cnt, Long page) {
-        return null;
+        Page<FansInfo> page1 = new Page<>(page,cnt);
+        JSONObject jsonObject = new JSONObject();
+        List<FansInfo> fansInfoList;
+        if(keyword == null || keyword.equals("")){
+            fansInfoList = fansMapper.getFansList(page1, id);
+        }else{
+            fansInfoList = fansMapper.getFansListByKeyword(page1, keyword, id);
+        }
+        jsonObject.put("fansList",fansInfoList);
+        jsonObject.put("counts",page1.getTotal());
+        jsonObject.put("pages",page1.getPages());
+        log.info("获取粉丝列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
     }
 
 
     @Override
     public JSONObject getFollowList(Long id, String keyword, Long cnt, Long page) {
-        return null;
+        Page<FollowInfo> page1 = new Page<>(page,cnt);
+        JSONObject jsonObject = new JSONObject();
+        List<FollowInfo> followInfoList;
+        if(keyword == null || keyword.equals("")){
+            followInfoList = fansMapper.getFollowList(page1,id);
+        }else{
+            followInfoList = fansMapper.getFollowListByKeyword(page1,keyword,id);
+        }
+        jsonObject.put("followList",followInfoList);
+        jsonObject.put("counts",page1.getTotal());
+        jsonObject.put("pages",page1.getPages());
+        log.info("获取关注列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
     }
 
 }

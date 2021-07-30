@@ -7,16 +7,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-//服务网关过滤器，可结合spring security oauth2
-/*
+//服务网关过滤器，结合spring security oauth2
+
 @Component
 public class GateWayFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
         return null;
     }
 
+    //过滤等级最高
     @Override
     public int getOrder() {
         return 0;
@@ -25,4 +27,3 @@ public class GateWayFilter implements GlobalFilter, Ordered {
 }
 
 
- */

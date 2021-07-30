@@ -66,18 +66,20 @@ public class FansController {
         return ResultUtils.getResult(new JSONObject(),fansService.judgeFollow(fromId,toId));
     }
 
+
+
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "keyword",value = "关键词（还是必带吧，获取全部给空就行）",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取自己的关注列表（还要显示关注情况的话，请用judgeFollow那个接口",notes = "success：成功 返回data followList：关注列表（id：用户id username：昵称 photo：头像url fansCounts：粉丝数）")
+    @ApiOperation(value = "获取自己的关注列表（还要显示关注情况的话，请用judgeFollow那个接口",notes = "success：成功 返回data followList：关注列表（id：用户id sex：性别 username：昵称 photo：头像url fansCounts：粉丝数）")
     @GetMapping("/user/followList")
     public Result<JSONObject> getFollow(@RequestParam("id") Long id,@RequestParam("keyword") String keyword,
                                         @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
         log.info("正在获取自己全部的关注列表，用户：" + id + " 关键词：" + keyword + " 数据量：" + cnt + " 页面：" + page);
-        return null;
+        return ResultUtils.getResult(fansService.getFollowList(id, keyword, cnt, page),"success");
     }
 
     @ApiImplicitParams({
@@ -86,12 +88,13 @@ public class FansController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取自己的粉丝列表（还要显示关注情况的话，请用judgeFollow那个接口",notes = "success：成功 返回data fansList：粉丝列表（id：用户id username：昵称 photo：头像url fansCounts：粉丝数）")
+    @ApiOperation(value = "获取自己的粉丝列表（还要显示关注情况的话，请用judgeFollow那个接口",notes = "success：成功 返回data fansList：粉丝列表（id：用户id sex：性别 username：昵称 photo：头像url fansCounts：粉丝数）")
     @GetMapping("/user/fansList")
     public Result<JSONObject> getFans(@RequestParam("id") Long id,@RequestParam("keyword") String keyword,
                                         @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
         log.info("正在获取自己全部的粉丝列表，用户：" + id + " 关键词：" + keyword + " 数据量：" + cnt + " 页面：" + page);
-        return null;
+        return ResultUtils.getResult(fansService.getFansList(id,keyword,cnt,page),"success");
     }
+
 
 }

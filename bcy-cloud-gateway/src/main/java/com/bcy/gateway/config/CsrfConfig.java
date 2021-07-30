@@ -6,9 +6,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.util.pattern.PathPatternParser;
 
-@Configuration
-public class CsrfConfig {
 
+//@Configuration
+public class CsrfConfig {
+/*
         @Bean
         public CorsWebFilter corsFilter() {
             CorsConfiguration config = new CorsConfiguration();
@@ -34,4 +35,5 @@ public class CsrfConfig {
 
             return new CorsWebFilter(source);
         }
+ */
 }

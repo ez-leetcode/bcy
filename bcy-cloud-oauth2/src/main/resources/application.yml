@@ -12,7 +12,7 @@ spring:
     name: bcy-cloud-oauth2
     #redis
   redis:
-    host: 127.0.0.1
+    host: 47.115.128.193
     port: 6379
     password:
     jedis:

@@ -34,6 +34,20 @@ spring:
             - Path=/acg/**
         - id: websocket_routh
           uri: ws://47.115.128.193:8004
+      globalcors:
+        #处理跨域
+        cors-configurations:
+          #匹配所有请求
+          '[/**]':
+            #跨域处理 允许所有的域
+            allowedOrigins: '*'
+            #支持的方法
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
 
 
 eureka:

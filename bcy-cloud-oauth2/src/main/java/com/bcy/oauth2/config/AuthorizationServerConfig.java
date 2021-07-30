@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+
     @Autowired
     public PasswordEncoder passwordEncoder;
     @Autowired
@@ -36,9 +37,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         //客户端持久化
         //配置网关服务的用户名密码，仅网关服务可作为客户端可访问oauth服务
         clients.inMemory()
-                .withClient("gateway-client").secret(passwordEncoder.encode("123456"))
+                .withClient("gateway-client")
+                //密钥
+                .secret(passwordEncoder.encode("123456"))
+                .redirectUris("http://www.baidu.com")
                 .authorizedGrantTypes("refresh_token", "authorization_code", "password")
+                //访问令牌有效期
                 .accessTokenValiditySeconds(24 * 3600)
+                //刷新令牌有效期
+                .refreshTokenValiditySeconds(24 * 3600)
                 .scopes("all");
     }
 
