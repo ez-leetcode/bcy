@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "他人主页管理类（注意是别人的主页！）")
 @Slf4j
-@RestController("/community")
+@RestController
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
 public class HomePageController {
@@ -39,7 +39,7 @@ public class HomePageController {
             @ApiImplicitParam(name = "id",value = "他人用户id",required = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "获取他人的主要信息（查看他人信息那里用）",notes = "existWrong：用户不存在 success：成功 返回data userInfo（id：用户id username：昵称 photo：头像URL description：自我介绍 sex：性别 followCounts：关注数 fansCounts：粉丝数）")
-    @GetMapping("/othersInfo")
+    @GetMapping("/community/othersInfo")
     public Result<JSONObject> getOthersInfo(@RequestParam("id") Long id){
         log.info("正在获取他人信息，用户：" + id);
         JSONObject jsonObject = homePageService.getOthersInfo(id);

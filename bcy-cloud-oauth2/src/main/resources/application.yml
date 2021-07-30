@@ -1,5 +1,5 @@
 server:
-  port: 8002
+  port: 8006
 
 spring:
   datasource:
@@ -9,19 +9,12 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
   application:
-    name: bcy-cloud-hystrix-communitypart
-  #rabbitmq
-  rabbitmq:
-    host: 47.115.128.193
-    port: 5672
-    username: ck
-    password: 123456
-    virtual-host: /
-  #redis
+    name: bcy-cloud-oauth2
+    #redis
   redis:
-    host: 47.115.128.193
+    host: 127.0.0.1
     port: 6379
-    password: 123456
+    password:
     jedis:
       pool:
         max-active: 8
@@ -38,15 +31,23 @@ eureka:
     #用ip代替实例名
     prefer-ip-address: true
     #实例的主机名
-    hostname: 1.117.75.49
+    hostname: localhost
     #实例的ID规则
-    instance-id: 1.117.75.49:${spring.application.name}:${server.port}
+    instance-id: localhost:${spring.application.name}:${server.port}
     #设置ip
-    ip-address: 1.117.75.49
-
+    ip-address: localhost
   client:
     #不是注册中心都是true
     register-with-eureka: true
     fetch-registry: true
     service-url:
       defaultZone: http://47.115.128.193:8000/eureka
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0

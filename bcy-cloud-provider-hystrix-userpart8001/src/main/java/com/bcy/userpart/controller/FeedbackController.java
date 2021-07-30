@@ -12,13 +12,14 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "用户反馈管理类")
 @Slf4j
-@RestController("/user")
+@RestController
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
 public class FeedbackController {
@@ -37,14 +38,13 @@ public class FeedbackController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "description",value = "反馈内容",required = true,dataType = "String",paramType = "query")
+            @ApiImplicitParam(name = "description",value = "反馈内容",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "添加用户反馈",notes = "repeatWrong：短期反馈太多次（8小时内最多3次） success：成功")
-    @PostMapping("/feedback")
+    @PostMapping("/user/feedback")
     public Result<JSONObject> addFeedback(@RequestParam("id") Long id,@RequestParam("description") String description){
         log.info("正在添加用户反馈，id：" + id + " description：" + description);
         return ResultUtils.getResult(new JSONObject(), feedbackService.addFeedback(id,description));
     }
-
 
 }

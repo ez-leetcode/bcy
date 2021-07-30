@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "问答管理类")
 @Slf4j
-@RestController("/community")
+@RestController
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
 public class AskController {
@@ -40,7 +40,7 @@ public class AskController {
             @ApiImplicitParam(name = "number",value = "提问编号",required = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "用户删除问答",notes = "existWrong：问答不存在或用户不匹配 success：成功")
-    @DeleteMapping("/ask")
+    @DeleteMapping("/community/ask")
     public Result<JSONObject> deleteAsk(@RequestParam("id") Long id,@RequestParam("number") Long number){
         log.info("正在删除用户问答，用户：" + id + " 提问编号：" + number);
         return ResultUtils.getResult(new JSONObject(),askService.deleteAsk(id,number));
@@ -52,7 +52,7 @@ public class AskController {
             @ApiImplicitParam(name = "question",value = "提问内容",required = true,dataType = "String",paramType = "query")
     })
     @ApiOperation(value = "用户向他人提问",notes = "blackWrong：被对方拉入黑名单 success：成功")
-    @DeleteMapping("/ask")
+    @DeleteMapping("/community/ask")
     public Result<JSONObject> addAsk(@RequestParam("fromId") Long fromId,@RequestParam("toId") Long toId,
                                      @RequestParam("question") String question){
         log.info("正在向他人提问，用户：" + fromId + " 对方id：" + toId + " 提问：" + question);
@@ -65,7 +65,7 @@ public class AskController {
             @ApiImplicitParam(name = "answer",value = "回答内容",required = true,dataType = "String",paramType = "query")
     })
     @ApiOperation(value = "用户回答问题（有推送）",notes = "existWrong：提问不存在或已被回答或用户不对 success：成功")
-    @DeleteMapping("/answer")
+    @DeleteMapping("/community/answer")
     public Result<JSONObject> addAnswer(@RequestParam("number") Long number,@RequestParam("id") Long id,
                                      @RequestParam("answer") String answer){
         log.info("用户正在回答问题，问题编号：" + number + " 用户id：" + id + " 回答内容：" + answer);

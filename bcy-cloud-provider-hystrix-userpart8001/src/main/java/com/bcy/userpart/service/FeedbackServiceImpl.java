@@ -22,8 +22,9 @@ public class FeedbackServiceImpl implements FeedbackService{
         //先看看有没有超过5次
         String cnt = redisUtils.getValue("feedback_" + id.toString());
         int i = 0;
-        if(cnt != null) {
-            i = Integer.getInteger(cnt);
+        log.info(cnt);
+        if(cnt != null && !cnt.equals("")) {
+            i = Integer.parseInt(cnt);
             if (i >= 5) {
                 log.info("添加用户反馈失败，反馈次数过多，已反馈次数：" + i);
                 return "repeatWrong";

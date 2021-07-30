@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@RestController
 @Api(tags = "圈子管理类")
 @Slf4j
-@RestController("/community")
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
 public class CircleController {
@@ -41,7 +41,7 @@ public class CircleController {
             @ApiImplicitParam(name = "photo",value = "圈子图片",required = true,dataType = "file",paramType = "query")
     })
     @ApiOperation(value = "上传圈子图片",notes = "fileWrong：文件为空 typeWrong：上传格式错误 success：成功 成功后返回json：url（图片url）")
-    @PostMapping("/circlePhoto")
+    @PostMapping("/acg/circlePhoto")
     public Result<JSONObject> circlePhotoUpload(@RequestParam("photo")MultipartFile file,@RequestParam("id") Long id){
         log.info("正在上传圈子图片，用户：" + id);
         String url = circleService.circlePhotoUpload(file,id);
@@ -60,7 +60,7 @@ public class CircleController {
             @ApiImplicitParam(name = "photo",value = "圈子图片url",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "创建圈子",notes = "repeatWrong：圈子已存在 success：成功")
-    @PostMapping("/circle")
+    @PostMapping("/acg/circle")
     public Result<JSONObject> createCircle(@RequestParam("id") Long id,@RequestParam("circleName") String circleName,
                                            @RequestParam("description") String description,
                                            @RequestParam("photo") String photo){
@@ -72,7 +72,7 @@ public class CircleController {
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "获取圈子基本信息",notes = "existWrong：圈子不存在 success：成功 返回data circleInfo：（circleName：圈子名 description：圈子简介 photo：圈子图片url postCounts：圈子发帖数 followCounts：圈子成员数 createTime：创建时间）")
-    @GetMapping("/circle")
+    @GetMapping("/acg/circle")
     public Result<JSONObject> getCircleInfo(@RequestParam("circleName") String circleName){
         log.info("正在获取圈子基本信息，圈子：" + circleName);
         JSONObject jsonObject = circleService.getCircleInfo(circleName);
@@ -88,7 +88,7 @@ public class CircleController {
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "关注圈子",notes = "repeatWrong：用户已关注 success：成功")
-    @PostMapping("/followCircle")
+    @PostMapping("/acg/followCircle")
     public Result<JSONObject> followCircle(@RequestParam("id") Long id,@RequestParam("circleName") String circleName){
         log.info("正在关注圈子，用户：" + id + " 圈子：" + circleName);
         return ResultUtils.getResult(new JSONObject(),circleService.followCircle(id,circleName));
@@ -99,7 +99,7 @@ public class CircleController {
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "取消关注圈子",notes = "repeatWrong：用户未关注 success：成功")
-    @DeleteMapping("/followCircle")
+    @DeleteMapping("/acg/followCircle")
     public Result<JSONObject> disFollowCircle(@RequestParam("id") Long id,@RequestParam("circleName") String circleName){
         log.info("正在取消关注圈子，用户：" + id + " 圈子：" + circleName);
         return ResultUtils.getResult(new JSONObject(),circleService.disFollowCircle(id,circleName));

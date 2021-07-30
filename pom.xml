@@ -19,6 +19,7 @@
     <module>bcy-cloud-provider-elasticsearch</module>
     <module>bcy-cloud-consumer-feign-8004</module>
     <module>bcy-cloud-hystrix-dashboard8005</module>
+      <module>bcy-cloud-oauth2</module>
   </modules>
   <packaging>pom</packaging>
 

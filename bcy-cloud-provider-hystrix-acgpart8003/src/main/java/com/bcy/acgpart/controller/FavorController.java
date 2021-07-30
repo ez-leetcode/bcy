@@ -11,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 @Api(tags = "收藏管理类")
 @Slf4j
-@RestController("/community")
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
 public class FavorController {

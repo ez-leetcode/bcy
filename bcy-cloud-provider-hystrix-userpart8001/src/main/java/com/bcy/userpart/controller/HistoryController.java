@@ -21,7 +21,7 @@ import java.util.List;
 
 @Api(tags = "用户历史浏览管理类")
 @Slf4j
-@RestController("/user")
+@RestController
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
 public class HistoryController {
@@ -45,7 +45,7 @@ public class HistoryController {
             @ApiImplicitParam(name = "keyword",value = "关键词",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "获取历史浏览列表",notes = "success：成功")
-    @GetMapping("/historyList")
+    @GetMapping("/user/historyList")
     public Result<JSONObject> getHistoryList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                              @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
         log.info("正在获取用户历史浏览列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page + " 关键词：" + keyword);
@@ -57,7 +57,7 @@ public class HistoryController {
             @ApiImplicitParam(name = "numbers",value = "历史浏览编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "批量删除历史浏览",notes = "existWrong：历史浏览不存在 success：成功")
-    @DeleteMapping("/history")
+    @DeleteMapping("/user/history")
     public Result<JSONObject> deleteHistory(@RequestParam("id") Long id,
                                             @RequestParam("numbers")List<Long> numbers){
         log.info("正在批量删除历史浏览，用户：" + id + " 历史编号：" + numbers.toString());
@@ -68,7 +68,7 @@ public class HistoryController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "清空历史浏览",notes = "success：成功")
-    @DeleteMapping("/allHistory")
+    @DeleteMapping("/user/allHistory")
     public Result<JSONObject> deleteAllHistory(@RequestParam("id") Long id){
         log.info("正在清空历史浏览，用户：" + id);
         return ResultUtils.getResult(new JSONObject(),historyService.deleteAllHistory(id));

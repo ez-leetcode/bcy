@@ -22,7 +22,7 @@ import java.util.Random;
 
 @Api(tags = "短信验证码类")
 @Slf4j
-@RestController("/user")
+@RestController
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
 public class SmsController {
@@ -48,7 +48,7 @@ public class SmsController {
             @ApiImplicitParam(name = "type",value = "哪种验证码（1.注册 2.修改密码 3.找回密码 4.登录）",required = true,dataType = "int",paramType = "query")
     })
     @ApiOperation(value = "发送短信验证码",notes = "repeatWrong：获取验证码次数过多，existWrong：手机号不存在（验证码发送错误） success：成功")
-    @PostMapping("/code")
+    @PostMapping("/user/code")
     public Result<JSONObject> sendCode(@RequestParam("phone") String phone, @RequestParam("type") Integer type){
         log.info("正在发送短信验证码，电话：" + phone + " 类型：" + type);
         String status = smsService.judgeCode(phone,type);

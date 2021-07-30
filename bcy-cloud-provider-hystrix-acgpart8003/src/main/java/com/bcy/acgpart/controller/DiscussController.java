@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@RestController
 @Api(tags = "圈子下面的讨论管理类")
 @Slf4j
-@RestController("/community")
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
 public class DiscussController {
@@ -42,7 +42,7 @@ public class DiscussController {
             @ApiImplicitParam(name = "numbers",value = "讨论编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "批量删除讨论（管理员用，如果违反规定就删除）（只有一个也扔这个接口~）",notes = "existWrong：讨论不存在 success：成功")
-    @DeleteMapping("/discuss")
+    @DeleteMapping("/acg/discuss")
     public Result<JSONObject> deleteDiscuss(@RequestParam("numbers")List<Long> numbers){
         log.info("正在批量删除讨论");
         log.info(numbers.toString());
@@ -55,7 +55,7 @@ public class DiscussController {
             @ApiImplicitParam(name = "description",value = "描述",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "发起讨论",notes = "success：成功")
-    @PostMapping("/discuss")
+    @PostMapping("/acg/discuss")
     public Result<JSONObject> createDiscuss(@RequestParam("id") Long id,@RequestParam("title") String title,
                                             @RequestParam("description") String description){
         log.info("正在发起讨论，用户：" + id + " 标题：" + title + " 描述：" + description);
