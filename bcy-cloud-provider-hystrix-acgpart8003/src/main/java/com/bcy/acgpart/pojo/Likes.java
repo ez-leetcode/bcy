@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -19,7 +20,7 @@ import java.util.Date;
 @ToString
 @Data
 @ApiModel(description = "个人点赞类")
-public class Likes {
+public class Likes implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
     @JsonFormat(shape = JsonFormat.Shape.STRING)

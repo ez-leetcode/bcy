@@ -1,6 +1,5 @@
 package com.bcy.acgpart.pojo;
 
-
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -13,39 +12,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "圈子讨论类")
-public class Discuss implements Serializable {
+@ApiModel(description = "用户收藏类")
+public class Favor {
 
     @TableId(type = IdType.ID_WORKER)
-    @ApiModelProperty("讨论编号")
+    @ApiModelProperty("收藏编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
+    @ApiModelProperty("帖子编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("提问者id")
+    private Long discussNumber;
+
+    @ApiModelProperty("用户id")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
-    @ApiModelProperty("讨论标题")
-    private String title;
-
-    @ApiModelProperty("讨论内容")
-    private String description;
-
-    @ApiModelProperty("评论数")
-    private Integer commentCounts;
-
     @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty("收藏时间")
     private Date createTime;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
 
 }

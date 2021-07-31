@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -17,7 +18,7 @@ import java.util.Date;
 @ToString
 @Data
 @ApiModel(description = "圈子关注类")
-public class CircleFollow {
+public class CircleFollow implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("圈子关注编号")
