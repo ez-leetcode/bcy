@@ -72,7 +72,7 @@ public class AcgController {
         return acgFeignService.likeDiscuss(id,number);
     }
 
-    @PostMapping("/acg/like")
+    @PostMapping("/acg/dislike")
     public Result<JSONObject> dislikeDiscuss(@RequestParam("id") Long id,@RequestParam("number") Long number){
         return acgFeignService.dislikeDiscuss(id, number);
     }

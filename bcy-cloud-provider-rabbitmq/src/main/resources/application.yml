@@ -9,4 +9,33 @@ eureka:
     service-url:
       defaultZone: http://47.115.128.193:8000/eureka
 
-
+spring:
+  datasource:
+    username: mycat
+    password: 123456
+    url: jdbc:mysql://47.115.128.193:8066/mycatdb?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  application:
+    name: bcy-cloud-hystrix-userpart
+  #rabbitmq
+  rabbitmq:
+    host: 47.115.128.193
+    port: 5672
+    username: ck
+    password: 123456
+    virtual-host: /
+  #redis
+  redis:
+    host: 47.115.128.193
+    port: 6379
+    password: 123456
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+  profiles:
+    #开发者环境
+    active: dev

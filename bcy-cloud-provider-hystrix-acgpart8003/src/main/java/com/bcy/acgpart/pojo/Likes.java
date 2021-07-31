@@ -36,7 +36,7 @@ public class Likes implements Serializable {
     private Long id;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @ApiModelProperty("更新时间")
-    private Date updateTime;
+    @ApiModelProperty("创建时间")
+    private Date createTime;
 
 }

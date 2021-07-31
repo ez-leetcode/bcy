@@ -35,5 +35,31 @@ public class CsrfConfig {
 
             return new CorsWebFilter(source);
         }
+
+/*
+      globalcors:
+        #处理跨域
+        cors-configurations:
+          #匹配所有请求
+          '[/**]':
+            #跨域处理 允许所有的域
+            allowedOrigins: '*'
+            #支持的方法
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+         ssl:
+    #证书路径
+    key-store: classpath:rat403.cn.pfx
+    #证书密码
+    key-store-password: N2sjS3S3
+    #证书类型
+    key-store-type: PKCS12
+    #开启ssl
+    enabled: true
+
  */
 }
