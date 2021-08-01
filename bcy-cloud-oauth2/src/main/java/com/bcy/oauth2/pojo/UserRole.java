@@ -1,5 +1,4 @@
-package com.bcy.acgpart.pojo;
-
+package com.bcy.oauth2.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -13,39 +12,31 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.Date;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Data
-@ApiModel(description = "圈子讨论类")
-public class Discuss implements Serializable {
+@ApiModel(description = "用户角色类，对应用户权限表")
+public class UserRole {
 
-    @TableId(type = IdType.ID_WORKER)
-    @ApiModelProperty("讨论编号")
+    //注册的时候会添加角色
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @TableId(type = IdType.ID_WORKER)
     private Long number;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("提问者id")
+    @ApiModelProperty(value = "用户id")
     private Long id;
 
-    @ApiModelProperty("讨论标题")
-    private String title;
+    @ApiModelProperty(value = "角色编号id")
+    private Integer role;
 
-    @ApiModelProperty("讨论内容")
-    private String description;
-
-    @ApiModelProperty("评论数")
-    private Integer commentCounts;
-
-
-    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("创建时间")
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
+    @ApiModelProperty("最近一次更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
