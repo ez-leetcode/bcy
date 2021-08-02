@@ -1,6 +1,8 @@
 package com.bcy.community.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bcy.community.mapper.AskMapper;
+import com.bcy.community.mapper.UserMapper;
 import com.bcy.community.pojo.Ask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,9 @@ public class AskServiceImpl implements AskService{
 
     @Autowired
     private AskMapper askMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     //推送待完成
 
@@ -46,5 +51,11 @@ public class AskServiceImpl implements AskService{
         log.info("回答问题成功");
         return "success";
     }
+
+    @Override
+    public JSONObject getWaitingAsk(Long id, Long page, Long cnt) {
+        return null;
+    }
+
 
 }

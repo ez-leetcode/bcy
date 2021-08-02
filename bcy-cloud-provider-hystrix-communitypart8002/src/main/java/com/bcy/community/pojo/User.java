@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "用户实例类")
+@ApiModel(description = "用户基本信息实例类")
 public class User {
 
     @ApiModelProperty("用户编号")
@@ -34,6 +34,18 @@ public class User {
     @ApiModelProperty("自我介绍")
     private String description;
 
+    @ApiModelProperty("所在省")
+    private String province;
+
+    @ApiModelProperty("所在市")
+    private String city;
+
+    @ApiModelProperty("生日")
+    private Date birthday;
+
+    @ApiModelProperty("动态数")
+    private Integer momentCounts;
+
     @ApiModelProperty("粉丝数")
     private Integer fansCounts;
 
@@ -43,7 +55,4 @@ public class User {
     @ApiModelProperty("是否被封号")
     @TableLogic
     private Integer deleted;
-
-    @ApiModelProperty("创建时间")
-    private Date createTime;
 }

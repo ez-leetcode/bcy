@@ -39,7 +39,7 @@ public class FavorController {
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取收藏列表",notes = "favorList：success：成功")
+    @ApiOperation(value = "获取收藏列表（文章）",notes = "favorList：success：成功")
     @GetMapping("/acg/favorList")
     public Result<JSONObject> getFavorList(@RequestParam("id") Long id,@RequestParam("keyword") String keyword,
                                            @RequestParam("page") Long page,@RequestParam("cnt") Long cnt){
