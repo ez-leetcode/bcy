@@ -18,9 +18,20 @@ public class GatewayMain {
         SpringApplication.run(GatewayMain.class, args);
     }
 
+
+    /*
     @Bean
     public KeyResolver ipKeyResolver(){
         return exchange -> Mono.just(Objects.requireNonNull(exchange.getRequest().getRemoteAddress()).getHostName());
     }
 
+      default-filters:
+        - name: RequestRateLimiter #请求数限流 名字不能随便写
+          args:
+          key-resolver: "#{@ipKeyResolver}"  # 令牌解析器
+          redis-rate-limiter.replenishRate: 1 #令牌桶每秒填充平均速率
+          redis-rate-limiter.burstCapacity: 1 #令牌桶总容量；一般总容量为填充速率的2倍或3倍
+
+
+     */
 }

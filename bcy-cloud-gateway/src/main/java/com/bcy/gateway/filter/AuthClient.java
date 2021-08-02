@@ -28,7 +28,7 @@ public class AuthClient {
 
 
     public boolean hasPermissionControl(String url) {
-        return !url.startsWith("/oauth");
+        return !url.startsWith("/oauth") && !url.startsWith("/websocket");
     }
 
     public boolean accessable(ServerHttpRequest request) {

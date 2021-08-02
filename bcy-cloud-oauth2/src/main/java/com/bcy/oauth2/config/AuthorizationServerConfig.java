@@ -64,9 +64,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         //允许客户端发送表单来进行权限认证来获取令牌
         //只允许认证的客户端，比如网关服务才可以获取和校验token
-        security.allowFormAuthenticationForClients()
-                .checkTokenAccess("isAuthenticated()")
-                .tokenKeyAccess("isAuthenticated()");
+        security.allowFormAuthenticationForClients();
+                //.checkTokenAccess("isAuthenticated()")
+                //.tokenKeyAccess("isAuthenticated()");
     }
 
 }

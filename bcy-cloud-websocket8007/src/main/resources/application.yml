@@ -1,0 +1,45 @@
+server:
+  port: 8007
+
+spring:
+  datasource:
+    username: mycat
+    password: 123456
+    url: jdbc:mysql://47.115.128.193:8066/mycatdb?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  application:
+    name: bcy-cloud-hystrix-websocket
+  #rabbitmq
+  rabbitmq:
+    host: 47.115.128.193
+    port: 5672
+    username: ck
+    password: 123456
+    virtual-host: /
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+eureka:
+  instance:
+    #用ip代替实例名
+    prefer-ip-address: true
+    #实例的主机名
+    hostname: localhost
+    #实例的ID规则
+    instance-id: localhost:${spring.application.name}:${server.port}
+    #设置ip
+    ip-address: localhost
+  client:
+    #不是注册中心都是true
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://47.115.128.193:8000/eureka

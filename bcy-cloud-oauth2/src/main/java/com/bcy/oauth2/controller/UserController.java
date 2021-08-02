@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,6 +58,11 @@ public class UserController {
                                              @RequestParam("code") String code){
         log.info("正在修改密码，用户：" + id + " 新密码：" + newPassword + " 验证码：" + code);
         return ResultUtils.getResult(new JSONObject(),userService.changePassword(newPassword,newPassword,code));
+    }
+
+    @PostMapping("/oauth/test")
+    public String test(){
+        return "success";
     }
 
 }

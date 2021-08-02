@@ -1,6 +1,15 @@
 server:
   #使用https默认端口
-  port: 8011
+  port: 443
+  ssl:
+    #证书路径
+    key-store: classpath:rat403.cn.pfx
+    #证书密码
+    key-store-password: N2sjS3S3
+    #证书类型
+    key-store-type: PKCS12
+    #开启ssl
+    enabled: true
 
 
 spring:
@@ -19,12 +28,6 @@ spring:
         min-idle: 0
   cloud:
     gateway:
-      default-filters:
-        - name: RequestRateLimiter #请求数限流 名字不能随便写
-          args:
-            key-resolver: "#{@ipKeyResolver}"  # 令牌解析器
-            redis-rate-limiter.replenishRate: 1 #令牌桶每秒填充平均速率
-            redis-rate-limiter.burstCapacity: 1 #令牌桶总容量；一般总容量为填充速率的2倍或3倍
       routes:
           #路由ID，唯一
         - id: userpart_routh
@@ -45,6 +48,10 @@ spring:
           uri: http://localhost:8006
           predicates:
             - Path=/oauth/**
+        - id: websocket_routh
+          uri: ws://localhost:8007
+          predicates:
+            - Path=/websocket/**
       globalcors:
         cors‐configurations:
           '[/**]': # 匹配所有请求
