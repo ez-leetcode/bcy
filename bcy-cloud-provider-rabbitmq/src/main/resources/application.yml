@@ -17,7 +17,8 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
   application:
-    name: bcy-cloud-hystrix-userpart
+    name: bcy-cloud-hystrix-rabbitmq
+
   #rabbitmq
   rabbitmq:
     host: 47.115.128.193
@@ -25,17 +26,19 @@ spring:
     username: ck
     password: 123456
     virtual-host: /
-  #redis
-  redis:
-    host: 47.115.128.193
-    port: 6379
-    password: 123456
-    jedis:
-      pool:
-        max-active: 8
-        max-wait: -1
-        max-idle: 8
-        min-idle: 0
+    #开启发送失败回退
+    publisher-returns: true
+    #默认开启发送确认
+    listener:
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
+        retry:
+          #支持重试
+          enabled: true
+    publisher-confirm-type: correlated
+
   profiles:
     #开发者环境
     active: dev
