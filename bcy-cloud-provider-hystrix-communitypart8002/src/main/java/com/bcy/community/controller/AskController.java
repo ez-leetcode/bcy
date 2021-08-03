@@ -50,7 +50,7 @@ public class AskController {
             @ApiImplicitParam(name = "question",value = "提问内容",required = true,dataType = "String",paramType = "query")
     })
     @ApiOperation(value = "用户向他人提问",notes = "blackWrong：被对方拉入黑名单 success：成功")
-    @DeleteMapping("/community/ask")
+    @PostMapping("/community/ask")
     public Result<JSONObject> addAsk(@RequestParam("fromId") Long fromId,@RequestParam("toId") Long toId,
                                      @RequestParam("question") String question){
         log.info("正在向他人提问，用户：" + fromId + " 对方id：" + toId + " 提问：" + question);
@@ -63,7 +63,7 @@ public class AskController {
             @ApiImplicitParam(name = "answer",value = "回答内容",required = true,dataType = "String",paramType = "query")
     })
     @ApiOperation(value = "用户回答问题（有推送）",notes = "existWrong：提问不存在或已被回答或用户不对 success：成功")
-    @DeleteMapping("/community/answer")
+    @PostMapping("/community/answer")
     public Result<JSONObject> addAnswer(@RequestParam("number") Long number,@RequestParam("id") Long id,
                                      @RequestParam("answer") String answer){
         log.info("用户正在回答问题，问题编号：" + number + " 用户id：" + id + " 回答内容：" + answer);
@@ -75,7 +75,7 @@ public class AskController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取待回答的问题列表",notes = "success：成功 返回data askList：（number：提问编号 fromId：提问者id username：提问者昵称 photo：图片 question：问题 createTime：提问时间）")
+    @ApiOperation(value = "获取待回答的问题列表",notes = "success：成功 返回data waitingAskList：（number：提问编号 fromId：提问者id username：提问者昵称 photo：图片 question：问题 createTime：提问时间）")
     @GetMapping("/community/waitingAsk")
     public Result<JSONObject> getWaitingAsk(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                             @RequestParam("page") Long page){

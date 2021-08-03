@@ -77,4 +77,43 @@ public class AcgController {
         return acgFeignService.dislikeDiscuss(id, number);
     }
 
+    @GetMapping("/acg/followQAList")
+    public Result<JSONObject> getFollowQAList(@RequestParam("id") Long id,@RequestParam("number") Long number,
+                                              @RequestParam("cnt") Long cnt,@RequestParam("page") Long page,
+                                              @RequestParam("keyword") String keyword) {
+        return acgFeignService.getFollowQAList(id, number, cnt, page, keyword);
+    }
+
+
+    @DeleteMapping("/acg/dislikeComment")
+    public Result<JSONObject> dislikeComment(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.dislikeComment(id, number);
+    }
+
+    @PostMapping("/acg/likeComment")
+    public Result<JSONObject> likeComment(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.likeComment(id,number);
+    }
+
+    @DeleteMapping("/acg/dislikeAnswer")
+    public Result<JSONObject> dislikeAnswer(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.dislikeAnswer(id, number);
+    }
+
+    @DeleteMapping("/acg/followQA")
+    public Result<JSONObject> disFollowQA(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.disFollowQA(id,number);
+    }
+
+    @PostMapping("/acg/followQA")
+    public Result<JSONObject> followQA(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.followQA(id,number);
+    }
+
+    @GetMapping("/acg/qaTopic")
+    public Result<JSONObject> getQaTopic(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.getQaTopic(id, number);
+    }
+
+
 }

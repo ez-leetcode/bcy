@@ -33,6 +33,9 @@ public class Qa implements Serializable {
     @ApiModelProperty("问答内容")
     private String description;
 
+    @ApiModelProperty("图片")
+    private String photo;
+
     @ApiModelProperty("关注数")
     private Integer followCounts;
 

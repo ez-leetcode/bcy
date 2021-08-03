@@ -52,4 +52,27 @@ public interface AcgFeignService {
     @PostMapping("/acg/like")
     Result<JSONObject> dislikeDiscuss(@RequestParam("id") Long id, @RequestParam("number") Long number);
 
+    @GetMapping("/acg/followQAList")
+    Result<JSONObject> getFollowQAList(@RequestParam("id") Long id,@RequestParam("number") Long number,
+                                              @RequestParam("cnt") Long cnt,@RequestParam("page") Long page,
+                                              @RequestParam("keyword") String keyword);
+
+    @DeleteMapping("/acg/dislikeComment")
+    Result<JSONObject> dislikeComment(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
+    @PostMapping("/acg/likeComment")
+    Result<JSONObject> likeComment(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
+    @DeleteMapping("/acg/dislikeAnswer")
+    Result<JSONObject> dislikeAnswer(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
+    @DeleteMapping("/acg/followQA")
+    Result<JSONObject> disFollowQA(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
+    @PostMapping("/acg/followQA")
+    Result<JSONObject> followQA(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
+    @GetMapping("/acg/qaTopic")
+    Result<JSONObject> getQaTopic(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
 }

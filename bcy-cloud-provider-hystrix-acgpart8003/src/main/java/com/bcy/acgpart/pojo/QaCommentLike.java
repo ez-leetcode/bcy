@@ -1,7 +1,5 @@
 package com.bcy.acgpart.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,22 +15,19 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "问答标签类")
-public class QaLabel implements Serializable {
+@ApiModel(description = "回答底下评论的点赞类")
+public class QaCommentLike implements Serializable {
 
-    @TableId(type = IdType.ID_WORKER)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("标签编号")
+    @ApiModelProperty("点赞编号")
     private Long number;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("问答编号")
-    private Long qaNumber;
+    @ApiModelProperty("评论编号")
+    private Long commentNumber;
 
-    @ApiModelProperty("标签内容")
-    private String label;
+    @ApiModelProperty("点赞人id")
+    private Long id;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty("点赞时间")
     private Date createTime;
-
 }

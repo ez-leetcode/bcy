@@ -14,16 +14,16 @@ import java.util.List;
 @Mapper
 public interface FansMapper extends BaseMapper<Fans> {
 
-    @Select("SELECT a.* FROM user a, fans b WHERE b.to_id = #{id} AND b.from_id = a.id AND a.username LIKE concat('%',#{keyword},'%') ORDER BY b.create_time")
+    @Select("SELECT a.* FROM user a, fans b WHERE b.to_id = #{id} AND b.from_id = a.id AND a.username LIKE concat('%',#{keyword},'%') ORDER BY b.create_time DESC")
     List<FansInfo> getFansListByKeyword(Page<FansInfo> page,@Param("keyword")String keyword,@Param("id")Long id);
 
-    @Select("SELECT a.* FROM user a, fans b WHERE b.to_id = #{id} AND b.from_id = a.id ORDER BY b.create_time")
+    @Select("SELECT a.* FROM user a, fans b WHERE b.to_id = #{id} AND b.from_id = a.id ORDER BY b.create_time DESC")
     List<FansInfo> getFansList(Page<FansInfo> page,@Param("id") Long id);
 
-    @Select("SELECT a.* FROM user a, fans b WHERE b.from_id = #{id} AND b.to_id = a.id AND a.username LIKE concat('%',#{keyword},'%') ORDER BY b.create_time")
+    @Select("SELECT a.* FROM user a, fans b WHERE b.from_id = #{id} AND b.to_id = a.id AND a.username LIKE concat('%',#{keyword},'%') ORDER BY b.create_time DESC")
     List<FollowInfo> getFollowListByKeyword(Page<FollowInfo> page, @Param("keyword")String keyword, @Param("id")Long id);
 
-    @Select("SELECT a.* FROM user a, fans b WHERE b.from_id = #{id} AND b.to_id = a.id ORDER BY b.create_time")
+    @Select("SELECT a.* FROM user a, fans b WHERE b.from_id = #{id} AND b.to_id = a.id ORDER BY b.create_time DESC")
     List<FollowInfo> getFollowList(Page<FollowInfo> page, @Param("id")Long id);
 
 }

@@ -17,20 +17,32 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "问答标签类")
-public class QaLabel implements Serializable {
+@ApiModel(description = "问答回答类")
+public class QaAnswer implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
+    @ApiModelProperty("问答编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("标签编号")
     private Long number;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("问答编号")
-    private Long qaNumber;
+    @ApiModelProperty("用户id")
+    private Long id;
 
-    @ApiModelProperty("标签内容")
-    private String label;
+    @ApiModelProperty("图片")
+    private Integer photo;
+
+    @ApiModelProperty("图片数")
+    private Integer photoCounts;
+
+    @ApiModelProperty("内容")
+    private String description;
+
+    @ApiModelProperty("点赞数")
+    private Integer likeCounts;
+
+    @ApiModelProperty("评论数")
+    private Integer commentCounts;
 
     @ApiModelProperty("创建时间")
     private Date createTime;

@@ -1,12 +1,16 @@
 package com.bcy.community.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.community.mapper.AskMapper;
 import com.bcy.community.mapper.UserMapper;
 import com.bcy.community.pojo.Ask;
+import com.bcy.vo.AskForAnswer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Slf4j
 @Configuration
@@ -40,6 +44,7 @@ public class AskServiceImpl implements AskService{
         return "success";
     }
 
+    //推送待完成
     @Override
     public String addAnswer(Long id, Long number, String answer) {
         Ask ask = askMapper.selectById(number);
@@ -52,10 +57,18 @@ public class AskServiceImpl implements AskService{
         return "success";
     }
 
+
     @Override
     public JSONObject getWaitingAsk(Long id, Long page, Long cnt) {
-        return null;
+        JSONObject jsonObject = new JSONObject();
+        Page<AskForAnswer> page1 = new Page<>(page,cnt);
+        List<AskForAnswer> askForAnswerList = askMapper.getWaitingAskList(id,page1);
+        jsonObject.put("waitingAskList",askForAnswerList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取待回应提问成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
     }
-
 
 }
