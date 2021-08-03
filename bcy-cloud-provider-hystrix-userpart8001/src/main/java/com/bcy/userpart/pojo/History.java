@@ -22,6 +22,8 @@ import java.util.Date;
 @ApiModel(description = "用户历史浏览实例类")
 public class History implements Serializable {
 
+    //有问题
+
     @TableId(type = IdType.ID_WORKER)
     @ApiModelProperty("历史浏览编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)

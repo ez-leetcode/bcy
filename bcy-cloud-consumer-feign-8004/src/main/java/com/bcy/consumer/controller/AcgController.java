@@ -3,7 +3,6 @@ package com.bcy.consumer.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.bcy.consumer.service.AcgFeignService;
 import com.bcy.pojo.Result;
-import com.bcy.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -113,6 +112,12 @@ public class AcgController {
     @GetMapping("/acg/qaTopic")
     public Result<JSONObject> getQaTopic(@RequestParam("id") Long id,@RequestParam("number") Long number){
         return acgFeignService.getQaTopic(id, number);
+    }
+
+    @PostMapping("/acg/QA")
+    public Result<JSONObject> generateQA(@RequestParam("id") Long id, @RequestParam("title") String title,
+                                         @RequestParam("description") String description, @RequestParam("photo")List<String> photo){
+        return acgFeignService.generateQA(id, title, description, photo);
     }
 
 

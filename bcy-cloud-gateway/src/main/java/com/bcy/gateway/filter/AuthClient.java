@@ -22,7 +22,7 @@ public class AuthClient {
     @Autowired
     private RedisUtils redisUtils;
 
-    private final String checkTokenUrl = "http://localhost:8006/oauth/check_token";
+    private final String checkTokenUrl = "http://47.107.108.55:8006/oauth/check_token";
 
     private RestTemplate restTemplate = new RestTemplate();
 

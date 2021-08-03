@@ -56,4 +56,5 @@ public class User {
     @ApiModelProperty("是否被封号")
     @TableLogic
     private Integer deleted;
+
 }

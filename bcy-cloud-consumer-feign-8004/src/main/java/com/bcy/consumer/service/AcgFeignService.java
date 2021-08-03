@@ -75,4 +75,7 @@ public interface AcgFeignService {
     @GetMapping("/acg/qaTopic")
     Result<JSONObject> getQaTopic(@RequestParam("id") Long id,@RequestParam("number") Long number);
 
+    @PostMapping("/acg/QA")
+    Result<JSONObject> generateQA(@RequestParam("id") Long id, @RequestParam("title") String title,
+                                  @RequestParam("description") String description, @RequestParam("photo")List<String> photo);
 }

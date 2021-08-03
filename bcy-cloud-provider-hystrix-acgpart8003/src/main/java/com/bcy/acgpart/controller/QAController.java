@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Api(tags = "问答管理类")
 @Slf4j
 @RestController
@@ -149,8 +151,18 @@ public class QAController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
-
-    //@PostMapping("/acg/")
-
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "title",value = "问答标题",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "description",value = "问答内容",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "photo",value = "图片列表",required = true,allowMultiple = true,dataType = "string",paramType = "query")
+    })
+    @ApiOperation(value = "生成问答",notes = "success：成功")
+    @PostMapping("/acg/QA")
+    public Result<JSONObject> generateQA(@RequestParam("id") Long id, @RequestParam("title") String title,
+                                         @RequestParam("description") String description, @RequestParam("photo")List<String> photo){
+        log.info("正在生成问答，用户：" + id + " 标题：" + title + " 描述：" + description + " 图片：" + photo.toString());
+        return ResultUtils.getResult(new JSONObject(), qaService.generateQA(id, title, description, photo));
+    }
 
 }

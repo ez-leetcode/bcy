@@ -1,6 +1,10 @@
 server:
   port: 8004
 
+spring:
+  application:
+    name: bcy-cloud-feign
+
 eureka:
   client:
     register-with-eureka: false

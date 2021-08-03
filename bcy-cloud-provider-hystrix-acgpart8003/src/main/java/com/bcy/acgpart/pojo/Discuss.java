@@ -41,7 +41,6 @@ public class Discuss implements Serializable {
     @ApiModelProperty("评论数")
     private Integer commentCounts;
 
-
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("创建时间")
     private Date createTime;

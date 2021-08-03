@@ -31,11 +31,11 @@ eureka:
     #用ip代替实例名
     prefer-ip-address: true
     #实例的主机名
-    hostname: localhost
+    hostname: 47.107.108.55
     #实例的ID规则
-    instance-id: localhost:${spring.application.name}:${server.port}
+    instance-id: 47.107.108.55:${spring.application.name}:${server.port}
     #设置ip
-    ip-address: localhost
+    ip-address: 47.107.108.55
   client:
     #不是注册中心都是true
     register-with-eureka: true

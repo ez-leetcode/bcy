@@ -27,6 +27,10 @@ public class Qa implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("提问的id")
+    private Long id;
+
     @ApiModelProperty("问答标题")
     private String title;
 

@@ -48,16 +48,16 @@ public class UserController {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "phone",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "phone",value = "电话",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "newPassword",value = "密码",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "code",value = "验证码",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "找回密码",notes = "codeWrong：验证码错误（不存在或者错误） existWrong：账号不存在 success：成功")
     @PostMapping("/oauth/changePassword")
-    public Result<JSONObject> changePassword(@RequestParam("id") Long id,@RequestParam("newPassword") String newPassword,
+    public Result<JSONObject> changePassword(@RequestParam("phone") String phone,@RequestParam("newPassword") String newPassword,
                                              @RequestParam("code") String code){
-        log.info("正在修改密码，用户：" + id + " 新密码：" + newPassword + " 验证码：" + code);
-        return ResultUtils.getResult(new JSONObject(),userService.changePassword(newPassword,newPassword,code));
+        log.info("正在修改密码，用户：" + phone + " 新密码：" + newPassword + " 验证码：" + code);
+        return ResultUtils.getResult(new JSONObject(),userService.changePassword(phone,newPassword,code));
     }
 
     @PostMapping("/oauth/test")

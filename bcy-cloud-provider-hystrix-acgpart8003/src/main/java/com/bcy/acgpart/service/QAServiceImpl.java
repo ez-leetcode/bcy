@@ -286,6 +286,15 @@ public class QAServiceImpl implements QAService{
     }
 
     @Override
+    public String generateQA(Long id, String title, String description, List<String> photo) {
+        //图片转换
+        String photoString = PhotoUtils.photoListToString(photo);
+        qaMapper.insert(new Qa(null,id,title,description,photoString,0,0,null,null));
+        log.info("生成新的问答成功");
+        return "success";
+    }
+
+    @Override
     public String photoUpload(MultipartFile file) {
         String url = OssUtils.uploadPhoto(file,"QAPhoto");
         if(url.length() < 12){

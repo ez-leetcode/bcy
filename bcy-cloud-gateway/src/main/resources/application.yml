@@ -45,11 +45,11 @@ spring:
           predicates:
             - Path=/acg/**
         - id: oauth_routh
-          uri: http://localhost:8006
+          uri: http://47.107.108.55:8006
           predicates:
             - Path=/oauth/**
         - id: websocket_routh
-          uri: ws://localhost:8007
+          uri: ws://1.117.75.49:8007
           predicates:
             - Path=/websocket/**
       globalcors:

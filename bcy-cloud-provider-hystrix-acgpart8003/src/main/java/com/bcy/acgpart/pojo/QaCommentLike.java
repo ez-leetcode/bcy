@@ -30,4 +30,5 @@ public class QaCommentLike implements Serializable {
 
     @ApiModelProperty("点赞时间")
     private Date createTime;
+
 }
