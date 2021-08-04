@@ -7,23 +7,25 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
-public class AskForAnswer implements Serializable {
+@AllArgsConstructor
+public class CosLikeForList implements Serializable {
 
     private Long number;
 
-    private Long fromId;
+    private Long id;
 
     private String username;
 
     private String photo;
 
-    private String question;
+    private String description;
+
+    private List<String> cosPhoto;
 
     private Date createTime;
-
 }

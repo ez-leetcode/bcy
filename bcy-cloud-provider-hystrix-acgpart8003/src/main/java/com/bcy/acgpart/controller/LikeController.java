@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "喜欢(只有帖子)管理类")
+@Api(tags = "喜欢(只有cos)管理类")
 @Slf4j
 @RestController
 //默认服务降级处理
@@ -35,6 +35,7 @@ public class LikeController {
         return timeoutService.timeoutHandler();
     }
 
+    //待修改
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "numbers",value = "cos编号（list）",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
@@ -50,13 +51,13 @@ public class LikeController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "keyword",value = "关键词",required = true,dataType = "string",paramType = "query")
     })
-    @ApiOperation(value = "获取喜欢列表",notes = "success：成功")
+    @ApiOperation(value = "获取喜欢列表（点赞收藏内容请调用另外接口）",notes = "success：成功 返回data likeCosList（number：cos编号 id：发布用户id username：发布用户昵称 photo：发布用户头像" +
+            " description：内容 cosPhoto：照片列表（list） createTime：发布时间）")
     @GetMapping("/acg/likeList")
     public Result<JSONObject> getLikeList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
-                                          @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
-        log.info("正在获取喜欢列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page + " 关键词：" + keyword);
+                                          @RequestParam("page") Long page){
+        log.info("正在获取喜欢列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
         return null;
     }
 
@@ -81,5 +82,6 @@ public class LikeController {
         log.info("正在取消喜欢cos，用户：" + id + " cos编号：" + number);
         return ResultUtils.getResult(new JSONObject(),likeService.deleteLike(id,number));
     }
+
 
 }

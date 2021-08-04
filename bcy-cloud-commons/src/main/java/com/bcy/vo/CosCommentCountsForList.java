@@ -6,24 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class AskForAnswer implements Serializable {
+public class CosCommentCountsForList implements Serializable {
 
     private Long number;
 
-    private Long fromId;
+    private Integer likeCounts;
 
-    private String username;
-
-    private String photo;
-
-    private String question;
-
-    private Date createTime;
-
+    private Integer commentCounts;
 }

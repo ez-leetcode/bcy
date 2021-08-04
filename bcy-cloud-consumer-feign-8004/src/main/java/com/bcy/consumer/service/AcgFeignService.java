@@ -94,4 +94,16 @@ public interface AcgFeignService {
     @PostMapping("/acg/cos")
     Result<JSONObject> createCos(@RequestParam("id") Long id, @RequestParam("description") String description,
                                         @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label);
+
+    @GetMapping("/acg/cosComment")
+    Result<JSONObject> getCosComment(@RequestParam(value = "id",required = false) Long id,
+                                            @RequestParam("number") Long number, @RequestParam("page") Long page,
+                                            @RequestParam("cnt") Long cnt,@RequestParam("type") Integer type);
+
+    @PostMapping("/acg/likeCosComment")
+    Result<JSONObject> likeCosComment(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
+    @GetMapping("/acg/cosCommentCountsList")
+    Result<JSONObject> getCosCommentCountsList(@RequestParam(value = "id",required = false) Long id,
+                                                      @RequestParam("number") List<Long> number);
 }

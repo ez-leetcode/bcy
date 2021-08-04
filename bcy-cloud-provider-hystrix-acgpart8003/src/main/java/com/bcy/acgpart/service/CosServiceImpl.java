@@ -2,11 +2,14 @@ package com.bcy.acgpart.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.acgpart.mapper.*;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
 import com.bcy.utils.PhotoUtils;
+import com.bcy.vo.CosCommentCountsForList;
+import com.bcy.vo.CosCommentForList;
 import com.bcy.vo.CosCountsForList;
 import com.bcy.vo.CosForTopic;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +44,12 @@ public class CosServiceImpl implements CosService {
 
     @Autowired
     private HistoryMapper historyMapper;
+
+    @Autowired
+    private CosCommentMapper cosCommentMapper;
+
+    @Autowired
+    private CosCommentLikeMapper cosCommentLikeMapper;
 
     @Override
     public String deleteCos(List<Long> numbers) {
@@ -114,6 +123,38 @@ public class CosServiceImpl implements CosService {
         }
         jsonObject.put("cosCountsList",cosCountsForList);
         log.info("获取cos计数信息成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    @Override
+    public JSONObject getCosCommentCountsList(Long id, List<Long> number) {
+        JSONObject jsonObject = new JSONObject();
+        List<CosCommentCountsForList> cosCommentCountsForList = new LinkedList<>();
+        for(Long x:number){
+            CosComment cosComment = new CosComment();
+            CosCommentCountsForList cosCommentCountsForList1 = new CosCommentCountsForList(x,null,null);
+            String likeCounts = redisUtils.getValue("cosCommentLikeCounts_" + x);
+            String commentCounts = redisUtils.getValue("cosCommentCommentCounts_" + x);
+            if(likeCounts == null || commentCounts == null){
+                cosComment = cosCommentMapper.selectById(x);
+            }
+            if(likeCounts != null){
+                cosCommentCountsForList1.setLikeCounts(Integer.parseInt(likeCounts));
+            }else{
+                cosCommentCountsForList1.setCommentCounts(cosComment.getCommentCounts());
+                redisUtils.saveByHoursTime("cosCommentLikeCounts_" + x,cosComment.getLikeCounts().toString(),12);
+            }
+            if(commentCounts != null){
+                cosCommentCountsForList1.setCommentCounts(Integer.parseInt(commentCounts));
+            }else{
+                cosCommentCountsForList1.setCommentCounts(cosCommentCountsForList1.getCommentCounts());
+                redisUtils.saveByHoursTime("cosCommentCommentCounts_" + x,cosComment.getCommentCounts().toString(),12);
+            }
+            cosCommentCountsForList.add(cosCommentCountsForList1);
+        }
+        jsonObject.put("cosCommentCountsList",cosCommentCountsForList);
+        log.info("获取cos下评论列表成功");
         log.info(jsonObject.toString());
         return jsonObject;
     }
@@ -219,8 +260,78 @@ public class CosServiceImpl implements CosService {
     @Override
     public JSONObject getCosComment(Long id, Long number, Long page, Long cnt, Integer type) {
         JSONObject jsonObject = new JSONObject();
-        return null;
+        Page<CosCommentForList> page1 = new Page<>(page,cnt);
+        List<CosCommentForList> commentForList;
+        if(type == 1){
+            commentForList = cosCommentMapper.getCosCommentListByHot(number,page1);
+        }else{
+            commentForList = cosCommentMapper.getCosCommentListByTime(number,page1);
+        }
+        jsonObject.put("cosCommentList",commentForList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取Cos下的评论列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
     }
+
+
+    @Override
+    public String likeCosComment(Long id, Long number) {
+        CosComment cosComment = cosCommentMapper.selectById(number);
+        if(cosComment == null){
+            log.error("点赞cos下评论失败，评论不存在");
+            return "existWrong";
+        }
+        QueryWrapper<CosCommentLike> wrapper = new QueryWrapper<>();
+        wrapper.eq("comment_number",number)
+                .eq("id",id);
+        CosCommentLike cosCommentLike = cosCommentLikeMapper.selectOne(wrapper);
+        if(cosCommentLike != null){
+            log.error("点赞cos下评论失败，评论已被点赞");
+            return "repeatWrong";
+        }
+        //插入数据
+        cosCommentLikeMapper.insert(new CosCommentLike(null,number,id,null));
+        //存redis
+        String ck = redisUtils.getValue("cosCommentLikeCounts_" + number);
+        if(ck == null){
+            redisUtils.saveByHoursTime("cosCommentLikeCounts_" + number,cosComment.getLikeCounts().toString(),12);
+        }
+        redisUtils.addKeyByTime("cosCommentLikeCounts_" + number,12);
+        log.info("点赞cos下评论成功");
+        return "success";
+    }
+
+    @Override
+    public String dislikeCosComment(Long id, Long number) {
+        CosComment cosComment = cosCommentMapper.selectById(number);
+        if(cosComment == null){
+            log.error("取消点赞cos下评论失败，评论不存在");
+            return "existWrong";
+        }
+        QueryWrapper<CosCommentLike> wrapper = new QueryWrapper<>();
+        wrapper.eq("comment_number",number)
+                .eq("id",id);
+        CosCommentLike cosCommentLike = cosCommentLikeMapper.selectOne(wrapper);
+        if(cosCommentLike == null){
+            log.error("取消点赞cos下评论失败，评论未被点赞");
+            return "repeatWrong";
+        }
+        //删除数据
+        cosCommentLikeMapper.deleteById(cosCommentLike);
+        //存入redis
+        String ck = redisUtils.getValue("cosCommentLikeCounts_" + number);
+        if(ck == null){
+            redisUtils.saveByHoursTime("cosCommentLikeCounts_" + number,cosComment.getLikeCounts().toString(),12);
+        }
+        redisUtils.subKeyByTime("cosCommentLikeCounts_" + number,12);
+        log.info("取消点赞cos下评论成功");
+        return "success";
+    }
+
+
+
 
     @Override
     public String cosPhotoUpload(MultipartFile file) {

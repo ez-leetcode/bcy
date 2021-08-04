@@ -17,8 +17,8 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "回答底下评论的点赞类")
-public class QaCommentLike implements Serializable {
+@ApiModel(description = "cos底下评论点赞类")
+public class CosCommentLike implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
     @JsonFormat(shape = JsonFormat.Shape.STRING)

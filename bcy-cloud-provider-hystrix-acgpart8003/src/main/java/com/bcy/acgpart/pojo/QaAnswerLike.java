@@ -1,5 +1,7 @@
 package com.bcy.acgpart.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,6 +20,7 @@ import java.util.Date;
 @ApiModel(description = "回答的点赞类")
 public class QaAnswerLike implements Serializable {
 
+    @TableId(type = IdType.ID_WORKER)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("点赞编号")
     private Long number;

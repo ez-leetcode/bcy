@@ -147,4 +147,22 @@ public class AcgController {
         return acgFeignService.createCos(id, description, photo, label);
     }
 
+    @GetMapping("/acg/cosComment")
+    public Result<JSONObject> getCosComment(@RequestParam(value = "id",required = false) Long id,
+                                            @RequestParam("number") Long number, @RequestParam("page") Long page,
+                                            @RequestParam("cnt") Long cnt,@RequestParam("type") Integer type){
+        return acgFeignService.getCosComment(id, number, page, cnt, type);
+    }
+
+    @PostMapping("/acg/likeCosComment")
+    public Result<JSONObject> likeCosComment(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.likeCosComment(id, number);
+    }
+
+    @GetMapping("/acg/cosCommentCountsList")
+    public Result<JSONObject> getCosCommentCountsList(@RequestParam(value = "id",required = false) Long id,
+                                                      @RequestParam("number") List<Long> number){
+        return acgFeignService.getCosCommentCountsList(id, number);
+    }
+
 }

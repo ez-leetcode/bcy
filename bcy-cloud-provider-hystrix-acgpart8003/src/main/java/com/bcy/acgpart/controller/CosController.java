@@ -42,22 +42,32 @@ public class CosController {
     @ApiOperation(value = "批量删除Cos（管理员用，如果违反规定就删除）（只有一个也扔这个接口~）",notes = "existWrong：讨论不存在 success：成功")
     @DeleteMapping("/acg/cos")
     public Result<JSONObject> deleteCos(@RequestParam("numbers")List<Long> numbers){
-        log.info("正在批量删除讨论");
-        log.info(numbers.toString());
+        log.info("正在批量删除讨论" + numbers.toString());
         return ResultUtils.getResult(new JSONObject(), cosService.deleteCos(numbers));
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos编号（list）",allowMultiple = true,required = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "获取cos的 点赞 评论 收藏数",notes = "success：成功 返回data cosCountsList（number：cos编号 commentCounts：评论数 likeCounts：点赞数 favorCounts：收藏数 shareCounts：分享数")
     @GetMapping("/acg/cosCountsList")
-    public Result<JSONObject> getCosCountsList(@RequestParam("id") Long id,@RequestParam("number") List<Long> number){
+    public Result<JSONObject> getCosCountsList(@RequestParam(value = "id",required = false) Long id,@RequestParam("number") List<Long> number){
         log.info("正在获取cos的计数信息，用户：" + id + " cos编号：" + number.toString());
         return ResultUtils.getResult(cosService.getCosCountsList(id,number),"success");
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "评论编号（list）",required = true,dataType = "Long",allowMultiple = true,paramType = "query")
+    })
+    @ApiOperation(value = "获取cos下面评论的点赞数和评论数",notes = "success：成功 返回data cosCommentCountsList（number：评论编号 likeCounts：点赞数 commentCounts：评论数）")
+    @GetMapping("/acg/cosCommentCountsList")
+    public Result<JSONObject> getCosCommentCountsList(@RequestParam(value = "id",required = false) Long id,
+                                                      @RequestParam("number") List<Long> number){
+        log.info("正在获取cos下面评论的点赞数和评论数，用户：" + id + " 评论编号：" + number.toString());
+        return ResultUtils.getResult(cosService.getCosCommentCountsList(id, number),"success");
+    }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
@@ -93,22 +103,46 @@ public class CosController {
     //获取下层的评论
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "type",value = "排序方式（0：按时间 1：按热度）",required = true,dataType = "int",paramType = "query")
     })
-    @ApiOperation(value = "获取cos页面下面的评论内容",notes = "existWrong：cos不存在 success：成功 cosCommentList （number：评论编号 ）")
+    @ApiOperation(value = "获取cos页面下面的评论内容",notes = "existWrong：cos不存在 success：成功 cosCommentList （number：评论编号 id：用户id username：用户昵称 photo：头像 description：评论内容 createTime：评论时间）")
     @GetMapping("/acg/cosComment")
     public Result<JSONObject> getCosComment(@RequestParam(value = "id",required = false) Long id,
                                             @RequestParam("number") Long number, @RequestParam("page") Long page,
                                             @RequestParam("cnt") Long cnt,@RequestParam("type") Integer type){
         log.info("正在获取cos页面下面的内容，用户：" + id + "cos编号：" + number + " 当前页面：" + page + " 页面数据量：" + cnt + " 排序方式：" + type);
+        JSONObject jsonObject = cosService.getCosComment(id, number, page, cnt, type);
+        if(jsonObject == null){
+            return ResultUtils.getResult(new JSONObject(),"existWrong");
+        }
+        return ResultUtils.getResult(jsonObject,"success");
+    }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "评论编号",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "点赞cos下的评论",notes = "existWrong：评论不存在 repeatWrong：重复点赞 success：成功")
+    @PostMapping("/acg/likeCosComment")
+    public Result<JSONObject> likeCosComment(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        log.info("正在点赞cos下的评论，用户：" + id + " 评论编号：" + number);
+        return ResultUtils.getResult(new JSONObject(),cosService.likeCosComment(id, number));
     }
 
 
-
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "评论编号",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "取消点赞cos下的评论",notes = "existWrong：评论不存在 repeatWrong：重复取消点赞 success：成功")
+    @DeleteMapping("/acg/likeCosComment")
+    public Result<JSONObject> dislikeCosComment(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        log.info("正在取消点赞cos下的评论，用户：" + id + " 评论编号：" + number);
+        return ResultUtils.getResult(new JSONObject(),cosService.dislikeCosComment(id, number));
+    }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "photo",required = true,dataType = "file",paramType = "query")
@@ -125,13 +159,5 @@ public class CosController {
         jsonObject.put("url",url);
         return ResultUtils.getResult(jsonObject,"success");
     }
-
-
-
-
-
-
-
-
 
 }

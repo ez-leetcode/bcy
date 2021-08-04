@@ -18,4 +18,10 @@ public interface CosService {
     JSONObject getCosTopic(Long id,Long number);
 
     JSONObject getCosComment(Long id,Long number,Long page,Long cnt,Integer type);
+
+    String likeCosComment(Long id,Long number);
+
+    String dislikeCosComment(Long id,Long number);
+
+    JSONObject getCosCommentCountsList(Long id,List<Long> number);
 }

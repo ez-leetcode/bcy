@@ -87,6 +87,7 @@ public class LikeServiceImpl implements LikeService{
         return "success";
     }
 
+    //待修改
     @Override
     public JSONObject getLikeStatus(Long id, List<Long> number) {
         JSONObject jsonObject = new JSONObject();
@@ -110,6 +111,11 @@ public class LikeServiceImpl implements LikeService{
 
     @Override
     public JSONObject getLikeList(Long id, Long cnt, Long page) {
-        return null;
+        JSONObject jsonObject = new JSONObject();
+        log.info("正在获取喜欢列表，");
+        return jsonObject;
     }
+
+
+
 }
