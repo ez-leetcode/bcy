@@ -1,7 +1,7 @@
 package com.bcy.acgpart.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bcy.acgpart.service.DiscussService;
+import com.bcy.acgpart.service.CosService;
 import com.bcy.acgpart.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
@@ -24,13 +24,13 @@ import java.util.List;
 @Slf4j
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
-public class DiscussController {
+public class CosController {
 
     @Autowired
     private TimeoutService timeoutService;
 
     @Autowired
-    private DiscussService discussService;
+    private CosService cosService;
 
     //超时或内部出错调用方法，进行服务降级
     public Result<JSONObject> timeoutHandler(){
@@ -41,12 +41,12 @@ public class DiscussController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "numbers",value = "讨论编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "批量删除讨论（管理员用，如果违反规定就删除）（只有一个也扔这个接口~）",notes = "existWrong：讨论不存在 success：成功")
-    @DeleteMapping("/acg/discuss")
-    public Result<JSONObject> deleteDiscuss(@RequestParam("numbers")List<Long> numbers){
+    @ApiOperation(value = "批量删除Cos（管理员用，如果违反规定就删除）（只有一个也扔这个接口~）",notes = "existWrong：讨论不存在 success：成功")
+    @DeleteMapping("/acg/cos")
+    public Result<JSONObject> deleteCos(@RequestParam("numbers")List<Long> numbers){
         log.info("正在批量删除讨论");
         log.info(numbers.toString());
-        return ResultUtils.getResult(new JSONObject(), discussService.deleteDiscuss(numbers));
+        return ResultUtils.getResult(new JSONObject(), cosService.deleteCos(numbers));
     }
 
     @ApiImplicitParams({

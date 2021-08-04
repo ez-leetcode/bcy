@@ -4,6 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface FavorService {
 
-    JSONObject getFavorList(Long id, String keyword, Long page, Long cnt);
+    JSONObject getFavorList(Long id, Long page, Long cnt);
 
 }

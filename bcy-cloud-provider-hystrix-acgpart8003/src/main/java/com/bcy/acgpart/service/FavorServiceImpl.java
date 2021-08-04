@@ -14,7 +14,7 @@ public class FavorServiceImpl implements FavorService{
     private FavorMapper favorMapper;
 
     @Override
-    public JSONObject getFavorList(Long id, String keyword, Long page, Long cnt) {
+    public JSONObject getFavorList(Long id, Long page, Long cnt) {
         return null;
     }
 

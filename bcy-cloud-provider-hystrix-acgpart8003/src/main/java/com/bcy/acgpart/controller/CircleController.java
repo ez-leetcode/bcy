@@ -105,4 +105,17 @@ public class CircleController {
         return ResultUtils.getResult(new JSONObject(),circleService.disFollowCircle(id,circleName));
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取个人圈子列表",notes = "success：成功 返回data personalCircleList（circleName：圈子名 photo：圈子图片）")
+    @GetMapping("/acg/personalCircle")
+    public Result<JSONObject> getPersonalCircle(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                                @RequestParam("page") Long page){
+        log.info("正在获取个人圈子列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(circleService.getPersonalCircle(id, cnt, page),"success");
+    }
+
 }

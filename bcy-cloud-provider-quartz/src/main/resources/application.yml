@@ -12,9 +12,9 @@ spring:
     name: bcy-cloud-provider-quartz
     #redis
   redis:
-    host: 127.0.0.1
+    host: 47.115.128.193
     port: 6379
-    password:
+    password: 123456
     jedis:
       pool:
         max-active: 8

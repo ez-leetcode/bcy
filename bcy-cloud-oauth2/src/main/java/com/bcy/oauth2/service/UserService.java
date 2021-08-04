@@ -6,4 +6,5 @@ public interface UserService {
 
     String loginByCode(String phone,String code,Integer type);
 
+    String logout(Long id,Integer type);
 }

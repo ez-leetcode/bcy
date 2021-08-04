@@ -18,7 +18,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "用户收藏类")
+@ApiModel(description = "用户收藏类（cos）")
 public class Favor {
 
     @TableId(type = IdType.ID_WORKER)
@@ -26,7 +26,7 @@ public class Favor {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
-    @ApiModelProperty("帖子编号")
+    @ApiModelProperty("cos编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long discussNumber;
 

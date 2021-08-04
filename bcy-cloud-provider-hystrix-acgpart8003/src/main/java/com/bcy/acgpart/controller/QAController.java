@@ -152,6 +152,21 @@ public class QAController {
     }
 
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "number",value = "问题编号",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "排序类型（1：最热 2：最新）",required = true,dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取回答列表（点赞数 收藏数 评论数见另外一个接口）",notes = "success：成功 返回data answerList（）")
+    @GetMapping("/acg/answerList")
+    public Result<JSONObject> getAnswerList(@RequestParam("number") Long number,@RequestParam("type") Integer type,
+                                            @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
+        log.info("正在获取回答列表，问题编号：" + number + " 排序类型：" + type + " 页面数据量：" + cnt + " 当前页面");
+        return null;
+    }
+
+
+    @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "title",value = "问答标题",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "description",value = "问答内容",required = true,dataType = "string",paramType = "query"),
@@ -164,5 +179,7 @@ public class QAController {
         log.info("正在生成问答，用户：" + id + " 标题：" + title + " 描述：" + description + " 图片：" + photo.toString());
         return ResultUtils.getResult(new JSONObject(), qaService.generateQA(id, title, description, photo));
     }
+
+
 
 }

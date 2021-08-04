@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,6 +57,17 @@ public class UserController {
                                              @RequestParam("code") String code){
         log.info("正在修改密码，用户：" + phone + " 新密码：" + newPassword + " 验证码：" + code);
         return ResultUtils.getResult(new JSONObject(),userService.changePassword(phone,newPassword,code));
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "端口（1：PC 2：安卓）",required = true,dataType = "int",paramType = "query")
+    })
+    @ApiOperation(value = "登出账号",notes = "success：成功")
+    @PostMapping("/oauth/logout")
+    public Result<JSONObject> logout(@RequestParam("id") Long id,@RequestParam("type") Integer type){
+        log.info("正在登出账号，用户id：" + id + " 类型：" + type);
+        return ResultUtils.getResult(new JSONObject(), userService.logout(id,type));
     }
 
     @PostMapping("/oauth/test")

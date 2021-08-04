@@ -2,15 +2,19 @@ package com.bcy.acgpart.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.acgpart.mapper.CircleFollowMapper;
 import com.bcy.acgpart.mapper.CircleMapper;
 import com.bcy.acgpart.pojo.Circle;
 import com.bcy.acgpart.pojo.CircleFollow;
 import com.bcy.acgpart.utils.OssUtils;
+import com.bcy.vo.PersonalCircleForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -85,6 +89,20 @@ public class CircleServiceImpl implements CircleService{
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("circleInfo",circle);
         log.info("获取圈子基本信息成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+
+    @Override
+    public JSONObject getPersonalCircle(Long id, Long cnt, Long page) {
+        JSONObject jsonObject = new JSONObject();
+        Page<PersonalCircleForList> page1 = new Page<>(page,cnt);
+        List<PersonalCircleForList> personalCircleForList = circleMapper.getPersonalCircleList(id,page1);
+        jsonObject.put("personalCircleList",personalCircleForList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取个人关注圈子列表成功");
         log.info(jsonObject.toString());
         return jsonObject;
     }

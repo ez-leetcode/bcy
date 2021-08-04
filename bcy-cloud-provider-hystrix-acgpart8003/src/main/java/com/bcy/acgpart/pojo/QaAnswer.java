@@ -32,9 +32,6 @@ public class QaAnswer implements Serializable {
     @ApiModelProperty("图片")
     private String photo;
 
-    @ApiModelProperty("图片数")
-    private Integer photoCounts;
-
     @ApiModelProperty("内容")
     private String description;
 

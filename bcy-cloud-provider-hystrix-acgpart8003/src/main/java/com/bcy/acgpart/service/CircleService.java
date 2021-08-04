@@ -14,4 +14,6 @@ public interface CircleService {
     String disFollowCircle(Long id,String circleName);
 
     JSONObject getCircleInfo(String circleName);
+
+    JSONObject getPersonalCircle(Long id,Long cnt,Long page);
 }

@@ -1,5 +1,6 @@
 package com.bcy.acgpart.pojo;
 
+
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,24 +20,30 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "个人点赞类")
-public class Likes implements Serializable {
+@ApiModel(description = "cos类")
+public class Cos implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
+    @ApiModelProperty("cos编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("点赞编号")
     private Long number;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("cos编号")
-    private Long discussNumber;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("用户id")
+    @ApiModelProperty("发布者id")
     private Long id;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty("内容")
+    private String description;
+
+    @ApiModelProperty("图片")
+    private String photo;
+
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("创建时间")
     private Date createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty("更新时间")
+    private Date updateTime;
 
 }

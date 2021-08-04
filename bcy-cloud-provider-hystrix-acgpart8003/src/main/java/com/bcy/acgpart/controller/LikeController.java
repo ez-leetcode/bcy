@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "喜欢（帖子或讨论）管理类")
+@Api(tags = "喜欢(只有帖子)管理类")
 @Slf4j
 @RestController
 //默认服务降级处理

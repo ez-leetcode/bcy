@@ -10,9 +10,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Api(tags = "收藏管理类")
@@ -35,16 +33,37 @@ public class FavorController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "keyword",value = "关键词",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取收藏列表（文章）",notes = "favorList：success：成功")
+    @ApiOperation(value = "获取收藏列表（文章/cos）",notes = "favorList：success：成功")
     @GetMapping("/acg/favorList")
-    public Result<JSONObject> getFavorList(@RequestParam("id") Long id,@RequestParam("keyword") String keyword,
+    public Result<JSONObject> getFavorList(@RequestParam("id") Long id,
                                            @RequestParam("page") Long page,@RequestParam("cnt") Long cnt){
-        log.info("正在获取收藏列表，用户：" + id + " 关键词：" + keyword + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return ResultUtils.getResult(favorService.getFavorList(id, keyword, page, cnt),"success");
+        log.info("正在获取收藏列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(favorService.getFavorList(id, page, cnt),"success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "cos文章编号",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "添加收藏（文章/cos）",notes = "repeatWrong：重复收藏 success：成功")
+    @PostMapping("/acg/favorCos")
+    public Result<JSONObject> addFavorCos(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        log.info("正在添加cos收藏，用户：" + id + " cos编号：" + number);
+
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "cos文章编号",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "取消收藏（文章/cos）",notes = "repeatWrong：未收藏 success：成功")
+    @DeleteMapping("/acg/favorCos")
+    public Result<JSONObject> deleteFavorCos(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        log.info("正在取消cos收藏，用户：" + id + " cos编号：" + number);
+
     }
 
 

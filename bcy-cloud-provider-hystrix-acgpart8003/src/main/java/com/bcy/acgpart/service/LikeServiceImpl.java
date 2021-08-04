@@ -2,7 +2,7 @@ package com.bcy.acgpart.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.bcy.acgpart.mapper.DiscussMapper;
+import com.bcy.acgpart.mapper.CosMapper;
 import com.bcy.acgpart.mapper.LikesMapper;
 import com.bcy.acgpart.pojo.Likes;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class LikeServiceImpl implements LikeService{
     private LikesMapper likesMapper;
 
     @Autowired
-    private DiscussMapper discussMapper;
+    private CosMapper cosMapper;
 
     @Override
     public String addLike(Long id, Long number) {

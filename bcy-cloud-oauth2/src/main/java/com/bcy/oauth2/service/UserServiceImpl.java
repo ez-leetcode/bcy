@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bcy.oauth2.mapper.UserLoginMapper;
 import com.bcy.oauth2.mapper.UserMapper;
 import com.bcy.oauth2.mapper.UserRoleMapper;
+import com.bcy.oauth2.mapper.UserSettingMapper;
 import com.bcy.oauth2.pojo.User;
 import com.bcy.oauth2.pojo.UserLogin;
 import com.bcy.oauth2.pojo.UserRole;
+import com.bcy.oauth2.pojo.UserSetting;
 import com.bcy.oauth2.utils.JwtUtils;
 import com.bcy.oauth2.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserSettingMapper userSettingMapper;
 
     @Override
     public String changePassword(String phone, String newPassword, String code) {
@@ -69,18 +74,27 @@ public class UserServiceImpl implements UserService{
             //添加用户权限
             userRoleMapper.insert(new UserRole(null,userLogin1.getId(),1,null,null));
             userMapper.insert(new User(userLogin1.getId(),phone,"女",null,null,null,null,null,0,0,0,0));
+            userSettingMapper.insert(new UserSetting(userLogin1.getId(),1,1,1,1,1,0,null));
             token = JwtUtils.createToken(userLogin1.getId().toString(),userLogin1.getPassword());
-            redisUtils.saveByHoursTime("token_" + userLogin1.getId().toString(),token,24);
+            redisUtils.saveByHoursTime(type + "token_" + userLogin1.getId().toString(),token,24);
         }else{
             //给token
             token = JwtUtils.createToken(userLogin.getId().toString(),userLogin.getPassword());
             //存入redis，24小时有效
-            redisUtils.saveByHoursTime("token_" + userLogin.getId().toString(),token,24);
+            redisUtils.saveByHoursTime(type + "token_" + userLogin.getId().toString(),token,24);
         }
         //验证码失效
         redisUtils.delete("1_" + phone);
         log.info("登录成功，用户");
         return token;
+    }
+
+
+    @Override
+    public String logout(Long id,Integer type) {
+        redisUtils.delete(type + "token_" + id);
+        log.info("用户登出成功");
+        return "success";
     }
 
 }
