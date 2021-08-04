@@ -1,4 +1,4 @@
-package com.bcy.userpart.pojo;
+package com.bcy.acgpart.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -19,27 +19,22 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "用户历史浏览实例类")
-public class History implements Serializable {
+@ApiModel(description = "圈子的cos类")
+public class CircleCos implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
-    @ApiModelProperty("历史浏览编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("圈子与cos关联编号")
     private Long number;
 
-    @ApiModelProperty("文章/cos编号")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("圈子")
+    private String circleName;
+
+    @ApiModelProperty("cos编号")
     private Long cosNumber;
 
-    @ApiModelProperty("用户id")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long id;
-
-    @ApiModelProperty("重复点击次数，为了更新时间能刷新蛮加的")
-    private Integer reClickCounts;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @ApiModelProperty("更新时间")
-    private Date updateTime;
+    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty("创建时间")
+    private Date createTime;
 
 }

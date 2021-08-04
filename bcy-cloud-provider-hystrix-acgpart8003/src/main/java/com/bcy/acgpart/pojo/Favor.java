@@ -28,7 +28,7 @@ public class Favor {
 
     @ApiModelProperty("cos编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long discussNumber;
+    private Long cosNumber;
 
     @ApiModelProperty("用户id")
     @JsonFormat(shape = JsonFormat.Shape.STRING)

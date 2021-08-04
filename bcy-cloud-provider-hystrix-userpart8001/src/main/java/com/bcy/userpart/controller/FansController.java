@@ -67,7 +67,6 @@ public class FansController {
     }
 
 
-
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "keyword",value = "关键词（还是必带吧，获取全部给空就行）",required = true,dataType = "string",paramType = "query"),

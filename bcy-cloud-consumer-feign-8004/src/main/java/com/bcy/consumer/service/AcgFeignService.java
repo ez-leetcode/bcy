@@ -78,4 +78,20 @@ public interface AcgFeignService {
     @PostMapping("/acg/QA")
     Result<JSONObject> generateQA(@RequestParam("id") Long id, @RequestParam("title") String title,
                                   @RequestParam("description") String description, @RequestParam("photo")List<String> photo);
+
+    @PostMapping("/acg/favorCos")
+    Result<JSONObject> addFavorCos(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
+    @DeleteMapping("/acg/favorCos")
+    Result<JSONObject> deleteFavorCos(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
+    @PostMapping("/acg/judgeFavor")
+    Result<JSONObject> judgeFavor(@RequestParam("id") Long id, @RequestParam("number")List<Long> number);
+
+    @PostMapping("/acg/cosPhotoUpload")
+    Result<JSONObject> photoUpload(@RequestParam("photo") MultipartFile file);
+
+    @PostMapping("/acg/cos")
+    Result<JSONObject> createCos(@RequestParam("id") Long id, @RequestParam("description") String description,
+                                        @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label);
 }

@@ -3,6 +3,7 @@ package com.bcy.consumer.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.bcy.consumer.service.AcgFeignService;
 import com.bcy.pojo.Result;
+import com.bcy.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -120,5 +121,30 @@ public class AcgController {
         return acgFeignService.generateQA(id, title, description, photo);
     }
 
+    @PostMapping("/acg/favorCos")
+    public Result<JSONObject> addFavorCos(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.addFavorCos(id, number);
+    }
+
+    @DeleteMapping("/acg/favorCos")
+    public Result<JSONObject> deleteFavorCos(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.deleteFavorCos(id, number);
+    }
+
+    @PostMapping("/acg/judgeFavor")
+    public Result<JSONObject> judgeFavor(@RequestParam("id") Long id, @RequestParam("number")List<Long> number){
+        return acgFeignService.judgeFavor(id, number);
+    }
+
+    @PostMapping("/acg/cosPhotoUpload")
+    public Result<JSONObject> photoUpload(@RequestParam("photo") MultipartFile file){
+        return acgFeignService.photoUpload(file);
+    }
+
+    @PostMapping("/acg/cos")
+    public Result<JSONObject> createCos(@RequestParam("id") Long id, @RequestParam("description") String description,
+                                        @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label){
+        return acgFeignService.createCos(id, description, photo, label);
+    }
 
 }

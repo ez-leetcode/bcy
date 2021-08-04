@@ -46,6 +46,9 @@ public class QAServiceImpl implements QAService{
     @Autowired
     private RedisUtils redisUtils;
 
+    @Autowired
+    private QaHistoryMapper qaHistoryMapper;
+
     @Override
     public String followQA(Long id, Long number) {
         Qa qa = qaMapper.selectById(number);
@@ -280,6 +283,19 @@ public class QAServiceImpl implements QAService{
             qaTopic.setFollowCounts(Integer.parseInt(ck1));
         }
         jsonObject.put("QATopic",qaTopic);
+        //添加历史记录
+        if(id != null){
+            QueryWrapper<QaHistory> wrapper1 = new QueryWrapper<>();
+            wrapper1.eq("qa_number",number)
+                    .eq("id",id);
+            QaHistory qaHistory = qaHistoryMapper.selectOne(wrapper1);
+            if(qaHistory == null){
+                qaHistoryMapper.insert(new QaHistory(null,number,id,0,null));
+            }else{
+                qaHistory.setReClickCounts(qaHistory.getReClickCounts() + 1);
+                qaHistoryMapper.updateById(qaHistory);
+            }
+        }
         log.info("获取问答头部信息成功");
         log.info(jsonObject.toString());
         return jsonObject;

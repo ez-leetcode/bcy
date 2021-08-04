@@ -43,7 +43,7 @@ public class SwaggerConfig {
         Contact contact = new Contact("yqc","https://github.com/ez-leetcode/bcy","1006021669@qq.com");
         return new ApiInfo(
                 "半次元",
-                "半次元用户部分接口文档",
+                "半次元认证部分接口文档",
                 "v1.0",
                 "https://github.com/ez-leetcode/bcy",
                 contact,

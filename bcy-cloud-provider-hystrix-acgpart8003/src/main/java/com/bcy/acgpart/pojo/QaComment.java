@@ -30,6 +30,10 @@ public class QaComment implements Serializable {
     private Long answerNumber;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("父级评论编号")
+    private Long fatherNumber;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("评论者id")
     private Long fromId;
 
@@ -37,8 +41,15 @@ public class QaComment implements Serializable {
     @ApiModelProperty("被回复者id，没有就为空")
     private Long toId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("被回复评论编号")
+    private Long replyNumber;
+
     @ApiModelProperty("点赞数")
     private Integer likeCounts;
+
+    @ApiModelProperty("下层评论数")
+    private Integer commentCounts;
 
     @ApiModelProperty("评论内容")
     private String description;

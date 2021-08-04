@@ -1,4 +1,4 @@
-package com.bcy.userpart.pojo;
+package com.bcy.acgpart.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;

@@ -42,7 +42,7 @@ public class QAController {
     @ApiOperation(value = "问答图片上传",notes = "fileWrong：文件为空 typeWrong：文件类型错误 success：成功（返回json带url）")
     @PostMapping("/acg/photoUpload")
     public Result<JSONObject> photoUpload(@RequestParam("photo") MultipartFile file){
-        log.info("正在上传帖子图片");
+        log.info("正在上传问答图片");
         String url = qaService.photoUpload(file);
         if(url.length() < 12){
             return ResultUtils.getResult(new JSONObject(),url);
@@ -65,7 +65,7 @@ public class QAController {
 
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问答编号",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
@@ -73,7 +73,7 @@ public class QAController {
     })
     @ApiOperation(value = "获取关注该问题的用户列表",notes = "success：成功 返回data：followQAList（id：用户id username：用户昵称 fansCounts：粉丝数 photo：头像url）")
     @GetMapping("/acg/followQAList")
-    public Result<JSONObject> getFollowQAList(@RequestParam("id") Long id,@RequestParam("number") Long number,
+    public Result<JSONObject> getFollowQAList(@RequestParam(value = "id",required = false) Long id,@RequestParam("number") Long number,
                                               @RequestParam("cnt") Long cnt,@RequestParam("page") Long page,
                                               @RequestParam("keyword") String keyword) {
         log.info("正在获取关注该问题的用户列表，用户：" + id + " 问答编号：" + number + " 页面数据量：" + cnt + " 当前页面：" + page + " 关键词：" + keyword);
@@ -137,12 +137,12 @@ public class QAController {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问答编号",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "获取问答头部信息",notes = "existWrong：问答不存在 success：成功 返回data QATopic（number：问答编号 title：题目 description：问题内容 followCounts：关注人数 answerCounts：回答数 photo：图片（列表） label：标签（列表））")
     @GetMapping("/acg/qaTopic")
-    public Result<JSONObject> getQaTopic(@RequestParam("id") Long id,@RequestParam("number") Long number){
+    public Result<JSONObject> getQaTopic(@RequestParam(value = "id",required = false) Long id,@RequestParam("number") Long number){
         log.info("正在获取问答头部信息，用户id：" + id + " 问答编号：" + number);
         JSONObject jsonObject = qaService.getQATopic(id, number);
         if(jsonObject == null){
@@ -179,7 +179,6 @@ public class QAController {
         log.info("正在生成问答，用户：" + id + " 标题：" + title + " 描述：" + description + " 图片：" + photo.toString());
         return ResultUtils.getResult(new JSONObject(), qaService.generateQA(id, title, description, photo));
     }
-
 
 
 }

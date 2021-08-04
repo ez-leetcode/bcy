@@ -1,8 +1,10 @@
 package com.bcy.acgpart.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bcy.acgpart.service.LikeService;
 import com.bcy.acgpart.service.TimeoutService;
 import com.bcy.pojo.Result;
+import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,6 +24,9 @@ import java.util.List;
 public class LikeController {
 
     @Autowired
+    private LikeService likeService;
+
+    @Autowired
     private TimeoutService timeoutService;
 
     //超时或内部出错调用方法，进行服务降级
@@ -32,14 +37,13 @@ public class LikeController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "numbers",value = "讨论编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "numbers",value = "cos编号（list）",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取是否被喜欢",notes = "success：成功")
+    @ApiOperation(value = "获取是否被喜欢",notes = "success：成功 judgeLikeList（0：未点赞 1：已点赞）")
     @GetMapping("/acg/judgeLikes")
     public Result<JSONObject> judgeLikes(@RequestParam("id") Long id, @RequestParam("numbers")List<Long> numbers){
-        log.info("正在判断是否被喜欢，用户：" + id);
-        log.info(numbers.toString());
-        return null;
+        log.info("正在判断是否被喜欢，用户：" + id + " cos编号：" + numbers.toString());
+        return ResultUtils.getResult(likeService.getLikeStatus(id,numbers),"success");
     }
 
     @ApiImplicitParams({
@@ -58,24 +62,24 @@ public class LikeController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "number",value = "帖子编号",required = true,dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "添加喜欢帖子")
-    @PostMapping("/acg/like")
-    public Result<JSONObject> likeDiscuss(@RequestParam("id") Long id,@RequestParam("number") Long number){
-        log.info("正在添加喜欢帖子，用户：" + id + " 帖子编号：" + number);
-        return null;
+    @ApiOperation(value = "添加喜欢cos",notes = "existWrong：cos不存在 repeatWrong：重复喜欢 success：成功")
+    @PostMapping("/acg/likeCos")
+    public Result<JSONObject> likeCos(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        log.info("正在添加喜欢cos，用户：" + id + " cos编号：" + number);
+        return ResultUtils.getResult(new JSONObject(),likeService.addLike(id,number));
     }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "number",value = "帖子编号",required = true,dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "取消喜欢帖子")
-    @DeleteMapping("/acg/like")
-    public Result<JSONObject> dislikeDiscuss(@RequestParam("id") Long id,@RequestParam("number") Long number){
-        log.info("正在取消喜欢帖子，用户：" + id + " 帖子编号：" + number);
-        return null;
+    @ApiOperation(value = "取消喜欢cos",notes = "existWrong：cos不存在 repeatWrong：未喜欢 success：成功")
+    @DeleteMapping("/acg/likeCos")
+    public Result<JSONObject> deleteLikeCos(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        log.info("正在取消喜欢cos，用户：" + id + " cos编号：" + number);
+        return ResultUtils.getResult(new JSONObject(),likeService.deleteLike(id,number));
     }
 
 }

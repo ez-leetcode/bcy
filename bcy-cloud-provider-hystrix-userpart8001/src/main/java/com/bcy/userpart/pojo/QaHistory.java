@@ -19,17 +19,17 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "用户历史浏览实例类")
-public class History implements Serializable {
+@ApiModel(description = "问答历史浏览类")
+public class QaHistory implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
     @ApiModelProperty("历史浏览编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
-    @ApiModelProperty("文章/cos编号")
+    @ApiModelProperty("问答编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long cosNumber;
+    private Long qaNumber;
 
     @ApiModelProperty("用户id")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
