@@ -8,10 +8,7 @@ import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
 import com.bcy.utils.PhotoUtils;
-import com.bcy.vo.CosCommentCountsForList;
-import com.bcy.vo.CosCommentForList;
-import com.bcy.vo.CosCountsForList;
-import com.bcy.vo.CosForTopic;
+import com.bcy.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -331,6 +328,71 @@ public class CosServiceImpl implements CosService {
     }
 
 
+    @Override
+    public JSONObject getCosCommentList(Long id, Long number, Long cnt, Long page,Integer type) {
+        JSONObject jsonObject = new JSONObject();
+        QueryWrapper<CosComment> wrapper = new QueryWrapper<>();
+        wrapper.eq("father_number",number);
+        if(type == 1){
+            wrapper.orderByDesc("like_counts");
+        }else{
+            wrapper.orderByAsc("create_time");
+        }
+        Page<CosComment> page1 = new Page<>(page,cnt);
+        cosCommentMapper.selectPage(page1,wrapper);
+        List<CosComment> cosCommentList = page1.getRecords();
+        List<CosCommentCommentForList> cosCommentCommentForList = new LinkedList<>();
+        for(CosComment x:cosCommentList){
+            CosCommentCommentForList cosCommentCommentForList1 = new CosCommentCommentForList(x.getNumber(),x.getFromId(),null,
+                    null,x.getDescription(),x.getToId(),null,x.getCreateTime());
+            User user = userMapper.selectById(x.getFromId());
+            User user1 = userMapper.selectById(x.getToId());
+            if(user != null){
+                cosCommentCommentForList1.setFromUsername(user.getUsername());
+                cosCommentCommentForList1.setFromPhoto(user.getPhoto());
+            }
+            if(user1 != null){
+                cosCommentCommentForList1.setToUsername(user1.getUsername());
+            }
+            cosCommentCommentForList.add(cosCommentCommentForList1);
+        }
+        jsonObject.put("commentCommentList",cosCommentCommentForList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取cos的评论的评论列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    //推送待完成
+    @Override
+    public String addComment(Long id, Long cosNumber, String description, Long fatherNumber, Long toId, Long replyNumber) {
+        //插入评论内容
+        cosCommentMapper.insert(new CosComment(null,cosNumber,fatherNumber,id,toId,replyNumber,0,0,description,null));
+        //添加父级评论评论数
+        if(fatherNumber != null && fatherNumber != 0){
+            String ck = redisUtils.getValue("cosCommentCommentCounts_" + fatherNumber);
+            if(ck == null){
+                CosComment cosComment = cosCommentMapper.selectById(fatherNumber);
+                if(cosComment != null){
+                    redisUtils.saveByHoursTime("cosCommentCommentCounts_" + fatherNumber,cosComment.getCommentCounts().toString(),12);
+                }
+            }
+            redisUtils.addKeyByTime("cosCommentCommentCounts_" + fatherNumber,12);
+        }
+        //添加cos的评论数
+        String ck = redisUtils.getValue("cosCommentCounts_" + cosNumber);
+        if(ck == null){
+            CosCounts cosCounts = cosCountsMapper.selectById(cosNumber);
+            if(cosCounts != null){
+                redisUtils.saveByHoursTime("cosCommentCounts_" + cosNumber,cosCounts.getCommentCounts().toString(),12);
+            }
+        }
+        redisUtils.addKeyByTime("cosCommentCounts_" + cosNumber,12);
+        //推送待完成
+        log.info("添加cos下的评论成功");
+        return "success";
+    }
 
 
     @Override

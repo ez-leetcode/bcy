@@ -19,7 +19,6 @@ public class RedisUtils {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-
     //次数加1
     public void addKeyByTime(String key,int hours){
         //防止雪崩，加随机时间

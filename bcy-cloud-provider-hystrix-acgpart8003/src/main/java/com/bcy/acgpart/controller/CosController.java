@@ -121,6 +121,49 @@ public class CosController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    //推送待完成
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cosNumber",value = "cos的编号",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "description",value = "评论内容",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "fatherNumber",value = "父评论编号（没有父评论填0或不带这个参数）",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "toId",value = "回复id（没有回复别人填0或不带这个参数）",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "replyNumber",value = "回复评论的编号（没有回复评论填0或不带这个参数）",dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "发表cos下面的评论",notes = "success：成功")
+    @PostMapping("/acg/cosComment")
+    public Result<JSONObject> addCosComment(@RequestParam("id") Long id,@RequestParam("cosNumber") Long cosNumber,
+                                            @RequestParam("description") String description,
+                                            @RequestParam(value = "fatherNumber",required = false) Long fatherNumber,
+                                            @RequestParam(value = "toId",required = false) Long toId,
+                                            @RequestParam(value = "reply",required = false) Long replyNumber){
+        log.info("正在发表cos下面的评论，用户：" + id + " cos编号：" + cosNumber + " 内容：" + description
+                + " 父评论编号：" + fatherNumber + " 回复id：" + toId + " 回复评论编号：" + replyNumber);
+        return ResultUtils.getResult(new JSONObject(), cosService.addComment(id, cosNumber, description, fatherNumber, toId, replyNumber));
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "评论编号",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "排序方式 1：热度 2：时间",required = true,dataType = "int",paramType = "query")
+    })
+    @ApiOperation(value = "获取cos下面评论的评论列表（在cos页面也用这个接口获取下面的回复数据，cnt请填3 page请填1 type请填1）",notes = "success：成功" +
+            "返回data commentCommentList：（number：评论编号 fromId:：评论者id fromUsername：评论者昵称 fromPhoto：评论者头像 description：评论内容 toId：被回复者id（没有回复别人为空） toUsername：被回复者昵称 createTime：评论时间）")
+    @GetMapping("/acg/cosCommentComment")
+    public Result<JSONObject> getCosCommentComment(@RequestParam(value = "id",required = false) Long id,
+                                                   @RequestParam("number") Long number,@RequestParam("cnt") Long cnt,
+                                                   @RequestParam("page") Long page,@RequestParam("type") Integer type){
+        log.info("正在获取cos下面的评论列表，用户：" + id + " 评论编号：" + number + " 页面数据量：" + cnt + " 当前页面：" + page + " 排序类型：" + type);
+        JSONObject jsonObject = cosService.getCosCommentList(id, number, cnt, page, type);
+        if(jsonObject == null){
+            return ResultUtils.getResult(new JSONObject(),"existWrong");
+        }
+        return ResultUtils.getResult(jsonObject,"success");
+    }
+
+
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "评论编号",required = true,dataType = "Long",paramType = "query")

@@ -27,4 +27,9 @@ public interface QAService {
 
     JSONObject getQATopic(Long id,Long number);
 
+    JSONObject getQAAnswerList(Long id,Long number,Integer type,Long cnt,Long page);
+
+    JSONObject getAnswerCommentList(Long id,Long answerNumber,Long page,Long cnt,Integer type);
+
+    JSONObject getAnswerCommentCommentList(Long id,Long number,Long page,Long cnt,Integer type);
 }

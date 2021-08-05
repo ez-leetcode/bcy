@@ -152,17 +152,55 @@ public class QAController {
     }
 
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问题编号",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "type",value = "排序类型（1：最热 2：最新）",required = true,dataType = "int",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取回答列表（点赞数 收藏数 评论数见另外一个接口）",notes = "success：成功 返回data answerList（）")
+    @ApiOperation(value = "获取回答列表（点赞数 收藏数 评论数以及回答下评论见另外一个接口）",notes = "success：成功 返回data answerList（number：评论编号 id：用户id username：昵称 description：主要内容" +
+            "photo：用户头像 answerPhoto：回答的图片（list） createTime：回答时间）")
     @GetMapping("/acg/answerList")
-    public Result<JSONObject> getAnswerList(@RequestParam("number") Long number,@RequestParam("type") Integer type,
+    public Result<JSONObject> getAnswerList(@RequestParam(value = "id",required = false) Long id,
+                                            @RequestParam("number") Long number,@RequestParam("type") Integer type,
                                             @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
-        log.info("正在获取回答列表，问题编号：" + number + " 排序类型：" + type + " 页面数据量：" + cnt + " 当前页面");
-        return null;
+        log.info("正在获取回答列表，用户：" + id + "问题编号：" + number + " 排序类型：" + type + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(qaService.getQAAnswerList(id, number, type, cnt, page),"success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "answerNumber",value = "回答编号",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "排序方式 1：热度 2：时间",required = true,dataType = "int",paramType = "query")
+    })
+    @ApiOperation(value = "获取问答下回答的评论列表（在问答主页面也用这个接口获取下面的回复数据，cnt请填3 page请填1 type请填1）",notes = "success：成功 返回answerCommentList（number：评论编号 id:：评论者id username：评论者昵称 photo：评论者头像 description：评论内容 createTime：评论时间）")
+    @GetMapping("/acg/answerCommentList")
+    public Result<JSONObject> getAnswerCommentList(@RequestParam(value = "id",required = false) Long id,
+                                                   @RequestParam("answerNumber") Long answerNumber,
+                                                   @RequestParam("cnt") Long cnt ,@RequestParam("page") Long page,
+                                                   @RequestParam("type") Integer type){
+        log.info("正在获取问答下回答的评论列表，用户：" + id + " 回答编号：" + answerNumber + " 页面数据量：" + cnt + " 当前页面：" + page + " 排序类型：" + type);
+        return ResultUtils.getResult(qaService.getAnswerCommentList(id, answerNumber, cnt, page, type),"success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "问答评论编号",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "排序顺序",required = true,dataType = "int",paramType = "query")
+    })
+    @ApiOperation(value = "获取问答下回答的评论的评论列表（在回答主页面也用这个接口获取下面的数据 cnt请填3 page请填1 type请填1）",notes = "success：成功 返回data answerCommentCommentList（number：评论编号 fromId:：评论者id" +
+            " fromUsername：评论者昵称 fromPhoto：评论者头像 description：评论内容 toId：被回复者id（没有回复别人为空） toUsername：被回复者昵称 createTime：评论时间）")
+    @GetMapping("/acg/answerCommentCommentList")
+    public Result<JSONObject> getAnswerCommentCommentList(@RequestParam(value = "id",required = false) Long id,
+                                                          @RequestParam("number") Long number,
+                                                          @RequestParam("cnt") Long cnt,@RequestParam("page") Long page,
+                                                          @RequestParam("type") Integer type){
+        log.info("正在获取问答下回答的评论的评论列表，用户：" + id + " 问答评论编号：" + number + " 页面数据量：" + cnt + " 当前页面：" + page + " 排序顺序：" + type);
+        return ResultUtils.getResult(qaService.getAnswerCommentCommentList(id, number, cnt, page, type),"success");
     }
 
 

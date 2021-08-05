@@ -8,14 +8,14 @@ import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
 import com.bcy.utils.PhotoUtils;
-import com.bcy.vo.FollowQAForList;
-import com.bcy.vo.QATopic;
+import com.bcy.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -48,6 +48,9 @@ public class QAServiceImpl implements QAService{
 
     @Autowired
     private QaHistoryMapper qaHistoryMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public String followQA(Long id, Long number) {
@@ -297,6 +300,108 @@ public class QAServiceImpl implements QAService{
             }
         }
         log.info("获取问答头部信息成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    //历史记录待完成
+    @Override
+    public JSONObject getQAAnswerList(Long id, Long number, Integer type, Long cnt, Long page) {
+        JSONObject jsonObject = new JSONObject();
+        QueryWrapper<QaAnswer> wrapper = new QueryWrapper<>();
+        wrapper.eq("qa_number",number);
+        if(type == 1){
+            wrapper.orderByDesc("like_counts");
+        }else{
+            wrapper.orderByDesc("create_time");
+        }
+        Page<QaAnswer> page1 = new Page<>(page,cnt);
+        qaAnswerMapper.selectPage(page1,wrapper);
+        List<QaAnswer> qaAnswerList = page1.getRecords();
+        List<QAAnswerForList> qaAnswerForList = new LinkedList<>();
+        for(QaAnswer x:qaAnswerList){
+            QAAnswerForList qaAnswerForList1 = new QAAnswerForList(x.getNumber(),x.getId(),null,null,x.getDescription(),null,x.getCreateTime());
+            List<String> answerPhoto = PhotoUtils.photoStringToList(x.getPhoto());
+            qaAnswerForList1.setAnswerPhoto(answerPhoto);
+            User user = userMapper.selectById(x.getId());
+            if(user != null){
+                qaAnswerForList1.setPhoto(user.getPhoto());
+                qaAnswerForList1.setUsername(user.getUsername());
+            }
+        }
+        jsonObject.put("answerList",qaAnswerForList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取问答回答列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+
+    @Override
+    public JSONObject getAnswerCommentList(Long id, Long answerNumber, Long page, Long cnt,Integer type) {
+        JSONObject jsonObject = new JSONObject();
+        QueryWrapper<QaComment> wrapper = new QueryWrapper<>();
+        wrapper.eq("answer_number",answerNumber)
+                //不是子评论
+                .eq("father_number",0);
+        if(type == 1){
+            wrapper.orderByDesc("like_counts");
+        }else{
+            wrapper.orderByDesc("create_time");
+        }
+        Page<QaComment> page1 = new Page<>(page,cnt);
+        List<QaComment> qaCommentList = page1.getRecords();
+        List<QAAnswerCommentForList> qaAnswerCommentForList = new LinkedList<>();
+        for(QaComment x:qaCommentList){
+            QAAnswerCommentForList qaAnswerCommentForList1 = new QAAnswerCommentForList(x.getNumber(),x.getFromId(),null,null,x.getDescription(),x.getCreateTime());
+            User user = userMapper.selectById(x.getFromId());
+            if(user != null){
+                qaAnswerCommentForList1.setUsername(user.getUsername());
+                qaAnswerCommentForList1.setPhoto(user.getPhoto());
+            }
+            qaAnswerCommentForList.add(qaAnswerCommentForList1);
+        }
+        jsonObject.put("answerCommentList",qaAnswerCommentForList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取回答下的评论列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+
+    @Override
+    public JSONObject getAnswerCommentCommentList(Long id, Long number, Long page, Long cnt, Integer type) {
+        JSONObject jsonObject = new JSONObject();
+        QueryWrapper<QaComment> wrapper = new QueryWrapper<>();
+        Page<QaComment> page1 = new Page<>(page,cnt);
+        wrapper.eq("father_number",number);
+        if(type == 1){
+            wrapper.orderByDesc("like_counts");
+        }else{
+            wrapper.orderByDesc("create_time");
+        }
+        qaCommentMapper.selectPage(page1,wrapper);
+        List<QaComment> qaCommentList = page1.getRecords();
+        List<QACommentCommentForList> qaCommentCommentForList = new LinkedList<>();
+        for(QaComment x:qaCommentList){
+            QACommentCommentForList qaCommentCommentForList1 = new QACommentCommentForList(x.getNumber(),x.getFromId(),null,null,x.getDescription(),x.getToId(),null,x.getCreateTime());
+            User user1 = userMapper.selectById(x.getToId());
+            User user = userMapper.selectById(x.getFromId());
+            if(user != null){
+                qaCommentCommentForList1.setFromUsername(user.getUsername());
+                qaCommentCommentForList1.setFromPhoto(user.getPhoto());
+            }
+            if(user1 != null){
+                qaCommentCommentForList1.setToUsername(user1.getUsername());
+            }
+            qaCommentCommentForList.add(qaCommentCommentForList1);
+        }
+        jsonObject.put("answerCommentCommentList",qaCommentCommentForList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取问答下回答的评论的评论列表成功");
         log.info(jsonObject.toString());
         return jsonObject;
     }

@@ -19,4 +19,7 @@ public interface CosCommentMapper extends BaseMapper<CosComment> {
     @Select("SELECT b.number,a.id,a.username,a.photo,b.description,b.create_time FROM user as a, cos_comment as b WHERE b.cos_number = #{number} AND a.id = b.from_id ORDER BY b.create_time DESC")
     List<CosCommentForList> getCosCommentListByTime(@Param("number") Long number, Page<CosCommentForList> page);
 
+    //@Select("SELECT FROM ")
+    //List<CosCommentCommentForList> getCommentComment(@Param("number") Long number, Page<CosCommentCommentForList> page);
+
 }

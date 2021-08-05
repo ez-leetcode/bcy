@@ -2,13 +2,15 @@ package com.bcy.acgpart.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.acgpart.mapper.CosCountsMapper;
 import com.bcy.acgpart.mapper.CosMapper;
 import com.bcy.acgpart.mapper.LikesMapper;
-import com.bcy.acgpart.pojo.CosCounts;
-import com.bcy.acgpart.pojo.Favor;
-import com.bcy.acgpart.pojo.Likes;
+import com.bcy.acgpart.mapper.UserMapper;
+import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.utils.PhotoUtils;
+import com.bcy.vo.CosLikeForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +22,6 @@ import java.util.List;
 @Service
 public class LikeServiceImpl implements LikeService{
 
-    //待会再说，暂时不清楚逻辑
-
     @Autowired
     private LikesMapper likesMapper;
 
@@ -30,6 +30,12 @@ public class LikeServiceImpl implements LikeService{
 
     @Autowired
     private RedisUtils redisUtils;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private CosMapper cosMapper;
 
     @Override
     public String addLike(Long id, Long number) {
@@ -112,10 +118,26 @@ public class LikeServiceImpl implements LikeService{
     @Override
     public JSONObject getLikeList(Long id, Long cnt, Long page) {
         JSONObject jsonObject = new JSONObject();
-        log.info("正在获取喜欢列表，");
+        Page<CosLikeForList> page1 = new Page<>(page,cnt);
+        List<CosLikeForList> cosLikeForList = likesMapper.getCosLikeForList(id,page1);
+        for(CosLikeForList x:cosLikeForList){
+            User user = userMapper.selectById(x.getId());
+            if(user != null){
+                x.setUsername(user.getUsername());
+                x.setPhoto(user.getPhoto());
+            }
+            Cos cos = cosMapper.selectById(x.getId());
+            if(cos != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+            }
+        }
+        jsonObject.put("likeCosList",cosLikeForList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取喜欢列表成功");
+        log.info(jsonObject.toString());
         return jsonObject;
     }
-
 
 
 }

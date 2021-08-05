@@ -24,4 +24,8 @@ public interface CosService {
     String dislikeCosComment(Long id,Long number);
 
     JSONObject getCosCommentCountsList(Long id,List<Long> number);
+
+    JSONObject getCosCommentList(Long id,Long number,Long cnt,Long page,Integer type);
+
+    String addComment(Long id,Long cosNumber,String description,Long fatherNumber,Long toId,Long replyNumber);
 }

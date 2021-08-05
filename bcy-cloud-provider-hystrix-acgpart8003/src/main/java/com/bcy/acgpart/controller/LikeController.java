@@ -58,7 +58,7 @@ public class LikeController {
     public Result<JSONObject> getLikeList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                           @RequestParam("page") Long page){
         log.info("正在获取喜欢列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return null;
+        return ResultUtils.getResult(likeService.getLikeList(id, cnt, page),"success");
     }
 
     @ApiImplicitParams({
@@ -82,6 +82,5 @@ public class LikeController {
         log.info("正在取消喜欢cos，用户：" + id + " cos编号：" + number);
         return ResultUtils.getResult(new JSONObject(),likeService.deleteLike(id,number));
     }
-
 
 }

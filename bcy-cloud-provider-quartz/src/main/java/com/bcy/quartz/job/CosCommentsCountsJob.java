@@ -2,7 +2,6 @@ package com.bcy.quartz.job;
 
 import com.bcy.quartz.mapper.CosCommentMapper;
 import com.bcy.quartz.pojo.CosComment;
-import com.bcy.quartz.pojo.CosCounts;
 import com.bcy.quartz.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;

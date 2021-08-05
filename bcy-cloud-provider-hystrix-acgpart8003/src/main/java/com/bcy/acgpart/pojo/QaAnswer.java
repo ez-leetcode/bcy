@@ -21,9 +21,13 @@ import java.util.Date;
 public class QaAnswer implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
-    @ApiModelProperty("问答编号")
+    @ApiModelProperty("回答编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("问答编号")
+    private Long qaNumber;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("用户id")
