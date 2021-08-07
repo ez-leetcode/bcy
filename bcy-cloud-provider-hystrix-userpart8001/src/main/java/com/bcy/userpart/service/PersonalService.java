@@ -3,6 +3,8 @@ package com.bcy.userpart.service;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface PersonalService {
 
     String userPhotoUpload(MultipartFile file,Long id);
@@ -14,4 +16,6 @@ public interface PersonalService {
     JSONObject getPersonalSetting(Long id);
 
     JSONObject getPersonalInfo(Long id);
+
+    JSONObject getUserCounts(List<Long> userId);
 }

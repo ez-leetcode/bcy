@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Api(tags = "用户个人信息管理类")
 @Slf4j
 @RestController
@@ -119,6 +121,16 @@ public class PersonalController {
             return ResultUtils.getResult(new JSONObject(),"existWrong");
         }
         return ResultUtils.getResult(jsonObject,"success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId",value = "用户id（这里不用id做参数是因为过过滤器会检测）",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取用户的粉丝数 关注数 动态数（统一接口，所有人都可以获取）",notes = "success：成功 返回userCountsList（id：用户id fansCounts：粉丝数 followCounts：关注数 momentCounts：动态数）")
+    @GetMapping("/user/userCounts")
+    public Result<JSONObject> getUserCounts(@RequestParam("userId")List<Long> userId){
+        log.info("正在获取用户粉丝数 关注数 动态数，用户：" + userId.toString());
+        return ResultUtils.getResult(personalService.getUserCounts(userId),"success");
     }
 
 }

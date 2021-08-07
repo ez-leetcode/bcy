@@ -1,6 +1,7 @@
 package com.bcy.userpart.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bcy.userpart.utils.RedisUtils;
 import com.bcy.vo.PersonalInfo;
 import com.bcy.vo.PersonalSetting;
 import com.bcy.userpart.mapper.UserMapper;
@@ -8,10 +9,14 @@ import com.bcy.userpart.mapper.UserSettingMapper;
 import com.bcy.userpart.pojo.User;
 import com.bcy.userpart.pojo.UserSetting;
 import com.bcy.userpart.utils.OssUtils;
+import com.bcy.vo.UserCountsForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 @Service
@@ -23,6 +28,9 @@ public class PersonalServiceImpl implements PersonalService{
 
     @Autowired
     private UserSettingMapper userSettingMapper;
+
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Override
     public String userPhotoUpload(MultipartFile file, Long id) {
@@ -105,4 +113,42 @@ public class PersonalServiceImpl implements PersonalService{
         return jsonObject;
     }
 
+    @Override
+    public JSONObject getUserCounts(List<Long> userId) {
+        JSONObject jsonObject = new JSONObject();
+        List<UserCountsForList> userCountsForLists = new LinkedList<>();
+        for(Long x:userId){
+            UserCountsForList userCountsForList = new UserCountsForList(x,null,null,null);
+            String fansCounts = redisUtils.getValue("fansCounts_" + x);
+            String followCounts = redisUtils.getValue("followCounts_" + x);
+            String momentCounts = redisUtils.getValue("momentCounts_" + x);
+            User user = new User();
+            if(followCounts == null || fansCounts == null || momentCounts == null){
+                user = userMapper.selectById(x);
+            }
+            if(followCounts == null){
+                redisUtils.saveByHoursTime("followCounts_" + x,user.getFollowCounts().toString(),12);
+                userCountsForList.setFollowCounts(user.getFollowCounts());
+            }else{
+                userCountsForList.setFollowCounts(Integer.parseInt(followCounts));
+            }
+            if(fansCounts == null){
+                redisUtils.saveByHoursTime("fansCounts_" + x,user.getFansCounts().toString(),12);
+                userCountsForList.setFansCounts(user.getFansCounts());
+            }else{
+                userCountsForList.setFansCounts(Integer.parseInt(fansCounts));
+            }
+            if(momentCounts == null){
+                redisUtils.saveByHoursTime("momentCounts_" + x,user.getMomentCounts().toString(),12);
+                userCountsForList.setMomentCounts(user.getMomentCounts());
+            }else{
+                userCountsForList.setMomentCounts(Integer.parseInt(momentCounts));
+            }
+            userCountsForLists.add(userCountsForList);
+        }
+        jsonObject.put("userCountsList",userCountsForLists);
+        log.info("获取用户计数数据成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
 }
