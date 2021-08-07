@@ -6,6 +6,7 @@ import com.bcy.community.mapper.AskMapper;
 import com.bcy.community.mapper.UserMapper;
 import com.bcy.community.pojo.Ask;
 import com.bcy.vo.AskForAnswer;
+import com.bcy.vo.AskForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -53,6 +54,7 @@ public class AskServiceImpl implements AskService{
             return "existWrong";
         }
         ask.setAnswer(answer);
+        askMapper.updateById(ask);
         log.info("回答问题成功");
         return "success";
     }
@@ -71,4 +73,16 @@ public class AskServiceImpl implements AskService{
         return jsonObject;
     }
 
+    @Override
+    public JSONObject getAskList(Long id, Long page, Long cnt) {
+        JSONObject jsonObject = new JSONObject();
+        Page<AskForList> page1 = new Page<>(page,cnt);
+        List<AskForList> askForList = askMapper.getAskList(id,page1);
+        jsonObject.put("askList",askForList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取问题列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
 }

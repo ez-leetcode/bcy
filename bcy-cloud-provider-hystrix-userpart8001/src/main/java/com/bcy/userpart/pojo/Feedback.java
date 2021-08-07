@@ -38,7 +38,7 @@ public class Feedback implements Serializable {
     private Integer isRead;
 
     @ApiModelProperty("反馈时间")
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date createTime;
 
 }

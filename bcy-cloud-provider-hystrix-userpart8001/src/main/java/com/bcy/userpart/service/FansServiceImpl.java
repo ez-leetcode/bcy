@@ -26,7 +26,21 @@ public class FansServiceImpl implements FansService{
 
     @Override
     public String addFollow(Long fromId, Long toId) {
-        return null;
+        QueryWrapper<Fans> wrapper = new QueryWrapper<>();
+        wrapper.eq("from_id",fromId)
+                .eq("to_id",toId);
+        Fans fans = fansMapper.selectOne(wrapper);
+        if(fans != null){
+            log.error("关注用户失败，用户已被关注");
+            return "repeatWrong";
+        }
+        //添加关注
+        fansMapper.insert(new Fans(null,fromId,toId,null));
+        //修改数量
+        redisUtils.addKeyByTime("fansCounts_" + toId,12);
+        redisUtils.subKeyByTime("followCounts_" + fromId,12);
+        log.info("添加关注成功");
+        return "success";
     }
 
     @Override
@@ -40,7 +54,9 @@ public class FansServiceImpl implements FansService{
             return "repeatWrong";
         }
         fansMapper.delete(wrapper);
-        //修改数量待完成
+        //修改数量
+        redisUtils.subKeyByTime("fansCounts_" + toId,12);
+        redisUtils.addKeyByTime("followCounts_" + fromId,12);
         log.info("取消关注成功");
         return "success";
     }
@@ -77,6 +93,14 @@ public class FansServiceImpl implements FansService{
         }else{
             fansInfoList = fansMapper.getFansListByKeyword(page1, keyword, id);
         }
+        for(FansInfo x:fansInfoList){
+            String fansCounts = redisUtils.getValue("fansCounts_" + x.getId());
+            if(fansCounts == null){
+                redisUtils.saveByHoursTime("fansCounts_" + x.getId(),x.getFansCounts().toString(),12);
+            }else{
+                x.setFansCounts(Integer.parseInt(fansCounts));
+            }
+        }
         jsonObject.put("fansList",fansInfoList);
         jsonObject.put("counts",page1.getTotal());
         jsonObject.put("pages",page1.getPages());
@@ -95,6 +119,14 @@ public class FansServiceImpl implements FansService{
             followInfoList = fansMapper.getFollowList(page1,id);
         }else{
             followInfoList = fansMapper.getFollowListByKeyword(page1,keyword,id);
+        }
+        for(FollowInfo x:followInfoList){
+            String fansCounts = redisUtils.getValue("fansCounts_" + x.getId());
+            if(fansCounts == null){
+                redisUtils.saveByHoursTime("fansCounts_" + x.getId(),x.getFansCounts().toString(),12);
+            }else{
+                x.setFansCounts(Integer.parseInt(fansCounts));
+            }
         }
         jsonObject.put("followList",followInfoList);
         jsonObject.put("counts",page1.getTotal());

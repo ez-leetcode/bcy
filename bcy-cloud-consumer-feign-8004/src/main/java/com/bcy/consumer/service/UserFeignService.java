@@ -33,11 +33,11 @@ public interface UserFeignService {
     Result<JSONObject> judgeFollow(@RequestParam("fromId") Long fromId,@RequestParam("toId") Long toId);
 
     @GetMapping("/user/followList")
-    Result<JSONObject> getFollow(@RequestParam("id") Long id,@RequestParam("keyword") String keyword,
+    Result<JSONObject> getFollow(@RequestParam("id") Long id,@RequestParam(value = "keyword",required = false) String keyword,
                                         @RequestParam("cnt") Long cnt,@RequestParam("page") Long page);
 
     @GetMapping("/user/fansList")
-    Result<JSONObject> getFans(@RequestParam("id") Long id,@RequestParam("keyword") String keyword,
+    Result<JSONObject> getFans(@RequestParam("id") Long id,@RequestParam(value = "keyword",required = false) String keyword,
                                       @RequestParam("cnt") Long cnt,@RequestParam("page") Long page);
 
     @PostMapping("/user/help")

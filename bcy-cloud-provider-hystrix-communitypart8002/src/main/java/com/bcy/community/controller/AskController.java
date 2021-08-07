@@ -83,4 +83,17 @@ public class AskController {
         return ResultUtils.getResult(askService.getWaitingAsk(id,page,cnt),"success");
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取问答列表",notes = "success：成功 返回data askList：（number：提问编号 fromId：提问者id username：提问者昵称 photo：图片 question：问题 answer：回答 createTime：提问时间）")
+    @GetMapping("/community/askList")
+    public Result<JSONObject> getAskList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                         @RequestParam("page") Long page){
+        log.info("正在获取问答列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(askService.getAskList(id, cnt, page),"success");
+    }
+
 }

@@ -12,4 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QaHistoryForList implements Serializable {
+
+    private Long id;
+
 }

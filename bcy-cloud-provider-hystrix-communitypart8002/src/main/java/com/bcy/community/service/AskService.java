@@ -11,4 +11,6 @@ public interface AskService {
     String addAnswer(Long id,Long number,String answer);
 
     JSONObject getWaitingAsk(Long id,Long page,Long cnt);
+
+    JSONObject getAskList(Long id,Long page,Long cnt);
 }

@@ -59,4 +59,10 @@ public class CommunityController {
     public Result<JSONObject> getAllCounts(@RequestParam("id") Long id){
         return communityFeignService.getAllCounts(id);
     }
+
+    @GetMapping("/community/askList")
+    public Result<JSONObject> getAskList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                         @RequestParam("page") Long page){
+        return communityFeignService.getAskList(id, cnt, page);
+    }
 }

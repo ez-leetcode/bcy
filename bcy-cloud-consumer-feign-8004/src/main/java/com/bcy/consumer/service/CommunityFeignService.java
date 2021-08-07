@@ -41,4 +41,8 @@ public interface CommunityFeignService {
 
     @GetMapping("/community/allCounts")
     Result<JSONObject> getAllCounts(@RequestParam("id") Long id);
+
+    @GetMapping("/community/askList")
+    Result<JSONObject> getAskList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                         @RequestParam("page") Long page);
 }

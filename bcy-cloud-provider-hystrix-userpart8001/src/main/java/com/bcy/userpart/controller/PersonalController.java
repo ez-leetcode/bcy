@@ -40,7 +40,7 @@ public class PersonalController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "photo",value = "头像文件",required = true,dataType = "file",paramType = "query")
     })
-    @ApiOperation(value = "用户头像上传",notes = "fileWrong：文件为空 typeWrong：上传格式错误 success：成功（就不返回url了，会自动替换头像）")
+    @ApiOperation(value = "用户头像上传P",notes = "fileWrong：文件为空 typeWrong：上传格式错误 success：成功（就不返回url了，会自动替换头像）")
     @PostMapping("/user/photoUpload")
     public Result<JSONObject> userPhotoUpload(@RequestParam("photo")MultipartFile file,Long id){
         log.info("正在上传头像，用户：" + id);
@@ -59,9 +59,9 @@ public class PersonalController {
             @ApiImplicitParam(name = "username",value = "昵称",dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "province",value = "省",dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "city",value = "市",dataType = "string",paramType = "query"),
-            @ApiImplicitParam(name = "birthday",value = "生日（请传yyyy-mm-dd格式）",dataType = "string",paramType = "query")
+            @ApiImplicitParam(name = "birthday",value = "生日（请传yyyy-MM-dd格式）",dataType = "string",paramType = "query")
     })
-    @ApiOperation(value = "用户修改基本个人信息（修改头像在上传头像那个接口会自动修改）",notes = "existWrong：账号不存在或已被冻结 success：成功")
+    @ApiOperation(value = "用户修改基本个人信息（修改头像在上传头像那个接口会自动修改）P",notes = "existWrong：账号不存在或已被冻结 success：成功")
     @PatchMapping("/user/personalInfo")
     public Result<JSONObject> changeInfo(@RequestParam("id") Long id,
                                          @RequestParam(value = "sex",required = false) String sex,
@@ -71,13 +71,13 @@ public class PersonalController {
                                          @RequestParam(value = "city",required = false) String city,
                                          @RequestParam(value = "birthday",required = false) String birthday){
         log.info("用户正在修改基本个人信息，用户：" + id + " 昵称：" + username + " 性别：" + sex + " 自我介绍：" + description + " 省：" + province + " 市：" + city + " 生日：" + birthday);
-        return ResultUtils.getResult(new JSONObject(),personalService.changeInfo(id, sex, description, username, province, city, birthday));
+        return ResultUtils.getResult(new JSONObject(),personalService.changeInfo(id,username,sex,description,province,city,birthday));
     }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取用户基本个人信息（个人主页）",notes = "existWrong：账号不存在或已被冻结 success：成功 返回data personalInfo（id：用户id username：昵称 sex：用户性别 photo：头像url description：用户简介 province：省 city：市 birthday：生日）")
+    @ApiOperation(value = "获取用户基本个人信息（个人主页）P",notes = "existWrong：账号不存在或已被冻结 success：成功 返回data personalInfo（id：用户id username：昵称 sex：用户性别 photo：头像url description：用户简介 province：省 city：市 birthday：生日）")
     @GetMapping("/user/personalInfo")
     public Result<JSONObject> getPersonalInfo(@RequestParam("id") Long id){
         log.info("正在获取用户基本个人信息，用户：" + id);
@@ -97,7 +97,7 @@ public class PersonalController {
             @ApiImplicitParam(name = "pushSystem",value = "推送系统通知",dataType = "int",paramType = "query"),
             @ApiImplicitParam(name = "pushInfo",value = "推送聊天",dataType = "int",paramType = "query"),
     })
-    @ApiOperation(value = "修改个人设置",notes = "existWrong：账号不存在或已被冻结 success：成功")
+    @ApiOperation(value = "修改个人设置P",notes = "existWrong：账号不存在或已被冻结 success：成功")
     @PatchMapping("/user/personalSetting")
     public Result<JSONObject> changeSetting(@RequestParam("id") Long id,
                                             @RequestParam(value = "pushComment",required = false) Integer pushComment,
@@ -112,7 +112,7 @@ public class PersonalController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取用户个人设置",notes = "existWrong：用户不存在或已被冻结 success：成功 返回data：personalSetting（id：用户id pushComment：推送评论 pushLike：推送点赞 pushFans：推送粉丝 pushSystem：推送系统通知 pushInfo：推送聊天）")
+    @ApiOperation(value = "获取用户个人设置P",notes = "existWrong：用户不存在或已被冻结 success：成功 返回data：personalSetting（id：用户id pushComment：推送评论 pushLike：推送点赞 pushFans：推送粉丝 pushSystem：推送系统通知 pushInfo：推送聊天）")
     @GetMapping("/user/personalSetting")
     public Result<JSONObject> getPersonalSetting(@RequestParam("id") Long id){
         log.info("正在获取用户个人设置，用户id：" + id);
@@ -126,7 +126,7 @@ public class PersonalController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId",value = "用户id（这里不用id做参数是因为过过滤器会检测）",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取用户的粉丝数 关注数 动态数（统一接口，所有人都可以获取）",notes = "success：成功 返回userCountsList（id：用户id fansCounts：粉丝数 followCounts：关注数 momentCounts：动态数）")
+    @ApiOperation(value = "获取用户的粉丝数 关注数 动态数（统一接口，所有人的信息都可以在这里获取）P",notes = "success：成功 返回userCountsList（id：用户id fansCounts：粉丝数 followCounts：关注数 momentCounts：动态数）")
     @GetMapping("/user/userCounts")
     public Result<JSONObject> getUserCounts(@RequestParam("userId")List<Long> userId){
         log.info("正在获取用户粉丝数 关注数 动态数，用户：" + userId.toString());

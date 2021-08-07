@@ -45,13 +45,13 @@ public class UserController {
     }
 
     @GetMapping("/user/followList")
-    public Result<JSONObject> getFollow(@RequestParam("id") Long id,@RequestParam("keyword") String keyword,
+    public Result<JSONObject> getFollow(@RequestParam("id") Long id,@RequestParam(value = "keyword",required = false) String keyword,
                                         @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
         return userFeignService.getFollow(id,keyword,cnt,page);
     }
 
     @GetMapping("/user/fansList")
-    public Result<JSONObject> getFans(@RequestParam("id") Long id,@RequestParam("keyword") String keyword,
+    public Result<JSONObject> getFans(@RequestParam("id") Long id,@RequestParam(value = "keyword",required = false) String keyword,
                                       @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
         return userFeignService.getFans(id, keyword, cnt, page);
     }

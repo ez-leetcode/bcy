@@ -40,7 +40,7 @@ public class FeedbackController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "description",value = "反馈内容",required = true,dataType = "string",paramType = "query")
     })
-    @ApiOperation(value = "添加用户反馈",notes = "repeatWrong：短期反馈太多次（8小时内最多3次） success：成功")
+    @ApiOperation(value = "添加用户反馈P",notes = "repeatWrong：短期反馈太多次（8小时内最多3次） success：成功")
     @PostMapping("/user/feedback")
     public Result<JSONObject> addFeedback(@RequestParam("id") Long id,@RequestParam("description") String description){
         log.info("正在添加用户反馈，id：" + id + " description：" + description);

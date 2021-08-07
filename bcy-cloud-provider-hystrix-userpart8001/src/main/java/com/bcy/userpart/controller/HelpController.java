@@ -36,9 +36,9 @@ public class HelpController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "question",value = "帮助问题",required = true,dataType = "String",paramType = "query"),
             @ApiImplicitParam(name = "answer",value = "回答",required = true,dataType = "String",paramType = "query"),
-            @ApiImplicitParam(name = "type",value = "问题分类（常用问题给0）",required = true,dataType = "Integer",paramType = "query")
+            @ApiImplicitParam(name = "type",value = "问题分类（常用问题给0）",required = true,dataType = "int",paramType = "query")
     })
-    @ApiOperation(value = "添加帮助（我们自己后台添加用啦~）",notes = "success：成功")
+    @ApiOperation(value = "添加帮助（我们自己后台添加用啦~）P",notes = "success：成功")
     @PostMapping("/user/help")
     public Result<JSONObject> addHelp(@RequestParam("question") String question,@RequestParam("answer") String answer,
                                       @RequestParam("type") Integer type){
@@ -49,7 +49,7 @@ public class HelpController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "number",value = "帮助编号",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "移除帮助（后台专用）",notes = "existWrong：帮助不存在 success：成功")
+    @ApiOperation(value = "移除帮助（后台专用）P",notes = "existWrong：帮助不存在 success：成功")
     @DeleteMapping("/user/help")
     public Result<JSONObject> deleteHelp(@RequestParam("number") Long number){
         log.info("正在移除帮助，编号：" + number);
@@ -59,7 +59,7 @@ public class HelpController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "number",value = "帮助编号",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取帮助的具体内容",notes = "existWrong：帮助不存在 success：成功 返回data： help（number：帮助编号 question：问题 answer：解决方案）")
+    @ApiOperation(value = "获取帮助的具体内容P",notes = "existWrong：帮助不存在 success：成功 返回data： help（number：帮助编号 question：问题 answer：解决方案）")
     @GetMapping("/user/help")
     public Result<JSONObject> getHelp(@RequestParam("number") Long number){
         log.info("正在获取帮助的具体内容，编号：" + number);
@@ -74,9 +74,9 @@ public class HelpController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "type",value = "帮助类型",required = true,dataType = "Integer",paramType = "query")
+            @ApiImplicitParam(name = "type",value = "帮助类型（0是常用）",required = true,dataType = "int",paramType = "query")
     })
-    @ApiOperation(value = "获取用户帮助列表",notes = "返回data helpList：帮助列表（number：帮助编号 question：问题）cnts：数据总量，pages：页面总数")
+    @ApiOperation(value = "获取用户帮助列表P",notes = "返回data helpList：帮助列表（number：帮助编号 question：问题）cnts：数据总量，pages：页面总数")
     @GetMapping("/user/helpList")
     public Result<JSONObject> getHelpList(@RequestParam("cnt") Long cnt,@RequestParam("page") Long page,
                                           @RequestParam("type") Integer type){
@@ -86,9 +86,9 @@ public class HelpController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "number",value = "帮助编号",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "isSolved",value = "是否已解决（0：未解决 1：已解决）",required = true,dataType = "Integer",paramType = "query")
+            @ApiImplicitParam(name = "isSolved",value = "是否已解决（0：未解决 1：已解决）",required = true,dataType = "int",paramType = "query")
     })
-    @ApiOperation(value = "添加帮助的已解决或未解决",notes = "existWrong：帮助不存在 success：成功")
+    @ApiOperation(value = "添加帮助的已解决或未解决P",notes = "existWrong：帮助不存在 success：成功")
     @PostMapping("/user/judgeHelp")
     public Result<JSONObject> judgeHelp(@RequestParam("number") Long number,@RequestParam("isSolved") Integer isSolved){
         log.info("正在添加帮助的已解决或未解决，帮助编号：" + number + " 是否已解决：" + isSolved);

@@ -62,8 +62,6 @@ spring:
               - PATCH
               - DELETE
 
-
-
 eureka:
   instance:
     #服务网关注册名

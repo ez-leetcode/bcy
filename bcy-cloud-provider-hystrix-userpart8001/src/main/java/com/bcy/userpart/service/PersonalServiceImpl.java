@@ -15,6 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,6 +65,14 @@ public class PersonalServiceImpl implements PersonalService{
         user.setDescription(description);
         user.setProvince(province);
         user.setCity(city);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = dateFormat.parse(birthday);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        user.setBirthday(date);
         //生日转化待完成
         int result = userMapper.updateById(user);
         log.info("修改用户信息成功，共修改了：" + result + "条");

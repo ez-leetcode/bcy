@@ -19,7 +19,7 @@ public class OssUtils {
 
     private static final String accessKeySecret = "luRzwpshRD1AHqEldvXe4XSKhu8Fmm";
 
-    private static final String bucket = "vehicle-contacting";
+    private static final String bucket = "rat-bcy";
 
     //上传文件方法
     public static String uploadPhoto(MultipartFile file, String tableName){
