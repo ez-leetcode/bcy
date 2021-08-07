@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface MessageService {
 
-    JSONObject getAtMessageList(Long id,Long page,Long cnt,String keyword);
+    JSONObject getAtMessageList(Long id,Long page,Long cnt);
 
     JSONObject getLikeMessageList(Long id,Long page,Long cnt);
 

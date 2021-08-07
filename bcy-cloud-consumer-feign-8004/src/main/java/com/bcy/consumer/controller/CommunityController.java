@@ -36,4 +36,27 @@ public class CommunityController {
                                         @RequestParam("answer") String answer){
         return communityFeignService.addAnswer(number, id, answer);
     }
+
+    @GetMapping("/community/atList")
+    public Result<JSONObject> getAtMessage(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                           @RequestParam("page") Long page){
+        return communityFeignService.getAtMessage(id, cnt, page);
+    }
+
+    @GetMapping("/community/likeList")
+    public Result<JSONObject> getLikeMessage(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                             @RequestParam("page") Long page){
+        return communityFeignService.getLikeMessage(id, cnt, page);
+    }
+
+    @GetMapping("/community/commentList")
+    public Result<JSONObject> getCommentList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                             @RequestParam("page") Long page){
+        return communityFeignService.getCommentList(id, cnt, page);
+    }
+
+    @GetMapping("/community/allCounts")
+    public Result<JSONObject> getAllCounts(@RequestParam("id") Long id){
+        return communityFeignService.getAllCounts(id);
+    }
 }

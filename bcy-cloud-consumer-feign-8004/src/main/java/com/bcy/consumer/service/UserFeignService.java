@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Random;
 
 //根据eureka里的微服务客户端信息转交给对应微服务提供者
@@ -54,10 +55,6 @@ public interface UserFeignService {
     @PostMapping("/user/judgeHelp")
     Result<JSONObject> judgeHelp(@RequestParam("number") Long number,@RequestParam("isSolved") Integer isSolved);
 
-    @GetMapping("/user/historyList")
-    Result<JSONObject> getHistoryList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
-                                             @RequestParam("page") Long page,@RequestParam("keyword") String keyword);
-
     @PostMapping("/user/photoUpload")
     Result<JSONObject> userPhotoUpload(@RequestParam("photo") MultipartFile file, Long id);
     @PatchMapping("/user/personalInfo")
@@ -85,4 +82,31 @@ public interface UserFeignService {
 
     @PostMapping("/user/code")
     Result<JSONObject> sendCode(@RequestParam("phone") String phone, @RequestParam("type") Integer type);
+
+    @GetMapping("/user/historyList")
+    Result<JSONObject> getHistoryList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                             @RequestParam("page") Long page);
+
+    @GetMapping("/user/qaHistoryList")
+    Result<JSONObject> getQaHistoryList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                               @RequestParam("page") Long page);
+
+    @DeleteMapping("/user/qaHistory")
+    Result<JSONObject> deleteQaHistory(@RequestParam("id") Long id,
+                                              @RequestParam("numbers") List<Long> numbers);
+
+    @DeleteMapping("/user/allQaHistory")
+    Result<JSONObject> deleteAllQaHistory(@RequestParam("id") Long id);
+
+    @DeleteMapping("/user/history")
+    Result<JSONObject> deleteHistory(@RequestParam("id") Long id,
+                                            @RequestParam("numbers")List<Long> numbers);
+
+    @DeleteMapping("/user/allHistory")
+    Result<JSONObject> deleteAllHistory(@RequestParam("id") Long id);
+
+    @GetMapping("/user/userCounts")
+    Result<JSONObject> getUserCounts(@RequestParam("userId")List<Long> userId);
+
+
 }

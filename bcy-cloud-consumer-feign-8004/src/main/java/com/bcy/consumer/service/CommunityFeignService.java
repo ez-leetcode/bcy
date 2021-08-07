@@ -27,4 +27,18 @@ public interface CommunityFeignService {
     Result<JSONObject> addAnswer(@RequestParam("number") Long number, @RequestParam("id") Long id,
                                  @RequestParam("answer") String answer);
 
+    @GetMapping("/community/atList")
+    Result<JSONObject> getAtMessage(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                           @RequestParam("page") Long page);
+
+    @GetMapping("/community/likeList")
+    Result<JSONObject> getLikeMessage(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                             @RequestParam("page") Long page);
+
+    @GetMapping("/community/commentList")
+    Result<JSONObject> getCommentList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                             @RequestParam("page") Long page);
+
+    @GetMapping("/community/allCounts")
+    Result<JSONObject> getAllCounts(@RequestParam("id") Long id);
 }

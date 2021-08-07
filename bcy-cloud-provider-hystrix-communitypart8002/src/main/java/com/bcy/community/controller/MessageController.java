@@ -36,16 +36,15 @@ public class MessageController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "keyword",value = "搜索关键词（没有就给空能查出全部）",required = true,dataType = "string",paramType = "query")
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "获取我的消息盒子中@我的列表",notes = "success：成功  返回data atList：（id：用户id username：昵称 photo：头像 description：内容" +
             " type：@类型（用来跳转）number：目标的cos或问答编号 info：右边展示的原内容 isRead：是否已读（0：未读 1：已读） createTime：@时间）")
     @GetMapping("/community/atList")
     public Result<JSONObject> getAtMessage(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
-                                           @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
-        log.info("正在获取消息盒子中At我的列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page + " 关键词：" + keyword);
-        return ResultUtils.getResult(messageService.getAtMessageList(id, cnt, page,keyword),"success");
+                                           @RequestParam("page") Long page){
+        log.info("正在获取消息盒子中At我的列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(messageService.getAtMessageList(id, cnt, page),"success");
     }
 
     @ApiImplicitParams({

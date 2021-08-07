@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Random;
 
 @RestController
@@ -82,12 +83,6 @@ public class UserController {
         return userFeignService.judgeHelp(number,isSolved);
     }
 
-    @GetMapping("/user/historyList")
-    public Result<JSONObject> getHistoryList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
-                                             @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
-        return userFeignService.getHistoryList(id, cnt, page, keyword);
-    }
-
     @PostMapping("/user/photoUpload")
     public Result<JSONObject> userPhotoUpload(@RequestParam("photo") MultipartFile file, Long id){
         return userFeignService.userPhotoUpload(file,id);
@@ -128,6 +123,46 @@ public class UserController {
     public Result<JSONObject> sendCode(@RequestParam("phone") String phone, @RequestParam("type") Integer type){
         return userFeignService.sendCode(phone,type);
     }
+
+    @GetMapping("/user/historyList")
+    public Result<JSONObject> getHistoryList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                             @RequestParam("page") Long page){
+        return userFeignService.getHistoryList(id, cnt, page);
+    }
+
+    @GetMapping("/user/qaHistoryList")
+    public Result<JSONObject> getQaHistoryList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                               @RequestParam("page") Long page){
+        return userFeignService.getQaHistoryList(id, cnt, page);
+    }
+
+    @DeleteMapping("/user/qaHistory")
+    public Result<JSONObject> deleteQaHistory(@RequestParam("id") Long id,
+                                              @RequestParam("numbers") List<Long> numbers){
+        return userFeignService.deleteQaHistory(id, numbers);
+    }
+
+    @DeleteMapping("/user/allQaHistory")
+    public Result<JSONObject> deleteAllQaHistory(@RequestParam("id") Long id){
+        return userFeignService.deleteAllQaHistory(id);
+    }
+
+    @DeleteMapping("/user/history")
+    public Result<JSONObject> deleteHistory(@RequestParam("id") Long id,
+                                            @RequestParam("numbers")List<Long> numbers){
+        return userFeignService.deleteHistory(id, numbers);
+    }
+
+    @DeleteMapping("/user/allHistory")
+    public Result<JSONObject> deleteAllHistory(@RequestParam("id") Long id){
+        return userFeignService.deleteAllHistory(id);
+    }
+
+    @GetMapping("/user/userCounts")
+    public Result<JSONObject> getUserCounts(@RequestParam("userId")List<Long> userId){
+        return userFeignService.getUserCounts(userId);
+    }
+
 
     @GetMapping("/user/timeout")
     public Result<JSONObject> globalTimeout(){

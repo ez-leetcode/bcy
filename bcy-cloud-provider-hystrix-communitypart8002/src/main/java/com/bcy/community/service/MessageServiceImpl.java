@@ -36,7 +36,7 @@ public class MessageServiceImpl implements MessageService{
     private RedisUtils redisUtils;
 
     @Override
-    public JSONObject getAtMessageList(Long id, Long page, Long cnt, String keyword) {
+    public JSONObject getAtMessageList(Long id, Long page, Long cnt) {
         JSONObject jsonObject = new JSONObject();
         Page<UserAtForList> page1 = new Page<>(page,cnt);
         List<UserAtForList> userAtForList = atMessageMapper.getUserLikeList(id,page1);
