@@ -40,7 +40,7 @@ public class MessageController {
             @ApiImplicitParam(name = "keyword",value = "搜索关键词（没有就给空能查出全部）",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "获取我的消息盒子中@我的列表",notes = "success：成功  返回data atList：（id：用户id username：昵称 photo：头像 description：内容" +
-            " type：@类型（用来跳转）number：目标的cos或问答编号 info：右边展示的原贴内容 isRead：是否已读（0：未读 1：已读） createTime：@时间）")
+            " type：@类型（用来跳转）number：目标的cos或问答编号 info：右边展示的原内容 isRead：是否已读（0：未读 1：已读） createTime：@时间）")
     @GetMapping("/community/atList")
     public Result<JSONObject> getAtMessage(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                            @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
@@ -53,7 +53,8 @@ public class MessageController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取我的消息盒子中点赞列表",notes = "success：成功")
+    @ApiOperation(value = "获取我的消息盒子中点赞列表",notes = "success：成功 返回data likeList：（id：用户id username：昵称 photo：头像 type：类型（点赞类型）" +
+            " number：被点赞的评论或者cos编号 info：右边展示原内容 isRead：是否已读 createTime：点赞时间）")
     @GetMapping("/community/likeList")
     public Result<JSONObject> getLikeMessage(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                              @RequestParam("page") Long page){
@@ -66,7 +67,8 @@ public class MessageController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取我的消息盒子中收到评论列表",notes = "success：成功")
+    @ApiOperation(value = "获取我的消息盒子中收到评论列表",notes = "success：成功 commentList：（id：用户id username：昵称 photo：头像 description：内容 " +
+            " type：评论类型 number：评论编号 info：右边展示原内容 isRead:是否已读 createTime：评论时间）")
     @GetMapping("/community/commentList")
     public Result<JSONObject> getCommentList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                              @RequestParam("page") Long page){
@@ -76,23 +78,23 @@ public class MessageController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "type",value = "类型（1：已读全部@ 2：已读全部评论 3：已读全部收到的赞）",required = true,dataType = "int",paramType = "query")
+            @ApiImplicitParam(name = "type",value = "类型（1：已读全部@ 2：已读全部评论 3：已读全部收到的赞 4：已读全部的消息）",required = true,dataType = "int",paramType = "query")
     })
     @ApiOperation(value = "将消息盒子中的某个内容全部设为已读",notes = "success：成功")
     @PostMapping("/community/allRead")
     public Result<JSONObject> allRead(@RequestParam("id") Long id,@RequestParam("type") Integer type){
         log.info("正在将消息盒子中某个内容全部设为已读，用户：" + id + " 类型：" + type);
-        return null;
+        return ResultUtils.getResult(new JSONObject(),messageService.allRead(id, type));
     }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取消息中心下的各个未读数",notes = "success：成功 返回data atCounts：未读的@数 commentCounts：未读评论数 likeCounts：未读点赞数 messageCounts：未读私聊消息数")
+    @ApiOperation(value = "获取消息中心下的各个未读数",notes = "success：成功 返回data userNoReadCounts（id：用户id atCounts：未读的@数 commentCounts：未读评论数 likeCounts：未读点赞数 messageCounts：未读私聊消息数）")
     @GetMapping("/community/allCounts")
     public Result<JSONObject> getAllCounts(@RequestParam("id") Long id){
         log.info("正在获取消息中心下各个未读数，用户id：" + id);
-        return null;
+        return ResultUtils.getResult(messageService.getAllCounts(id),"success");
     }
 
 }

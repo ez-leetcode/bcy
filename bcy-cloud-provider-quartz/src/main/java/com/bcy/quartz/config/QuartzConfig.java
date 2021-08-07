@@ -1,9 +1,6 @@
 package com.bcy.quartz.config;
 
-import com.bcy.quartz.job.CosCommentsCountsJob;
-import com.bcy.quartz.job.CosCountsJob;
-import com.bcy.quartz.job.HelpSolvedCountsJob;
-import com.bcy.quartz.job.QACountsJob;
+import com.bcy.quartz.job.*;
 import org.quartz.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -83,7 +80,7 @@ public class QuartzConfig {
         //关联业务类
         return JobBuilder.newJob(CosCommentsCountsJob.class)
                 //给JobDetail起名字
-                .withIdentity("cosCommenttsCountsDetail")
+                .withIdentity("cosCommentsCountsDetail")
                 .storeDurably()
                 .build();
     }
@@ -96,6 +93,29 @@ public class QuartzConfig {
                 //关联上述JobDetail
                 .forJob(cosCommentsCountsJobDetail())
                 .withIdentity("cosCommentsCountsTrigger")
+                .withSchedule(cronScheduleBuilder)
+                .build();
+    }
+
+    @Bean
+    public JobDetail userNoReadCountsJobDetail(){
+        //关联业务类
+        return JobBuilder.newJob(UserNoReadCountsJob.class)
+                //给JobDetail起名字
+                .withIdentity("userNoReadCountsDetail")
+                .storeDurably()
+                .build();
+    }
+
+
+    @Bean
+    public Trigger userNoReadCountsTrigger(){
+        //十五分钟一刷新
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 */15 * * * ?");
+        return TriggerBuilder.newTrigger()
+                //关联上述JobDetail
+                .forJob(userNoReadCountsJobDetail())
+                .withIdentity("userNoReadCountsTrigger")
                 .withSchedule(cronScheduleBuilder)
                 .build();
     }

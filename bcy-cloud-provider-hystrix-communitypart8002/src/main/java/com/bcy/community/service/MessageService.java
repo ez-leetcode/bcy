@@ -10,5 +10,7 @@ public interface MessageService {
 
     JSONObject getCommentMessageList(Long id,Long page,Long cnt);
 
+    JSONObject getAllCounts(Long id);
 
+    String allRead(Long id,Integer type);
 }

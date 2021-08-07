@@ -1,14 +1,8 @@
 package com.bcy.oauth2.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.bcy.oauth2.mapper.UserLoginMapper;
-import com.bcy.oauth2.mapper.UserMapper;
-import com.bcy.oauth2.mapper.UserRoleMapper;
-import com.bcy.oauth2.mapper.UserSettingMapper;
-import com.bcy.oauth2.pojo.User;
-import com.bcy.oauth2.pojo.UserLogin;
-import com.bcy.oauth2.pojo.UserRole;
-import com.bcy.oauth2.pojo.UserSetting;
+import com.bcy.oauth2.mapper.*;
+import com.bcy.oauth2.pojo.*;
 import com.bcy.oauth2.utils.JwtUtils;
 import com.bcy.oauth2.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +28,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserSettingMapper userSettingMapper;
+
+    @Autowired
+    private UserMessageMapper userMessageMapper;
 
     @Override
     public String changePassword(String phone, String newPassword, String code) {
@@ -73,8 +70,12 @@ public class UserServiceImpl implements UserService{
             UserLogin userLogin1 = userLoginMapper.selectOne(wrapper);
             //添加用户权限
             userRoleMapper.insert(new UserRole(null,userLogin1.getId(),1,null,null));
+            //插入用户基本信息
             userMapper.insert(new User(userLogin1.getId(),phone,"女",null,null,null,null,null,0,0,0,0));
+            //插入用户设置
             userSettingMapper.insert(new UserSetting(userLogin1.getId(),1,1,1,1,1,0,null));
+            //插入用户消息
+            userMessageMapper.insert(new UserMessage(userLogin1.getId(),0,0,0,0,null,null));
             token = JwtUtils.createToken(userLogin1.getId().toString(),userLogin1.getPassword());
             redisUtils.saveByHoursTime(type + "token_" + userLogin1.getId().toString(),token,24);
         }else{
@@ -92,6 +93,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public String logout(Long id,Integer type) {
+        //oauth2给的token在限定时限内是一致的，就不删了
         redisUtils.delete(type + "token_" + id);
         log.info("用户登出成功");
         return "success";
