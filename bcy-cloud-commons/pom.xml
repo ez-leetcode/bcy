@@ -62,6 +62,12 @@
             <version>21.0</version>
         </dependency>
 
+        <!--JsonFormat-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

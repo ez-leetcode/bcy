@@ -1,5 +1,6 @@
 package com.bcy.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,8 +15,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class AskForAnswer implements Serializable {
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long fromId;
 
     private String username;

@@ -89,7 +89,7 @@ public class MessageController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取消息中心下的各个未读数",notes = "success：成功 返回data userNoReadCounts（id：用户id atCounts：未读的@数 commentCounts：未读评论数 likeCounts：未读点赞数 messageCounts：未读私聊消息数）")
+    @ApiOperation(value = "获取消息中心下的各个未读数P",notes = "success：成功 返回data userNoReadCounts（id：用户id atCounts：未读的@数 commentCounts：未读评论数 likeCounts：未读点赞数 messageCounts：未读私聊消息数）")
     @GetMapping("/community/allCounts")
     public Result<JSONObject> getAllCounts(@RequestParam("id") Long id){
         log.info("正在获取消息中心下各个未读数，用户id：" + id);

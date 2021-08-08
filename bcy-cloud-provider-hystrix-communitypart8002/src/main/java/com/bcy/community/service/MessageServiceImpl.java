@@ -81,6 +81,7 @@ public class MessageServiceImpl implements MessageService{
         JSONObject jsonObject = new JSONObject();
         UserMessage userMessage = new UserMessage();
         UserNoReadCounts userNoReadCounts = new UserNoReadCounts();
+        userNoReadCounts.setId(id);
         String atCounts = redisUtils.getValue("atCounts_" + id);
         String commentCounts = redisUtils.getValue("commentCounts_" + id);
         String likeCounts = redisUtils.getValue("likeCounts_" + id);
