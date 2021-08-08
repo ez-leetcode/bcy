@@ -135,6 +135,9 @@ public class CosServiceImpl implements CosService {
             String commentCounts = redisUtils.getValue("cosCommentCommentCounts_" + x);
             if(likeCounts == null || commentCounts == null){
                 cosComment = cosCommentMapper.selectById(x);
+                if(cosComment == null){
+                    cosComment = new CosComment(0L,0L,0L,0L,0L,0L,0,0,null,null);
+                }
             }
             if(likeCounts != null){
                 cosCommentCountsForList1.setLikeCounts(Integer.parseInt(likeCounts));

@@ -56,11 +56,16 @@ public class LikeServiceImpl implements LikeService{
         likesMapper.insert(new Likes(null,number,id,null));
         //redis记录
         String ck = redisUtils.getValue("cosLikeCounts_" + number);
+        String ck1 = redisUtils.getValue("cosHotLikeCounts_" + number);
         if(ck == null){
             //redis存入
             redisUtils.saveByHoursTime("cosLikeCounts_" + number,cosCounts.getLikeCounts().toString(),12);
         }
+        if(ck1 == null){
+            redisUtils.saveByHoursTime("cosHotLikeCounts_" + number,"0",12);
+        }
         redisUtils.addKeyByTime("cosLikeCounts_" + number,12);
+        redisUtils.addKeyByTime("cosHotLikeCounts_" + number,12);
         log.info("添加cos点赞成功");
         return "success";
     }
@@ -84,11 +89,16 @@ public class LikeServiceImpl implements LikeService{
         likesMapper.deleteById(likes.getId());
         //redis记录
         String ck = redisUtils.getValue("cosLikeCounts_" + number);
+        String ck1 = redisUtils.getValue("cosHotLikeCounts_" + number);
         if(ck == null){
             //redis存入
             redisUtils.saveByHoursTime("cosLikeCounts_" + number,cosCounts.getLikeCounts().toString(),12);
         }
+        if(ck1 != null){
+            redisUtils.saveByHoursTime("cosHotLikeCounts_" + number,"0",12);
+        }
         redisUtils.subKeyByTime("cosLikeCounts_" + number,12);
+        redisUtils.subKeyByTime("cosHotLikeCounts_" + number,12);
         log.info("取消cos点赞成功");
         return "success";
     }
@@ -138,6 +148,5 @@ public class LikeServiceImpl implements LikeService{
         log.info(jsonObject.toString());
         return jsonObject;
     }
-
 
 }

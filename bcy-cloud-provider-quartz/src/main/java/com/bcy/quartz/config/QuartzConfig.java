@@ -22,7 +22,7 @@ public class QuartzConfig {
     @Bean
     public Trigger helpSolvedCountsTrigger(){
         //十五分钟一刷新
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 */15 * * * ?");
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/15 * * * ?");
         return TriggerBuilder.newTrigger()
                 //关联上述JobDetail
                 .forJob(helpSolvedCountsJobDetail())
@@ -44,7 +44,7 @@ public class QuartzConfig {
     @Bean
     public Trigger qaCountsTrigger(){
         //十五分钟一刷新
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 */15 * * * ?");
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 1/15 * * * ?");
         return TriggerBuilder.newTrigger()
                 //关联上述JobDetail
                 .forJob(qaCountsJobDetail())
@@ -66,7 +66,7 @@ public class QuartzConfig {
     @Bean
     public Trigger discussCountsTrigger(){
         //十五分钟一刷新
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 */15 * * * ?");
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 2/15 * * * ?");
         return TriggerBuilder.newTrigger()
                 //关联上述JobDetail
                 .forJob(cosCountsJobDetail())
@@ -88,7 +88,7 @@ public class QuartzConfig {
     @Bean
     public Trigger cosCommentsCountsTrigger(){
         //十五分钟一刷新
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 */15 * * * ?");
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 3/15 * * * ?");
         return TriggerBuilder.newTrigger()
                 //关联上述JobDetail
                 .forJob(cosCommentsCountsJobDetail())
@@ -111,7 +111,7 @@ public class QuartzConfig {
     @Bean
     public Trigger userNoReadCountsTrigger(){
         //十五分钟一刷新
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 */15 * * * ?");
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 4/15 * * * ?");
         return TriggerBuilder.newTrigger()
                 //关联上述JobDetail
                 .forJob(userNoReadCountsJobDetail())
@@ -119,5 +119,51 @@ public class QuartzConfig {
                 .withSchedule(cronScheduleBuilder)
                 .build();
     }
+
+    @Bean
+    public JobDetail userCountsJobDetail(){
+        //关联业务类
+        return JobBuilder.newJob(UserCountsJob.class)
+                //给JobDetail起名字
+                .withIdentity("userCountsDetail")
+                .storeDurably()
+                .build();
+    }
+
+    @Bean
+    public Trigger userCountsTrigger(){
+        //十五分钟一刷新
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 5/15 * * * ?");
+        return TriggerBuilder.newTrigger()
+                //关联上述JobDetail
+                .forJob(userCountsJobDetail())
+                .withIdentity("userCountsTrigger")
+                .withSchedule(cronScheduleBuilder)
+                .build();
+    }
+
+    @Bean
+    public JobDetail cosHotCountsJobDetail(){
+        //关联业务类
+        return JobBuilder.newJob(CosHotCountsJob.class)
+                //给JobDetail起名字
+                .withIdentity("cosHotCountsDetail")
+                .storeDurably()
+                .build();
+    }
+
+
+    @Bean
+    public Trigger cosHotCountsTrigger(){
+        //十五分钟一刷新
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0 0/8 * * ?");
+        return TriggerBuilder.newTrigger()
+                //关联上述JobDetail
+                .forJob(cosHotCountsJobDetail())
+                .withIdentity("cosHotCountsTrigger")
+                .withSchedule(cronScheduleBuilder)
+                .build();
+    }
+
 
 }

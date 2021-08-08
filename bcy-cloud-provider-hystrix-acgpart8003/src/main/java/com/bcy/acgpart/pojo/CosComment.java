@@ -1,6 +1,8 @@
 package com.bcy.acgpart.pojo;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -54,6 +56,7 @@ public class CosComment implements Serializable {
     @ApiModelProperty("评论内容")
     private String description;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty("创建时间")
     private Date createTime;
 

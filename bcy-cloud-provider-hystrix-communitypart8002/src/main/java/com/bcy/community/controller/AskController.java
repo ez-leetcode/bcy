@@ -37,7 +37,7 @@ public class AskController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "提问编号",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "用户删除问答",notes = "existWrong：问答不存在或用户不匹配 success：成功")
+    @ApiOperation(value = "用户删除问答P",notes = "existWrong：问答不存在或用户不匹配 success：成功")
     @DeleteMapping("/community/ask")
     public Result<JSONObject> deleteAsk(@RequestParam("id") Long id,@RequestParam("number") Long number){
         log.info("正在删除用户问答，用户：" + id + " 提问编号：" + number);
@@ -49,7 +49,7 @@ public class AskController {
             @ApiImplicitParam(name = "toId",value = "被提问用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "question",value = "提问内容",required = true,dataType = "String",paramType = "query")
     })
-    @ApiOperation(value = "用户向他人提问",notes = "blackWrong：被对方拉入黑名单 success：成功")
+    @ApiOperation(value = "用户向他人提问P",notes = "blackWrong：被对方拉入黑名单 success：成功")
     @PostMapping("/community/ask")
     public Result<JSONObject> addAsk(@RequestParam("fromId") Long fromId,@RequestParam("toId") Long toId,
                                      @RequestParam("question") String question){
@@ -62,7 +62,7 @@ public class AskController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "answer",value = "回答内容",required = true,dataType = "String",paramType = "query")
     })
-    @ApiOperation(value = "用户回答问题（有推送）",notes = "existWrong：提问不存在或已被回答或用户不对 success：成功")
+    @ApiOperation(value = "用户回答问题（有推送）P",notes = "existWrong：提问不存在或已被回答或用户不对 success：成功")
     @PostMapping("/community/answer")
     public Result<JSONObject> addAnswer(@RequestParam("number") Long number,@RequestParam("id") Long id,
                                      @RequestParam("answer") String answer){
@@ -75,7 +75,7 @@ public class AskController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取待回答的问题列表",notes = "success：成功 返回data waitingAskList：（number：提问编号 fromId：提问者id username：提问者昵称 photo：图片 question：问题 createTime：提问时间）")
+    @ApiOperation(value = "获取待回答的问题列表P",notes = "success：成功 返回data waitingAskList：（number：提问编号 fromId：提问者id username：提问者昵称 photo：图片 question：问题 createTime：提问时间）")
     @GetMapping("/community/waitingAsk")
     public Result<JSONObject> getWaitingAsk(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                             @RequestParam("page") Long page){
@@ -88,12 +88,12 @@ public class AskController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取问答列表",notes = "success：成功 返回data askList：（number：提问编号 fromId：提问者id username：提问者昵称 photo：图片 question：问题 answer：回答 createTime：提问时间）")
+    @ApiOperation(value = "获取问答列表P",notes = "success：成功 返回data askList：（number：提问编号 fromId：提问者id username：提问者昵称 photo：图片 question：问题 answer：回答 createTime：提问时间）")
     @GetMapping("/community/askList")
     public Result<JSONObject> getAskList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                          @RequestParam("page") Long page){
         log.info("正在获取问答列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return ResultUtils.getResult(askService.getAskList(id, cnt, page),"success");
+        return ResultUtils.getResult(askService.getAskList(id,page,cnt),"success");
     }
 
 }

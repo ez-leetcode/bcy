@@ -38,7 +38,7 @@ public class HomePageController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "他人用户id",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取他人的主要信息（查看他人信息那里用）",notes = "existWrong：用户不存在 success：成功 返回data userInfo（id：用户id username：昵称 photo：头像URL description：自我介绍 sex：性别 followCounts：关注数 fansCounts：粉丝数）")
+    @ApiOperation(value = "获取他人的主要信息（查看他人信息那里用）P",notes = "existWrong：用户不存在 success：成功 返回data userInfo（id：用户id username：昵称 photo：头像URL description：自我介绍 sex：性别 followCounts：关注数 fansCounts：粉丝数）")
     @GetMapping("/community/othersInfo")
     public Result<JSONObject> getOthersInfo(@RequestParam("id") Long id){
         log.info("正在获取他人信息，用户：" + id);

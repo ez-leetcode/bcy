@@ -45,7 +45,10 @@ public class CircleServiceImpl implements CircleService{
 
     @Override
     public String followCircle(Long id, String circleName) {
-        Circle circle = circleMapper.selectById(id);
+        Circle circle = circleMapper.selectById(circleName);
+        if(circle == null){
+            log.error("关注圈子失败，圈子不存在");
+        }
         QueryWrapper<CircleFollow> wrapper = new QueryWrapper<>();
         wrapper.eq("id",id)
                 .eq("circle_name",circleName);
@@ -63,7 +66,11 @@ public class CircleServiceImpl implements CircleService{
 
     @Override
     public String disFollowCircle(Long id, String circleName) {
-        Circle circle = circleMapper.selectById(id);
+        Circle circle = circleMapper.selectById(circleName);
+        if(circle == null){
+            log.error("取消关注失败，圈子不存在");
+            return "existWrong";
+        }
         QueryWrapper<CircleFollow> wrapper = new QueryWrapper<>();
         wrapper.eq("id",id)
                 .eq("circle_name",circleName);

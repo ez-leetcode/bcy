@@ -56,10 +56,15 @@ public class FavorServiceImpl implements FavorService{
         favorMapper.insert(new Favor(null,number,id,null));
         //收藏数扔给redis
         String ck = redisUtils.getValue("cosFavorCounts_" + number);
+        String ck1 = redisUtils.getValue("cosHotFavorCounts_" + number);
         if(ck == null){
             //redis里没有，存入
             redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),12);
         }
+        if(ck1 == null){
+            redisUtils.saveByHoursTime("cosHotFavorCounts_" + number,"0",12);
+        }
+        redisUtils.addKeyByTime("cosHotFavorCounts_" + number,12);
         redisUtils.addKeyByTime("cosFavorCounts_" + number,12);
         log.info("添加收藏成功");
         return "success";
@@ -83,11 +88,16 @@ public class FavorServiceImpl implements FavorService{
         //清除收藏记录
         favorMapper.deleteById(favor.getId());
         //收藏数扔给redis
+        String ck1 = redisUtils.getValue("cosHotFavorCounts_" + number);
         String ck = redisUtils.getValue("cosFavorCounts_" + number);
         if(ck == null){
             //redis没有，存入
             redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),12);
         }
+        if(ck1 == null){
+            redisUtils.saveByHoursTime("cosHotFavorCounts_" + number,"0",12);
+        }
+        redisUtils.subKeyByTime("cosHotFavorCounts_" + number,12);
         redisUtils.subKeyByTime("cosFavorCounts_" + number,12);
         log.info("取消收藏成功");
         return "success";

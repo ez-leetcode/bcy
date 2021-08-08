@@ -58,7 +58,7 @@ public interface AcgFeignService {
     Result<JSONObject> createCos(@RequestParam("id") Long id, @RequestParam("description") String description,
                                         @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label);
     @GetMapping("/acg/cos")
-    Result<JSONObject> getCosTopic(@RequestParam("id") Long id,@RequestParam("number") Long number);
+    Result<JSONObject> getCosTopic(@RequestParam(value = "id",required = false) Long id,@RequestParam("number") Long number);
 
     @GetMapping("/acg/cosComment")
     Result<JSONObject> getCosComment(@RequestParam(value = "id",required = false) Long id,

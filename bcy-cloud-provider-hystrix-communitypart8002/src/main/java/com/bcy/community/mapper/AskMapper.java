@@ -18,7 +18,7 @@ public interface AskMapper extends BaseMapper<Ask> {
     List<AskForAnswer> getWaitingAskList(@Param("id") Long id, Page<AskForAnswer> page);
 
 
-    @Select("SELECT a.*, b.* FROM ask as a, user as b WHERE b.id = a.from_id AND a.to_id = #{id} ORDER BY a.create_time DESC")
+    @Select("SELECT a.number, a.from_id, b.username, b.photo, a.question, a.answer, a.create_time FROM ask as a, user as b WHERE b.id = a.from_id AND a.to_id = #{id} ORDER BY a.create_time DESC")
     List<AskForList> getAskList(@Param("id") Long id, Page<AskForList> page);
 
 }

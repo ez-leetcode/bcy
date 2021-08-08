@@ -85,13 +85,13 @@ public class CosController {
 
     //会存入历史记录
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "获取cos页面上半部分内容（获取底下评论在另外一个接口）",notes = "existWrong：cos不存在 success：成功 返回data cos（number：cos编号 id：用户id username：发布者昵称 photo：发布者头像 fansCounts：粉丝数" +
             "description：内容 cosPhoto：图片（list） label：标签（list） createTime：发布时间 ）")
     @GetMapping("/acg/cos")
-    public Result<JSONObject> getCosTopic(@RequestParam("id") Long id,@RequestParam("number") Long number){
+    public Result<JSONObject> getCosTopic(@RequestParam(value = "id",required = false) Long id,@RequestParam("number") Long number){
         log.info("正在获取cos上半部分内容，用户：" + id + " cos编号：" + number);
         JSONObject jsonObject = cosService.getCosTopic(id,number);
         if(jsonObject == null){

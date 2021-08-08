@@ -74,7 +74,7 @@ public class AcgController {
     }
 
     @GetMapping("/acg/cos")
-    public Result<JSONObject> getCosTopic(@RequestParam("id") Long id,@RequestParam("number") Long number){
+    public Result<JSONObject> getCosTopic(@RequestParam(value = "id",required = false) Long id,@RequestParam("number") Long number){
         return acgFeignService.getCosTopic(id, number);
     }
 
