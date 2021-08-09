@@ -28,4 +28,6 @@ public interface CosService {
     JSONObject getCosCommentList(Long id,Long number,Long cnt,Long page,Integer type);
 
     String addComment(Long id,Long cosNumber,String description,Long fatherNumber,Long toId,Long replyNumber);
+
+    JSONObject getRecommendLabelList();
 }

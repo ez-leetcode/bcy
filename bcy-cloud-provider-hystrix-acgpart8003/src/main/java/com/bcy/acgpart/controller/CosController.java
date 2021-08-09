@@ -203,4 +203,13 @@ public class CosController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+
+    @ApiOperation(value = "获取推荐cos标签",notes = "success：成功 返回data cosRecommendLabelList：label（list）：推荐标签列表 一般会有20个")
+    @GetMapping("/acg/recommendList")
+    public Result<JSONObject> getRecommendList(){
+        log.info("正在获取推荐cos标签");
+        return ResultUtils.getResult(cosService.getRecommendLabelList(),"success");
+    }
+
+
 }

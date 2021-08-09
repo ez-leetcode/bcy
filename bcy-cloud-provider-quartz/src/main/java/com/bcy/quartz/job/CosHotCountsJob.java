@@ -19,6 +19,7 @@ public class CosHotCountsJob implements Job {
 
     //推送到消息队列待完成
 
+    //删除
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         Map<Long,Integer> likeMap = redisUtils.getAllRedisDataByKeys("cosHotLikeCounts");
@@ -27,6 +28,7 @@ public class CosHotCountsJob implements Job {
         Map<Long,Integer> map = new HashMap<>();
         for(Long x:likeMap.keySet()){
             map.put(x,likeMap.get(x) * 3);
+            redisUtils.delete("cosHotLikeCounts_" + x);
         }
         for(Long x:favorMap.keySet()){
             Integer ck = map.get(x);
@@ -35,6 +37,7 @@ public class CosHotCountsJob implements Job {
             }else{
                 map.put(x,favorMap.get(x) * 5 + ck);
             }
+            redisUtils.delete("cosHotFavorCounts_" + x);
         }
         List<Map.Entry<Long,Integer>> list = new ArrayList<>(map.entrySet());
         list.sort((Comparator.comparingInt(Map.Entry::getValue)));

@@ -207,6 +207,10 @@ public class CosServiceImpl implements CosService {
             //加一
             circleCosMapper.insert(new CircleCos(null,x,cos.getNumber(),null));
         }
+        //把标签给redis做个推荐标签
+        for(String x:label){
+            redisUtils.addKeyByTime("recommendLabel_" + x,48);
+        }
         log.info("生成cos成功");
         return "success";
     }
@@ -408,6 +412,22 @@ public class CosServiceImpl implements CosService {
         //成功上传图片
         log.info("上传cos图片文件成功，url：" + url);
         return url;
+    }
+
+    @Override
+    public JSONObject getRecommendLabelList() {
+        JSONObject jsonObject = new JSONObject();
+        List<String> labelList = new LinkedList<>();
+        for(int i = 1 ; i <= 20; i++){
+            String ck = redisUtils.getValue("recommendLabel_" + i);
+            if(ck != null){
+                labelList.add(ck);
+            }
+        }
+        jsonObject.put("cosRecommendLabelList",labelList);
+        log.info("获取当前推荐标签成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
     }
 
 }

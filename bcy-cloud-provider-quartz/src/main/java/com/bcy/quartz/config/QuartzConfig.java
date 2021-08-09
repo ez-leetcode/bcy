@@ -165,4 +165,27 @@ public class QuartzConfig {
                 .build();
     }
 
+    @Bean
+    public JobDetail cosRecommendLabelJobDetail(){
+        //关联业务类
+        return JobBuilder.newJob(CosRecommendLabelJob.class)
+                //给JobDetail起名字
+                .withIdentity("cosRecommendLabelDetail")
+                .storeDurably()
+                .build();
+    }
+
+
+    @Bean
+    public Trigger cosRecommendLabelTrigger(){
+        //十五分钟一刷新
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0 0 1/1 * ? *");
+        return TriggerBuilder.newTrigger()
+                //关联上述JobDetail
+                .forJob(cosRecommendLabelJobDetail())
+                .withIdentity("cosRecommendLabelTrigger")
+                .withSchedule(cronScheduleBuilder)
+                .build();
+    }
+
 }

@@ -241,5 +241,9 @@ public class AcgController {
         return acgFeignService.getAnswerCommentCommentList(id, number, cnt, page, type);
     }
 
+    @GetMapping("/acg/recommendList")
+    public Result<JSONObject> getRecommendList(){
+        return acgFeignService.getRecommendList();
+    }
 
 }

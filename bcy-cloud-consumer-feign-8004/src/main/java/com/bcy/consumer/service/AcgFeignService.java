@@ -159,4 +159,7 @@ public interface AcgFeignService {
                                                           @RequestParam("cnt") Long cnt,@RequestParam("page") Long page,
                                                           @RequestParam("type") Integer type);
 
+    @GetMapping("/acg/recommendList")
+    Result<JSONObject> getRecommendList();
+
 }

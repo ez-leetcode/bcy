@@ -39,6 +39,20 @@ public class RedisUtils {
         return map;
     }
 
+    public Map<String,Integer> getAllStringRedisDataByKeys(String keys){
+        Map<String,Integer> map = new HashMap<>();
+        Set<String> set = redisTemplate.keys(keys + "_*");
+        if(set != null){
+            for(String x:set){
+                String value = redisTemplate.opsForValue().get(x);
+                if(value != null){
+                    map.put(x,Integer.parseInt(value));
+                }
+            }
+        }
+        return map;
+    }
+
     //次数加1
     public void addKeyByTime(String key,int hours){
         //防止雪崩，加随机时间
