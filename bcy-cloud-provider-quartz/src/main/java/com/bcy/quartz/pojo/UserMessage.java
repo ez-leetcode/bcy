@@ -2,6 +2,7 @@ package com.bcy.quartz.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Data
 public class UserMessage implements Serializable {
 
+    @TableId
     private Long id;
 
     private Integer atCounts;

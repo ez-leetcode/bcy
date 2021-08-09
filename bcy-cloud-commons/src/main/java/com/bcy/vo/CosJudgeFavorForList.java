@@ -9,13 +9,14 @@ import lombok.ToString;
 import java.io.Serializable;
 
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonalCircleForList implements Serializable {
+@ToString
+public class CosJudgeFavorForList implements Serializable {
 
-    private String circleName;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long id;
 
-    private String photo;
+    private Integer status;
 
 }

@@ -120,8 +120,8 @@ public class AcgController {
 
     @GetMapping("/acg/likeList")
     public Result<JSONObject> getLikeList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
-                                          @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
-        return acgFeignService.getLikeList(id, cnt, page, keyword);
+                                          @RequestParam("page") Long page){
+        return acgFeignService.getLikeList(id, cnt, page);
     }
 
     @PostMapping("/acg/like")
@@ -140,7 +140,6 @@ public class AcgController {
                                               @RequestParam("keyword") String keyword) {
         return acgFeignService.getFollowQAList(id, number, cnt, page, keyword);
     }
-
 
     @DeleteMapping("/acg/dislikeComment")
     public Result<JSONObject> dislikeComment(@RequestParam("id") Long id,@RequestParam("number") Long number){
@@ -161,12 +160,6 @@ public class AcgController {
     public Result<JSONObject> getFavorList(@RequestParam("id") Long id,
                                            @RequestParam("page") Long page,@RequestParam("cnt") Long cnt){
         return acgFeignService.getFavorList(id, page, cnt);
-    }
-
-    @GetMapping("/acg/likeList")
-    public Result<JSONObject> getLikeList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
-                                          @RequestParam("page") Long page){
-        return acgFeignService.getLikeList(id, cnt, page);
     }
 
     @PostMapping("/acg/likeCos")

@@ -1,5 +1,6 @@
 package com.bcy.quartz.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Data
 public class User {
 
+    @TableId
     private Long id;
 
     private String username;

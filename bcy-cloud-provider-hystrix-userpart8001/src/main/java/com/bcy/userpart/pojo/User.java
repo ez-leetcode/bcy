@@ -1,5 +1,6 @@
 package com.bcy.userpart.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -19,6 +20,7 @@ import java.util.Date;
 @ApiModel(description = "用户基本信息实例类")
 public class User {
 
+    @TableId
     @ApiModelProperty("用户编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;

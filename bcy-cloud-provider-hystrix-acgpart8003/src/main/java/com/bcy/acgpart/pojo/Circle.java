@@ -2,6 +2,7 @@ package com.bcy.acgpart.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Date;
 @ApiModel(description = "圈子类")
 public class Circle implements Serializable {
 
+    @TableId
     @ApiModelProperty("圈子名称")
     private String circleName;
 

@@ -63,7 +63,8 @@ public class MyUserDetailService implements UserDetailsService {
             //权限赋予用户
             authList.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
         }
-        return new User(userLogin.getId().toString(),userLogin.getPassword(),authList);
+        log.info(authList.toString());
+        return new User(userLogin.getPhone(),userLogin.getPassword(),authList);
     }
 
 }

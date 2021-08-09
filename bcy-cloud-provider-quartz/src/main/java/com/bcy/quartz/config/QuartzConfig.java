@@ -156,7 +156,7 @@ public class QuartzConfig {
     @Bean
     public Trigger cosHotCountsTrigger(){
         //十五分钟一刷新
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0 0/8 * * ?");
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0 0 1/1 * ? *");
         return TriggerBuilder.newTrigger()
                 //关联上述JobDetail
                 .forJob(cosHotCountsJobDetail())
@@ -164,6 +164,5 @@ public class QuartzConfig {
                 .withSchedule(cronScheduleBuilder)
                 .build();
     }
-
 
 }

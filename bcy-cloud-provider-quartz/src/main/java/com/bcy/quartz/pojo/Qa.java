@@ -19,6 +19,7 @@ import java.util.Date;
 @Data
 public class Qa implements Serializable {
 
+    @TableId
     private Long number;
 
     private Long id;

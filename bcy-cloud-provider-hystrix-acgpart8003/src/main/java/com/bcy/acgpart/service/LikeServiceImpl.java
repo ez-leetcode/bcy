@@ -10,6 +10,7 @@ import com.bcy.acgpart.mapper.UserMapper;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.RedisUtils;
 import com.bcy.utils.PhotoUtils;
+import com.bcy.vo.CosJudgeLikeForList;
 import com.bcy.vo.CosLikeForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,16 +108,16 @@ public class LikeServiceImpl implements LikeService{
     @Override
     public JSONObject getLikeStatus(Long id, List<Long> number) {
         JSONObject jsonObject = new JSONObject();
-        List<Integer> judgeLikeList = new LinkedList<>();
+        List<CosJudgeLikeForList> judgeLikeList = new LinkedList<>();
         for(Long x:number){
             QueryWrapper<Likes> wrapper = new QueryWrapper<>();
             wrapper.eq("cos_number",x)
                     .eq("id",id);
             Likes likes = likesMapper.selectOne(wrapper);
             if(likes == null){
-                judgeLikeList.add(0);
+                judgeLikeList.add(new CosJudgeLikeForList(x,0));
             }else{
-                judgeLikeList.add(1);
+                judgeLikeList.add(new CosJudgeLikeForList(x,1));
             }
         }
         jsonObject.put("judgeLikeList",judgeLikeList);

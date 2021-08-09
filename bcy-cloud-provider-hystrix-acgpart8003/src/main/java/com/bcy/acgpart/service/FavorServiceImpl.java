@@ -2,13 +2,18 @@ package com.bcy.acgpart.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.acgpart.mapper.CosCountsMapper;
 import com.bcy.acgpart.mapper.CosMapper;
 import com.bcy.acgpart.mapper.FavorMapper;
+import com.bcy.acgpart.mapper.UserMapper;
 import com.bcy.acgpart.pojo.Cos;
 import com.bcy.acgpart.pojo.CosCounts;
 import com.bcy.acgpart.pojo.Favor;
 import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.utils.PhotoUtils;
+import com.bcy.vo.CosForFavor;
+import com.bcy.vo.CosJudgeFavorForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,9 +37,25 @@ public class FavorServiceImpl implements FavorService{
     @Autowired
     private RedisUtils redisUtils;
 
+
     @Override
     public JSONObject getFavorList(Long id, Long page, Long cnt) {
-        return null;
+        JSONObject jsonObject = new JSONObject();
+        Page<CosForFavor> page1 = new Page<>(page,cnt);
+        List<CosForFavor> cosForFavorList = favorMapper.getCosForFavor(id,page1);
+        for(CosForFavor x:cosForFavorList){
+            Cos cos = cosMapper.selectById(x.getCosNumber());
+            if(cos != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+                x.setDescription(cos.getDescription());
+            }
+        }
+        jsonObject.put("favorList",cosForFavorList);
+        jsonObject.put("counts",page1.getTotal());
+        jsonObject.put("pages",page1.getPages());
+        log.info("获取cos收藏列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
     }
 
     @Override
@@ -59,12 +80,12 @@ public class FavorServiceImpl implements FavorService{
         String ck1 = redisUtils.getValue("cosHotFavorCounts_" + number);
         if(ck == null){
             //redis里没有，存入
-            redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),12);
+            redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),48);
         }
         if(ck1 == null){
             redisUtils.saveByHoursTime("cosHotFavorCounts_" + number,"0",12);
         }
-        redisUtils.addKeyByTime("cosHotFavorCounts_" + number,12);
+        redisUtils.addKeyByTime("cosHotFavorCounts_" + number,48);
         redisUtils.addKeyByTime("cosFavorCounts_" + number,12);
         log.info("添加收藏成功");
         return "success";
@@ -92,12 +113,12 @@ public class FavorServiceImpl implements FavorService{
         String ck = redisUtils.getValue("cosFavorCounts_" + number);
         if(ck == null){
             //redis没有，存入
-            redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),12);
+            redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),48);
         }
         if(ck1 == null){
             redisUtils.saveByHoursTime("cosHotFavorCounts_" + number,"0",12);
         }
-        redisUtils.subKeyByTime("cosHotFavorCounts_" + number,12);
+        redisUtils.subKeyByTime("cosHotFavorCounts_" + number,48);
         redisUtils.subKeyByTime("cosFavorCounts_" + number,12);
         log.info("取消收藏成功");
         return "success";
@@ -107,7 +128,7 @@ public class FavorServiceImpl implements FavorService{
     public JSONObject judgeFavor(Long id, List<Long> number) {
         //这里sql待调优
         JSONObject jsonObject = new JSONObject();
-        List<Integer> judgeFavorList = new LinkedList<>();
+        List<CosJudgeFavorForList> judgeFavorList = new LinkedList<>();
         for(Long x:number){
             QueryWrapper<Favor> wrapper = new QueryWrapper<>();
             wrapper.eq("cos_number",x)
@@ -115,9 +136,9 @@ public class FavorServiceImpl implements FavorService{
             Favor favor = favorMapper.selectOne(wrapper);
             if(favor == null){
                 //未收藏
-                judgeFavorList.add(0);
+                judgeFavorList.add(new CosJudgeFavorForList(x,0));
             }else{
-                judgeFavorList.add(1);
+                judgeFavorList.add(new CosJudgeFavorForList(x,1));
             }
         }
         jsonObject.put("judgeFavorList",judgeFavorList);

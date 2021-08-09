@@ -17,6 +17,7 @@ import java.util.Date;
 @Data
 public class CosComment implements Serializable {
 
+    @TableId
     private Long number;
 
     private Long cosNumber;

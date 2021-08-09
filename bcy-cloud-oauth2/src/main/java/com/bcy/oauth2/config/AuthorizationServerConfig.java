@@ -40,7 +40,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Bean
     public TokenStore tokenStore() {
-        return new RedisTokenStore(redisConnectionFactory);
+        RedisTokenStore redisTokenStore = new RedisTokenStore(redisConnectionFactory);
+        //token前缀
+        redisTokenStore.setPrefix("auth-token:");
+        return redisTokenStore;
     }
 
         @Override
@@ -48,10 +51,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         //客户端持久化
         //配置网关服务的用户名密码，仅网关服务可作为客户端可访问oauth服务
         clients.inMemory()
-                .withClient("gateway-client")
+                .withClient("bcy-cloud-gateway")
                 //密钥
                 .secret(passwordEncoder.encode("123456"))
-                .authorizedGrantTypes("refresh_token", "authorization_code", "password")
+                .authorizedGrantTypes("password")
                 //访问令牌有效期
                 .accessTokenValiditySeconds(24 * 3600)
                 //刷新令牌有效期
@@ -64,9 +67,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         //允许客户端发送表单来进行权限认证来获取令牌
         //只允许认证的客户端，比如网关服务才可以获取和校验token
-        security.allowFormAuthenticationForClients();
-                //.checkTokenAccess("isAuthenticated()")
-                //.tokenKeyAccess("isAuthenticated()");
+        security//check_token无权限也可以访问 给gateway远程rpc调用
+                 .checkTokenAccess("permitAll()")
+                 .tokenKeyAccess("permitAll()")
+                 .allowFormAuthenticationForClients();
     }
 
 }

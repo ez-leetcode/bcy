@@ -2,6 +2,7 @@ package com.bcy.userpart.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -21,6 +22,7 @@ import java.util.Date;
 @ApiModel(description = "用户个人设置实例类（业务垂直拆分）")
 public class UserSetting {
 
+    @TableId
     @ApiModelProperty("用户编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;

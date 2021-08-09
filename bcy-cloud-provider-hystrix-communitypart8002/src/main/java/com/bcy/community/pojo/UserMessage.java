@@ -2,6 +2,7 @@ package com.bcy.community.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,6 +21,7 @@ import java.util.Date;
 @ApiModel(description = "用户消息通知类（记录未读数据）")
 public class UserMessage implements Serializable {
 
+    @TableId
     @ApiModelProperty("用户id")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;

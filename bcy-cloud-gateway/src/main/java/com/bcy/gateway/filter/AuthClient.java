@@ -52,10 +52,7 @@ public class AuthClient {
                 ResponseEntity<TokenInfo> response = restTemplate.exchange(url, HttpMethod.GET, entity, TokenInfo.class);
                 log.info("oauth request: {}, response body: {}, response status: {}",
                         entity, response.getBody(), response.getStatusCode());
-                if(id == null){
-                    return response.getBody() != null && response.getBody().isActive();
-                }
-                return response.getBody() != null && response.getBody().isActive() && response.getBody().getUser_name().equals(realId);
+                return response.getBody() != null && response.getBody().isActive();
             } catch (RestClientException e) {
                 log.error("oauth failed.", e);
                 return false;

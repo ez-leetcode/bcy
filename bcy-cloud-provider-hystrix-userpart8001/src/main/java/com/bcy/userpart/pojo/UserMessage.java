@@ -21,6 +21,7 @@ import java.util.Date;
 @ApiModel(description = "用户消息通知类（记录未读数据）")
 public class UserMessage implements Serializable {
 
+    @TableId
     @ApiModelProperty("用户id")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;

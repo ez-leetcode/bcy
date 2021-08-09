@@ -50,10 +50,6 @@ public interface AcgFeignService {
     @GetMapping("/acg/judgeLikes")
     Result<JSONObject> judgeLikes(@RequestParam("id") Long id, @RequestParam("numbers") List<Long> numbers);
 
-    @GetMapping("/acg/likeList")
-    Result<JSONObject> getLikeList(@RequestParam("id") Long id, @RequestParam("cnt") Long cnt,
-                                   @RequestParam("page") Long page, @RequestParam("keyword") String keyword);
-
     @PostMapping("/acg/cos")
     Result<JSONObject> createCos(@RequestParam("id") Long id, @RequestParam("description") String description,
                                         @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label);

@@ -46,7 +46,7 @@ public class CosHotCountsJob implements Job {
             if(map.size() - i < 0){
                 break;
             }
-            redisUtils.saveByHoursTime("hotCos" + i,list.get(map.size() - i).getKey().toString(),24);
+            redisUtils.saveByHoursTime("hotCos" + i,list.get(map.size() - i).getKey().toString(),48);
             log.info("新热门cos编号：" + list.get(map.size() - i).toString());
         }
         log.info("热门cos更新成功");

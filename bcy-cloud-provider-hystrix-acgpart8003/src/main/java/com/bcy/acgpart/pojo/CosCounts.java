@@ -2,6 +2,7 @@ package com.bcy.acgpart.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,6 +22,7 @@ import java.util.Date;
 @ApiModel(description = "cos类（计数部分，业务垂直拆分）")
 public class CosCounts implements Serializable {
 
+    @TableId
     @ApiModelProperty("cos编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
