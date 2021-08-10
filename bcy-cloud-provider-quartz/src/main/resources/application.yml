@@ -21,6 +21,25 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
+  #rabbitmq
+  rabbitmq:
+    host: 47.115.128.193
+    port: 5672
+    username: ck
+    password: 123456
+    virtual-host: /
+    #开启发送失败回退
+    publisher-returns: true
+    #默认开启发送确认
+    listener:
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
+        retry:
+          #支持重试
+          enabled: true
+    publisher-confirm-type: correlated
 
 eureka:
   client:

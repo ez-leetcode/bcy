@@ -2,6 +2,8 @@ package com.bcy.websocket.service;
 
 import com.alibaba.fastjson.JSON;
 import com.bcy.mq.FansMsg;
+import com.bcy.mq.HotCosMsg;
+import com.bcy.mq.HotQAMsg;
 import com.bcy.pojo.SystemInfo;
 import com.bcy.utils.WebsocketResultUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -72,5 +74,32 @@ public class WebsocketService {
             log.info("粉丝添加推送成功");
         }
     }
+
+    public void sendHotCosToEveryOneOnline(HotCosMsg hotCosMsg){
+        log.info("正在向所有在线用户推送热门cos");
+        for(String x:websocketServiceConcurrentHashMap.keySet()){
+            WebsocketService websocketService = websocketServiceConcurrentHashMap.get(x);
+            if (websocketService != null){
+                log.info("正在向用户" + websocketService.session.getId() + "推送热门cos");
+                SystemInfo systemInfo = new SystemInfo("新的热帖推送","用户" + hotCosMsg.getFromUsername() + "发布了新热帖：" + hotCosMsg.getDescription());
+                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"hotCosInfo", hotCosMsg.getNumber()).toString());
+                log.info("推送热门cos成功");
+            }
+        }
+    }
+
+    public void sendHotQAToEveryOneOnline(HotQAMsg hotQAMsg){
+        log.info("正在向所有在线用户推送热门问答");
+        for(String x:websocketServiceConcurrentHashMap.keySet()){
+            WebsocketService websocketService = websocketServiceConcurrentHashMap.get(x);
+            if (websocketService != null){
+                log.info("正在向用户" + websocketService.session.getId() + "推送热门问答");
+                SystemInfo systemInfo = new SystemInfo("新的问答推送","用户" + hotQAMsg.getFromUsername() + "发布了新问题：" + hotQAMsg.getTitle());
+                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"hotQAInfo", hotQAMsg.getNumber()).toString());
+                log.info("推送热门cos成功");
+            }
+        }
+    }
+
 
 }

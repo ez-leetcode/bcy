@@ -20,4 +20,16 @@ public class RabbitmqConfig {
 
     public static final String FANS_ROUTING_KEY = "fans_routing_key";
 
+    public static final String HOT_COS_EXCHANGE_NAME = "hot_cos_exchange";
+
+    public static final String HOT_COS_QUEUE_NAME = "hot_cos_queue";
+
+    public static final String HOT_COS_ROUTING_KEY = "hot_cos_routing_key";
+
+    public static final String HOT_QA_EXCHANGE_NAME = "hot_qa_exchange";
+
+    public static final String HOT_QA_QUEUE_NAME = "hot_qa_queue";
+
+    public static final String HOT_QA_ROUTING_KEY = "hot_qa_routing_key";
+
 }
