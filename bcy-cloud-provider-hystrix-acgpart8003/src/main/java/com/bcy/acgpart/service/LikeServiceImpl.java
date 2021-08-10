@@ -56,17 +56,22 @@ public class LikeServiceImpl implements LikeService{
         //添加likes
         likesMapper.insert(new Likes(null,number,id,null));
         //redis记录
+        String ck2 = redisUtils.getValue("cosHotLikeWeekCounts_" + number);
         String ck = redisUtils.getValue("cosLikeCounts_" + number);
         String ck1 = redisUtils.getValue("cosHotLikeCounts_" + number);
         if(ck == null){
             //redis存入
             redisUtils.saveByHoursTime("cosLikeCounts_" + number,cosCounts.getLikeCounts().toString(),12);
         }
+        if(ck2 == null){
+            redisUtils.saveByHoursTime("cosHotLikeWeekCounts_" + number,"0",24 * 8);
+        }
         if(ck1 == null){
-            redisUtils.saveByHoursTime("cosHotLikeCounts_" + number,"0",12);
+            redisUtils.saveByHoursTime("cosHotLikeCounts_" + number,"0",48);
         }
         redisUtils.addKeyByTime("cosLikeCounts_" + number,12);
-        redisUtils.addKeyByTime("cosHotLikeCounts_" + number,12);
+        redisUtils.addKeyByTime("cosHotLikeCounts_" + number,48);
+        redisUtils.addKeyByTime("cosHotLikeWeekCounts_" + number,24 * 8);
         log.info("添加cos点赞成功");
         return "success";
     }
@@ -91,15 +96,20 @@ public class LikeServiceImpl implements LikeService{
         //redis记录
         String ck = redisUtils.getValue("cosLikeCounts_" + number);
         String ck1 = redisUtils.getValue("cosHotLikeCounts_" + number);
+        String ck2 = redisUtils.getValue("cosHotLikeWeekCounts_" + number);
         if(ck == null){
             //redis存入
             redisUtils.saveByHoursTime("cosLikeCounts_" + number,cosCounts.getLikeCounts().toString(),12);
         }
-        if(ck1 != null){
-            redisUtils.saveByHoursTime("cosHotLikeCounts_" + number,"0",12);
+        if(ck1 == null){
+            redisUtils.saveByHoursTime("cosHotLikeCounts_" + number,"0",48);
+        }
+        if(ck2 == null){
+            redisUtils.saveByHoursTime("cosHotLikeWeekCounts_" + number,"0",24 * 8);
         }
         redisUtils.subKeyByTime("cosLikeCounts_" + number,12);
-        redisUtils.subKeyByTime("cosHotLikeCounts_" + number,12);
+        redisUtils.subKeyByTime("cosHotLikeCounts_" + number,48);
+        redisUtils.subKeyByTime("cosHotLikeWeekCounts_" + number, 24 * 8);
         log.info("取消cos点赞成功");
         return "success";
     }

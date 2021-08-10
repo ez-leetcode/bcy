@@ -112,7 +112,6 @@ public class AcgController {
     }
 
 
-
     @GetMapping("/acg/judgeLikes")
     public Result<JSONObject> judgeLikes(@RequestParam("id") Long id, @RequestParam("numbers")List<Long> numbers){
         return acgFeignService.judgeLikes(id, numbers);
@@ -194,8 +193,9 @@ public class AcgController {
 
     @PostMapping("/acg/QA")
     public Result<JSONObject> generateQA(@RequestParam("id") Long id, @RequestParam("title") String title,
-                                         @RequestParam("description") String description, @RequestParam("photo")List<String> photo){
-        return acgFeignService.generateQA(id, title, description, photo);
+                                         @RequestParam("description") String description, @RequestParam("photo")List<String> photo,
+                                         @RequestParam("label") List<String> label){
+        return acgFeignService.generateQA(id, title, description, photo, label);
     }
 
     @PostMapping("/acg/favorCos")
@@ -246,4 +246,13 @@ public class AcgController {
         return acgFeignService.getRecommendList();
     }
 
+    @GetMapping("/acg/hotDayCos")
+    public Result<JSONObject> getHotDayCos(@RequestParam("time") String time){
+        return acgFeignService.getHotDayCos(time);
+    }
+
+    @GetMapping("/acg/hotWeekCos")
+    public Result<JSONObject> getHotMonthCos(@RequestParam("time") String time){
+        return acgFeignService.getHotMonthCos(time);
+    }
 }

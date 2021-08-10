@@ -7,8 +7,10 @@ import com.bcy.acgpart.mapper.*;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.utils.CommentUtils;
 import com.bcy.utils.PhotoUtils;
 import com.bcy.vo.*;
+import com.tencentcloudapi.aa.v20200224.models.QQAccountInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -407,10 +409,34 @@ public class QAServiceImpl implements QAService{
     }
 
     @Override
-    public String generateQA(Long id, String title, String description, List<String> photo) {
+    public String generateQA(Long id, String title, String description, List<String> photo, List<String> label) {
+        String ck = redisUtils.getValue("generateQA_" + id);
+        int qaCounts = 0;
+        if(ck != null){
+            qaCounts = Integer.parseInt(ck);
+        }
+        if(qaCounts >= 15){
+            log.error("生成问答失败，短期内次数过多");
+            return "repeatWrong";
+        }
+        //判断问答是否合法
+        if(CommentUtils.judgeComment(description)){
+            log.error("生成问答失败，用户描述不合法");
+            return "dirtyWrong";
+        }
         //图片转换
         String photoString = PhotoUtils.photoListToString(photo);
         qaMapper.insert(new Qa(null,id,title,description,photoString,0,0,null,null));
+        QueryWrapper<Qa> wrapper = new QueryWrapper<>();
+        wrapper.eq("title",title)
+                .eq("description",description)
+                .eq("id",id)
+                .eq("photo",photoString);
+        Qa qa = qaMapper.selectOne(wrapper);
+        //标签插入
+        for(String x:label){
+            qaLabelMapper.insert(new QaLabel(null,qa.getNumber(),x,null));
+        }
         log.info("生成新的问答成功");
         return "success";
     }

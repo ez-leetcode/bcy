@@ -7,6 +7,7 @@ import com.bcy.acgpart.mapper.*;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.utils.CommentUtils;
 import com.bcy.utils.PhotoUtils;
 import com.bcy.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,12 @@ public class CosServiceImpl implements CosService {
     @Autowired
     private CosCommentLikeMapper cosCommentLikeMapper;
 
+    @Autowired
+    private CosDayHotMapper cosDayHotMapper;
+
+    @Autowired
+    private CosMonthMapper cosMonthMapper;
+
     @Override
     public String deleteCos(List<Long> numbers) {
         //先删动态
@@ -72,56 +79,6 @@ public class CosServiceImpl implements CosService {
         //通知用户待完成
         log.info("删除cos成功，共删除：" + result + "条");
         return "success";
-    }
-
-    @Override
-    public JSONObject getCosCountsList(Long id, List<Long> number) {
-        JSONObject jsonObject = new JSONObject();
-        List<CosCountsForList> cosCountsForList = new LinkedList<>();
-        for(Long x:number){
-            CosCounts cosCounts = new CosCounts();
-            CosCountsForList cosCountsForList1 = new CosCountsForList();
-            String favorCounts = redisUtils.getValue("cosFavorCounts_" + x);
-            String likeCounts = redisUtils.getValue("cosLikeCounts_" + x);
-            String commentCounts = redisUtils.getValue("cosCommentCounts_" + x);
-            String shareCounts = redisUtils.getValue("cosShareCounts_" + x);
-            if(favorCounts == null || likeCounts == null || commentCounts == null || shareCounts == null){
-                cosCounts = cosCountsMapper.selectById(x);
-            }
-            if(favorCounts != null){
-                cosCountsForList1.setFavorCounts(Integer.parseInt(favorCounts));
-            }else{
-                cosCountsForList1.setFavorCounts(cosCounts.getFavorCounts());
-                //redis插入
-                redisUtils.saveByHoursTime("cosFavorCounts_" + x,cosCounts.getFavorCounts().toString(),12);
-            }
-            if(likeCounts != null){
-                cosCountsForList1.setLikeCounts(Integer.parseInt(likeCounts));
-            }else{
-                cosCountsForList1.setLikeCounts(cosCounts.getLikeCounts());
-                //redis插入
-                redisUtils.saveByHoursTime("cosLikeCounts_" + x,cosCounts.getLikeCounts().toString(),12);
-            }
-            if(commentCounts != null){
-                cosCountsForList1.setCommentCounts(Integer.parseInt(commentCounts));
-            }else{
-                cosCountsForList1.setCommentCounts(cosCounts.getCommentCounts());
-                //redis插入
-                redisUtils.saveByHoursTime("cosCommentCounts_" + x,cosCounts.getCommentCounts().toString(),12);
-            }
-            if(shareCounts != null){
-                cosCountsForList1.setShareCounts(Integer.parseInt(shareCounts));
-            }else{
-                cosCountsForList1.setShareCounts(cosCounts.getShareCounts());
-                //redis插入
-                redisUtils.saveByHoursTime("cosCommentCounts_" + x,cosCounts.getCommentCounts().toString(),12);
-            }
-            cosCountsForList.add(cosCountsForList1);
-        }
-        jsonObject.put("cosCountsList",cosCountsForList);
-        log.info("获取cos计数信息成功");
-        log.info(jsonObject.toString());
-        return jsonObject;
     }
 
     @Override
@@ -170,6 +127,11 @@ public class CosServiceImpl implements CosService {
         if(cosCounts >= 15){
             log.warn("生成cos失败，短期内次数过多");
             return "repeatWrong";
+        }
+        //判断是否合法，推送待完成
+        if(CommentUtils.judgeComment(description)){
+            log.error("生成cos失败，用户描述不合法");
+            return "dirtyWrong";
         }
         //加一
         redisUtils.saveByHoursTime("generateCos_" + id,String.valueOf(cosCounts + 1),24);
@@ -279,6 +241,55 @@ public class CosServiceImpl implements CosService {
         return jsonObject;
     }
 
+    @Override
+    public JSONObject getCosCountsList(Long id, List<Long> number) {
+        JSONObject jsonObject = new JSONObject();
+        List<CosCountsForList> cosCountsForList = new LinkedList<>();
+        for(Long x:number){
+            CosCounts cosCounts = new CosCounts();
+            CosCountsForList cosCountsForList1 = new CosCountsForList();
+            String favorCounts = redisUtils.getValue("cosFavorCounts_" + x);
+            String likeCounts = redisUtils.getValue("cosLikeCounts_" + x);
+            String commentCounts = redisUtils.getValue("cosCommentCounts_" + x);
+            String shareCounts = redisUtils.getValue("cosShareCounts_" + x);
+            if(favorCounts == null || likeCounts == null || commentCounts == null || shareCounts == null){
+                cosCounts = cosCountsMapper.selectById(x);
+            }
+            if(favorCounts != null){
+                cosCountsForList1.setFavorCounts(Integer.parseInt(favorCounts));
+            }else{
+                cosCountsForList1.setFavorCounts(cosCounts.getFavorCounts());
+                //redis插入
+                redisUtils.saveByHoursTime("cosFavorCounts_" + x,cosCounts.getFavorCounts().toString(),12);
+            }
+            if(likeCounts != null){
+                cosCountsForList1.setLikeCounts(Integer.parseInt(likeCounts));
+            }else{
+                cosCountsForList1.setLikeCounts(cosCounts.getLikeCounts());
+                //redis插入
+                redisUtils.saveByHoursTime("cosLikeCounts_" + x,cosCounts.getLikeCounts().toString(),12);
+            }
+            if(commentCounts != null){
+                cosCountsForList1.setCommentCounts(Integer.parseInt(commentCounts));
+            }else{
+                cosCountsForList1.setCommentCounts(cosCounts.getCommentCounts());
+                //redis插入
+                redisUtils.saveByHoursTime("cosCommentCounts_" + x,cosCounts.getCommentCounts().toString(),12);
+            }
+            if(shareCounts != null){
+                cosCountsForList1.setShareCounts(Integer.parseInt(shareCounts));
+            }else{
+                cosCountsForList1.setShareCounts(cosCounts.getShareCounts());
+                //redis插入
+                redisUtils.saveByHoursTime("cosCommentCounts_" + x,cosCounts.getCommentCounts().toString(),12);
+            }
+            cosCountsForList.add(cosCountsForList1);
+        }
+        jsonObject.put("cosCountsList",cosCountsForList);
+        log.info("获取cos计数信息成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
 
     @Override
     public String likeCosComment(Long id, Long number) {
@@ -426,6 +437,53 @@ public class CosServiceImpl implements CosService {
         }
         jsonObject.put("cosRecommendLabelList",labelList);
         log.info("获取当前推荐标签成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+
+    @Override
+    public JSONObject getCosDayHotList(String time) {
+        JSONObject jsonObject = new JSONObject();
+        List<CosForHot> cosForHotList = cosDayHotMapper.getDayHotList(time);
+        for(CosForHot x:cosForHotList){
+            User user = userMapper.selectById(x.getId());
+            if(user != null){
+                x.setUsername(user.getUsername());
+                x.setPhoto(user.getPhoto());
+            }
+            Cos cos = cosMapper.selectById(x.getCosNumber());
+            if(cos != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+            }
+            List<String> circleNameList = circleCosMapper.getAllCircleNameFromCosNumber(x.getCosNumber());
+            x.setCosLabel(circleNameList);
+        }
+        jsonObject.put("cosHotList",cosForHotList);
+        log.info("获取cos日榜成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    @Override
+    public JSONObject getCosMonthHotList(String time) {
+        JSONObject jsonObject = new JSONObject();
+        List<CosForHot> cosForHotList = cosMonthMapper.getMonthHotList(time);
+        for(CosForHot x:cosForHotList){
+            Cos cos = cosMapper.selectById(x.getCosNumber());
+            if(cos != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+            }
+            User user = userMapper.selectById(x.getId());
+            if(user != null){
+                x.setUsername(user.getUsername());
+                x.setPhoto(user.getPhoto());
+            }
+            List<String> circleNameList = circleCosMapper.getAllCircleNameFromCosNumber(x.getCosNumber());
+            x.setCosLabel(circleNameList);
+        }
+        jsonObject.put("cosHotList",cosForHotList);
+        log.info("获取cos月榜成功");
         log.info(jsonObject.toString());
         return jsonObject;
     }

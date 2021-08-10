@@ -3,6 +3,7 @@ package com.bcy.acgpart.service;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.DocFlavor;
 import java.util.List;
 
 public interface QAService {
@@ -21,7 +22,7 @@ public interface QAService {
 
     String dislikeComment(Long id,Long number);
 
-    String generateQA(Long id, String title, String description, List<String> photo);
+    String generateQA(Long id, String title, String description, List<String> photo, List<String> label);
 
     JSONObject getFollowQAList(Long id,Long number,String keyword,Long page,Long cnt);
 

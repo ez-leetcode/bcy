@@ -30,4 +30,8 @@ public interface CosService {
     String addComment(Long id,Long cosNumber,String description,Long fatherNumber,Long toId,Long replyNumber);
 
     JSONObject getRecommendLabelList();
+
+    JSONObject getCosDayHotList(String time);
+
+    JSONObject getCosMonthHotList(String time);
 }

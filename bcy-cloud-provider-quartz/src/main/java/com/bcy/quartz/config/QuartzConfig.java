@@ -188,4 +188,27 @@ public class QuartzConfig {
                 .build();
     }
 
+    @Bean
+    public JobDetail cosHotWeekCountsJobDetail(){
+        //关联业务类
+        return JobBuilder.newJob(CosHotWeekCountsJob.class)
+                //给JobDetail起名字
+                .withIdentity("cosHotWeekCountsDetail")
+                .storeDurably()
+                .build();
+    }
+
+
+    @Bean
+    public Trigger cosHotWeekCountsTrigger(){
+        //十五分钟一刷新
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0 0 1/7 * ? *");
+        return TriggerBuilder.newTrigger()
+                //关联上述JobDetail
+                .forJob(cosHotWeekCountsJobDetail())
+                .withIdentity("cosHotWeekCountsTrigger")
+                .withSchedule(cronScheduleBuilder)
+                .build();
+    }
+
 }

@@ -78,6 +78,7 @@ public class FavorServiceImpl implements FavorService{
         //收藏数扔给redis
         String ck = redisUtils.getValue("cosFavorCounts_" + number);
         String ck1 = redisUtils.getValue("cosHotFavorCounts_" + number);
+        String ck2 = redisUtils.getValue("cosHotFavorWeekCounts_" + number);
         if(ck == null){
             //redis里没有，存入
             redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),48);
@@ -85,8 +86,12 @@ public class FavorServiceImpl implements FavorService{
         if(ck1 == null){
             redisUtils.saveByHoursTime("cosHotFavorCounts_" + number,"0",12);
         }
+        if(ck2 == null){
+            redisUtils.saveByHoursTime("cosHotFavorWeekCounts_" + number, "0",24 * 8);
+        }
         redisUtils.addKeyByTime("cosHotFavorCounts_" + number,48);
         redisUtils.addKeyByTime("cosFavorCounts_" + number,12);
+        redisUtils.addKeyByTime("cosHotFavorWeekCounts_" + number,24 * 8);
         log.info("添加收藏成功");
         return "success";
     }
@@ -110,16 +115,21 @@ public class FavorServiceImpl implements FavorService{
         favorMapper.deleteById(favor.getId());
         //收藏数扔给redis
         String ck1 = redisUtils.getValue("cosHotFavorCounts_" + number);
+        String ck2 = redisUtils.getValue("cosHotFavorWeekCounts_" + number);
         String ck = redisUtils.getValue("cosFavorCounts_" + number);
         if(ck == null){
             //redis没有，存入
             redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),48);
+        }
+        if(ck2 == null){
+            redisUtils.saveByHoursTime("cosHotFavorWeekCounts_" + number,"0",24 * 8);
         }
         if(ck1 == null){
             redisUtils.saveByHoursTime("cosHotFavorCounts_" + number,"0",12);
         }
         redisUtils.subKeyByTime("cosHotFavorCounts_" + number,48);
         redisUtils.subKeyByTime("cosFavorCounts_" + number,12);
+        redisUtils.subKeyByTime("cosHotFavorWeekCounts_" + number,24 * 8);
         log.info("取消收藏成功");
         return "success";
     }

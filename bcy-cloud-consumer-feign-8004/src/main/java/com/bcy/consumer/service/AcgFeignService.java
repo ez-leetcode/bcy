@@ -46,7 +46,6 @@ public interface AcgFeignService {
     Result<JSONObject> getCosCommentCountsList(@RequestParam(value = "id",required = false) Long id,
                                                       @RequestParam("number") List<Long> number);
 
-
     @GetMapping("/acg/judgeLikes")
     Result<JSONObject> judgeLikes(@RequestParam("id") Long id, @RequestParam("numbers") List<Long> numbers);
 
@@ -127,7 +126,8 @@ public interface AcgFeignService {
 
     @PostMapping("/acg/QA")
     Result<JSONObject> generateQA(@RequestParam("id") Long id, @RequestParam("title") String title,
-                                  @RequestParam("description") String description, @RequestParam("photo")List<String> photo);
+                                  @RequestParam("description") String description, @RequestParam("photo")List<String> photo,
+                                  @RequestParam("label") List<String> label);
 
     @PostMapping("/acg/favorCos")
     Result<JSONObject> addFavorCos(@RequestParam("id") Long id,@RequestParam("number") Long number);
@@ -162,4 +162,9 @@ public interface AcgFeignService {
     @GetMapping("/acg/recommendList")
     Result<JSONObject> getRecommendList();
 
+    @GetMapping("/acg/hotDayCos")
+    Result<JSONObject> getHotDayCos(@RequestParam("time") String time);
+
+    @GetMapping("/acg/hotWeekCos")
+    Result<JSONObject> getHotMonthCos(@RequestParam("time") String time);
 }

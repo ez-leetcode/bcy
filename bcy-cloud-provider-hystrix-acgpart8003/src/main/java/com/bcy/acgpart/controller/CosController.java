@@ -75,7 +75,7 @@ public class CosController {
             @ApiImplicitParam(name = "photo",value = "图片列表（list）",required = true,allowMultiple = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "label",value = "标签（list）",required = true,allowMultiple = true,dataType = "string",paramType = "query")
     })
-    @ApiOperation(value = "发布cos",notes = "repeatWrong：24小时内发布cos超过15次 不让发了 success：成功")
+    @ApiOperation(value = "发布cos",notes = "dirtyWrong：描述里有敏感词汇（会推送） repeatWrong：24小时内发布cos超过15次 不让发了 success：成功")
     @PostMapping("/acg/cos")
     public Result<JSONObject> createCos(@RequestParam("id") Long id, @RequestParam("description") String description,
                                             @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label){
@@ -163,7 +163,6 @@ public class CosController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
-
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "评论编号",required = true,dataType = "Long",paramType = "query")
@@ -174,7 +173,6 @@ public class CosController {
         log.info("正在点赞cos下的评论，用户：" + id + " 评论编号：" + number);
         return ResultUtils.getResult(new JSONObject(),cosService.likeCosComment(id, number));
     }
-
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
@@ -203,6 +201,28 @@ public class CosController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "time",value = "日期（请带yyyy-MM-dd格式）",required = true,dataType = "string",paramType = "query")
+    })
+    @ApiOperation(value = "获取日榜热门cos列表",notes = "success：成功 返回hotCosList：（cosNumber：cos编号 id：用户id username：昵称 photo：头像 cosPhoto：cos图片列表" +
+            "cosLabel：cos标签 createTime：cos发布时间）")
+    @GetMapping("/acg/hotDayCos")
+    public Result<JSONObject> getHotDayCos(@RequestParam("time") String time){
+        log.info("正在获取日榜热门cos列表，时间：" + time);
+        return ResultUtils.getResult(cosService.getCosDayHotList(time),"success");
+    }
+
+    //这里week写成month了 其实是周榜
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "time",value = "日期（请带yyyy-MM-dd格式）请给周一的日期",required = true,dataType = "string",paramType = "query")
+    })
+    @ApiOperation(value = "获取周榜热门cos列表",notes = "success：成功 返回hotCosList：（cosNumber：cos编号 id：用户id username：昵称 photo：头像 cosPhoto：cos图片列表" +
+            "cosLabel：cos标签 createTime：cos发布时间）")
+    @GetMapping("/acg/hotWeekCos")
+    public Result<JSONObject> getHotMonthCos(@RequestParam("time") String time){
+        log.info("正在获取周榜热门cos列表，时间：" + time);
+        return ResultUtils.getResult(cosService.getCosMonthHotList(time),"success");
+    }
 
     @ApiOperation(value = "获取推荐cos标签",notes = "success：成功 返回data cosRecommendLabelList：label（list）：推荐标签列表 一般会有20个")
     @GetMapping("/acg/recommendList")
@@ -210,6 +230,5 @@ public class CosController {
         log.info("正在获取推荐cos标签");
         return ResultUtils.getResult(cosService.getRecommendLabelList(),"success");
     }
-
 
 }
