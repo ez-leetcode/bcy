@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService{
         String token;
         if(userLogin == null){
             //用户第一次登录，直接创号，待完成
-            userLoginMapper.insert(new UserLogin(null,phone,new BCryptPasswordEncoder().encode("lxm"),0,null,null));
+            userLoginMapper.insert(new UserLogin(null,phone,new BCryptPasswordEncoder().encode("lxm"),null,0,null,null));
             UserLogin userLogin1 = userLoginMapper.selectOne(wrapper);
             //添加用户权限
             userRoleMapper.insert(new UserRole(null,userLogin1.getId(),1,null,null));

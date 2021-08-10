@@ -30,6 +30,9 @@ public class UserLogin implements Serializable {
     @ApiModelProperty("密码")
     private String password;
 
+    @ApiModelProperty("微博uid")
+    private String weiboId;
+
     @ApiModelProperty("是否被封号")
     @TableLogic
     private Integer deleted;
