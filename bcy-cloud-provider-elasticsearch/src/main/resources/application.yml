@@ -1,6 +1,11 @@
 server:
   port: 8008
 
+
+
+
+
+
 eureka:
   client:
     #不是注册中心都是true

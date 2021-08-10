@@ -3,15 +3,23 @@ package com.bcy.userpart.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bcy.config.RabbitmqConfig;
+import com.bcy.mq.FansMsg;
 import com.bcy.userpart.mapper.FansMapper;
+import com.bcy.userpart.mapper.UserMapper;
+import com.bcy.userpart.mapper.UserSettingMapper;
 import com.bcy.userpart.pojo.Fans;
+import com.bcy.userpart.pojo.User;
+import com.bcy.userpart.pojo.UserSetting;
 import com.bcy.userpart.utils.RedisUtils;
 import com.bcy.vo.FansInfo;
 import com.bcy.vo.FollowInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -23,6 +31,18 @@ public class FansServiceImpl implements FansService{
 
     @Autowired
     private FansMapper fansMapper;
+
+    @Autowired
+    private UserSettingMapper userSettingMapper;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private RabbitmqProducerService rabbitmqProducerService;
 
     @Override
     public String addFollow(Long fromId, Long toId) {
@@ -39,6 +59,16 @@ public class FansServiceImpl implements FansService{
         //修改数量
         redisUtils.addKeyByTime("fansCounts_" + toId,12);
         redisUtils.subKeyByTime("followCounts_" + fromId,12);
+        //推送添加粉丝信息
+        UserSetting userSetting = userSettingMapper.selectById(toId);
+        if(userSetting != null && userSetting.getPushFans() == 1){
+            //推送消息
+            User user = userMapper.selectById(fromId);
+            if(user != null){
+                FansMsg fansMsg = new FansMsg(fromId,user.getUsername(),toId,new Date());
+                rabbitmqProducerService.sendFansMsg(fansMsg);
+            }
+        }
         log.info("添加关注成功");
         return "success";
     }

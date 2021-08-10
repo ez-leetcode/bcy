@@ -6,23 +6,27 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-@Getter
 @Setter
-public class Result<T> implements Serializable {
+@Getter
+public class WebsocketResult<T> implements Serializable {
 
-    //返回状态码
-    private Integer code;
+    //类型
+    private Integer status;
 
-    //返回的状态消息
+    //跳转编号
+    private Long number;
+
+    //消息
     private String msg;
 
-    //返回的数据
+    //数据
     private T data;
 
     @Override
     public String toString() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code",code);
+        jsonObject.put("status",status);
+        jsonObject.put("number",number);
         jsonObject.put("msg",msg);
         jsonObject.put("data",data);
         return jsonObject.toString();

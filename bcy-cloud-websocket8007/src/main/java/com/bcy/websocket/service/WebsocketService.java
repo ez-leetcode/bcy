@@ -1,5 +1,9 @@
 package com.bcy.websocket.service;
 
+import com.alibaba.fastjson.JSON;
+import com.bcy.mq.FansMsg;
+import com.bcy.pojo.SystemInfo;
+import com.bcy.utils.WebsocketResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +60,17 @@ public class WebsocketService {
         //把message转成talkMsg
         //rabbitmqWebsocketProductConfig.sendMessageToFanoutExchange(message);
         log.info("rabbitmq发送信息成功");
+    }
+
+    public void sendFansMessage(FansMsg fansMsg){
+        log.info("正在向别的在线用户推送粉丝添加");
+        WebsocketService websocketService = websocketServiceConcurrentHashMap.get(fansMsg.getToId().toString());
+        if(websocketService != null){
+            log.info("正在向用户" + websocketService.session.getId() + "推送粉丝添加信息");
+            SystemInfo systemInfo = new SystemInfo("您有新的粉丝关注","用户" + fansMsg.getFromUsername() + "关注了您");
+            websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"fansInfo", fansMsg.getFromId()).toString());
+            log.info("粉丝添加推送成功");
+        }
     }
 
 }

@@ -17,6 +17,18 @@ spring:
     username: ck
     password: 123456
     virtual-host: /
+    #开启发送失败回退
+    publisher-returns: true
+    #默认开启发送确认
+    listener:
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
+        retry:
+          #支持重试
+          enabled: true
+    publisher-confirm-type: correlated
   #redis
   redis:
     host: 47.115.128.193

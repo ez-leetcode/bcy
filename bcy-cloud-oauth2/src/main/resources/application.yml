@@ -21,6 +21,7 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
+
   profiles:
     #开发者环境
     active: dev
