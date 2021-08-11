@@ -108,5 +108,6 @@ public interface UserFeignService {
     @GetMapping("/user/userCounts")
     Result<JSONObject> getUserCounts(@RequestParam("userId")List<Long> userId);
 
-
+    @PostMapping("/user/judgeNew")
+    Result<JSONObject> judgeNewUser(@RequestParam("id") Long id);
 }

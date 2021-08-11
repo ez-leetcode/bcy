@@ -18,4 +18,6 @@ public interface PersonalService {
     JSONObject getPersonalInfo(Long id);
 
     JSONObject getUserCounts(List<Long> userId);
+
+    JSONObject judgeNew(Long id);
 }

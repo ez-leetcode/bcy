@@ -20,7 +20,7 @@ public class WeiboController {
 
     @ApiOperation(value = "微博登录回调",notes = "这条新浪官方使用，你们不用")
     @GetMapping("/oauth/weiboCallBack")
-    public String weiboLogin(@RequestParam("code") String code){
+    public String weiboLogin(@RequestParam("code") String code) throws InterruptedException {
         log.info("正在进行微博登录回调，代码：" + code);
         return weiboService.weiboLogin(code);
     }

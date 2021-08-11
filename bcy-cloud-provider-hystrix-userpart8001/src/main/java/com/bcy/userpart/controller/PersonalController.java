@@ -133,4 +133,17 @@ public class PersonalController {
         return ResultUtils.getResult(personalService.getUserCounts(userId),"success");
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "判断是否为新用户",notes = "existWrong：用户不存在 success：成功 返回data： isNew：1是新人跳转填写用户信息 0不是新人")
+    @PostMapping("/user/judgeNew")
+    public Result<JSONObject> judgeNewUser(@RequestParam("id") Long id){
+        log.info("正在判断是否为新用户，用户：" + id);
+        JSONObject jsonObject = personalService.judgeNew(id);
+        if(jsonObject == null){
+            return ResultUtils.getResult(new JSONObject(),"existWrong");
+        }
+        return ResultUtils.getResult(jsonObject,"success");
+    }
 }

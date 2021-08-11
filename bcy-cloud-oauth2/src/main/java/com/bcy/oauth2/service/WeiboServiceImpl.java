@@ -39,7 +39,7 @@ public class WeiboServiceImpl implements WeiboService{
     private UserMessageMapper userMessageMapper;
 
     @Override
-    public String weiboLogin(String code) {
+    public String weiboLogin(String code) throws InterruptedException {
         Map<String,Object> map = new HashMap<>();
         map.put("client_id", WeiboConfig.client_id);
         map.put("client_secret",WeiboConfig.client_secret);
@@ -72,6 +72,7 @@ public class WeiboServiceImpl implements WeiboService{
             //创建用户
             UserLogin userLogin1 = new UserLogin(null,null,new BCryptPasswordEncoder().encode("lxm"),uid,0,null,null);
             userLoginMapper.insert(userLogin1);
+            Thread.sleep(100);
             UserLogin userLogin2 = userLoginMapper.selectOne(wrapper);
             //添加用户权限
             userRoleMapper.insert(new UserRole(null,userLogin2.getId(),1,null,null));

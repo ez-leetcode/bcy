@@ -1,6 +1,10 @@
 package com.bcy.userpart.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bcy.userpart.mapper.UserLoginMapper;
+import com.bcy.userpart.mapper.UserMessageMapper;
+import com.bcy.userpart.pojo.UserLogin;
+import com.bcy.userpart.pojo.UserMessage;
 import com.bcy.userpart.utils.RedisUtils;
 import com.bcy.vo.PersonalInfo;
 import com.bcy.vo.PersonalSetting;
@@ -32,6 +36,12 @@ public class PersonalServiceImpl implements PersonalService{
 
     @Autowired
     private UserSettingMapper userSettingMapper;
+
+    @Autowired
+    private UserLoginMapper userLoginMapper;
+
+    @Autowired
+    private UserMessageMapper userMessageMapper;
 
     @Autowired
     private RedisUtils redisUtils;
@@ -163,4 +173,25 @@ public class PersonalServiceImpl implements PersonalService{
         log.info(jsonObject.toString());
         return jsonObject;
     }
+
+
+    @Override
+    public JSONObject judgeNew(Long id) {
+        JSONObject jsonObject = new JSONObject();
+        UserLogin userLogin = userLoginMapper.selectById(id);
+        UserMessage userMessage = userMessageMapper.selectById(id);
+        if(userLogin == null || userMessage == null){
+            log.error("判断是否为新用户失败，用户不存在");
+            return null;
+        }
+        if(userLogin.getCreateTime().equals(userLogin.getUpdateTime()) && userMessage.getCreateTime().equals(userMessage.getUpdateTime())){
+            jsonObject.put("isNew",1);
+        }else{
+            jsonObject.put("isNew",2);
+        }
+        log.info("判断是否为新用户成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
 }

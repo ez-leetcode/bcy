@@ -163,6 +163,11 @@ public class UserController {
         return userFeignService.getUserCounts(userId);
     }
 
+    @PostMapping("/user/judgeNew")
+    public Result<JSONObject> judgeNewUser(@RequestParam("id") Long id){
+        return userFeignService.judgeNewUser(id);
+    }
+
 
     @GetMapping("/user/timeout")
     public Result<JSONObject> globalTimeout(){
