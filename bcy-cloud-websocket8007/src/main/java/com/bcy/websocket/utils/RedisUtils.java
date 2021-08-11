@@ -1,4 +1,4 @@
-package com.bcy.community.utils;
+package com.bcy.websocket.utils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,10 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +18,7 @@ public class RedisUtils {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
 
     //次数加1
     public void addKeyByTime(String key,int hours){
@@ -50,7 +47,6 @@ public class RedisUtils {
         //存入redis
         redisTemplate.opsForValue().set(key,String.valueOf(cnt),hours * 3600L,TimeUnit.SECONDS);
     }
-
 
     //存带有过期时间的key-value
     public void saveByHoursTime(String key,String value,int hours){
@@ -96,30 +92,5 @@ public class RedisUtils {
     public boolean isAfterDate(String key,int minutes){
         return redisTemplate.getExpire(key,TimeUnit.SECONDS) > (long) minutes * 60;
     }
-
-    //获取两个用户的最后一次聊天
-    public String getUserLastTalk(Long id1,Long id2){
-        String ck = redisTemplate.opsForValue().get("lastInfo_" + id1 + id2);
-        String ck1 = redisTemplate.opsForValue().get("lastInfo_" + id2 + id1);
-        if(ck != null){
-            return ck;
-        }
-        //如果不存在 ck1返回null也合需求
-        return ck1;
-    }
-
-    public Date getUserLastTime(Long id1,Long id2) throws ParseException {
-        String ck = redisTemplate.opsForValue().get("updateTime_" + id1 + id2);
-        String ck1 = redisTemplate.opsForValue().get("updateTime_" + id2 + id1);
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        if(ck != null){
-            return format.parse(ck);
-        }
-        if(ck1 != null){
-            return format.parse(ck1);
-        }
-        return null;
-    }
-
 
 }

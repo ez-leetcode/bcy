@@ -1,7 +1,13 @@
 package com.bcy.quartz.job;
 
+import com.bcy.mq.HotCosMsg;
 import com.bcy.quartz.mapper.CosDayHotMapper;
+import com.bcy.quartz.mapper.CosMapper;
+import com.bcy.quartz.mapper.UserMapper;
+import com.bcy.quartz.pojo.Cos;
 import com.bcy.quartz.pojo.CosDayHot;
+import com.bcy.quartz.pojo.User;
+import com.bcy.quartz.service.RabbitmqProducerService;
 import com.bcy.quartz.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
@@ -22,6 +28,15 @@ public class CosHotCountsJob implements Job {
 
     @Autowired
     private CosDayHotMapper cosDayHotMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private CosMapper cosMapper;
+
+    @Autowired
+    private RabbitmqProducerService rabbitmqProducerService;
 
     //推送到消息队列待完成
 
@@ -61,6 +76,16 @@ public class CosHotCountsJob implements Job {
             cosDayHotMapper.insert(new CosDayHot(null,list.get(map.size() - i).getKey(),i,dateString));
             redisUtils.saveByHoursTime("hotCos" + i,list.get(map.size() - i).getKey().toString(),48);
             log.info("新日榜热门cos编号：" + list.get(map.size() - i).toString());
+            if(i == 1){
+                //推送最火的
+                Cos cos = cosMapper.selectById(list.get(map.size() - i).getKey());
+                if(cos != null){
+                    User user = userMapper.selectById(cos.getId());
+                    if(user != null){
+                        rabbitmqProducerService.sendHotCos(new HotCosMsg(cos.getNumber(),cos.getDescription(),user.getUsername()));
+                    }
+                }
+            }
         }
         log.info("日榜热门cos更新成功");
     }

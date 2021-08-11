@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.util.List;
+
 @RestController
 @Slf4j
 public class CommunityController {
@@ -64,5 +67,37 @@ public class CommunityController {
     public Result<JSONObject> getAskList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                          @RequestParam("page") Long page){
         return communityFeignService.getAskList(id, cnt, page);
+    }
+
+    @GetMapping("/community/judgeOnline")
+    public Result<JSONObject> judgeOnline(@RequestParam("userId") List<Long> userId){
+        return communityFeignService.judgeOnline(userId);
+    }
+
+    @DeleteMapping("/community/talkHistory")
+    public Result<JSONObject> deleteTalkHistory(@RequestParam("id") Long id,
+                                                @RequestParam("number") List<Long> number){
+        return communityFeignService.deleteTalkHistory(id, number);
+    }
+
+    @DeleteMapping("/community/talk")
+    public Result<JSONObject> deleteTalk(@RequestParam("id") Long id,@RequestParam("toId") Long toId){
+        return communityFeignService.deleteTalk(id, toId);
+    }
+
+    @GetMapping("/community/talkCounts")
+    public Result<JSONObject> getTalkCounts(@RequestParam("id") Long id,@RequestParam("toId") List<Long> toId) throws ParseException {
+        return communityFeignService.getTalkCounts(id, toId);
+    }
+
+    @GetMapping("/community/talkList")
+    public Result<JSONObject> getTalkList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                          @RequestParam("page") Long page){
+        return communityFeignService.getTalkList(id, cnt, page);
+    }
+
+    @PostMapping("/community/allRead")
+    public Result<JSONObject> allRead(@RequestParam("id") Long id,@RequestParam("toId") Long toId){
+        return communityFeignService.allRead(id, toId);
     }
 }

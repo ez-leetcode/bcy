@@ -32,4 +32,11 @@ public class RabbitmqConfig {
 
     public static final String HOT_QA_ROUTING_KEY = "hot_qa_routing_key";
 
+    public static final String WEBSOCKET_FANOUT_QUEUE_NAME = "websocket_fanout_queue";
+
+    public static final String WEBSOCKET_FANOUT_EXCHANGE_NAME = "websocket_fanout_exchange";
+
+    public static final String WEBSOCKET_FANOUT_ROUTING_KEY = "websocket_fanout_routing_key";
+
+
 }

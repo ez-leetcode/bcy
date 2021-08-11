@@ -1,6 +1,7 @@
 package com.bcy.quartz.job;
 
 import com.bcy.quartz.mapper.QaMapper;
+import com.bcy.quartz.mapper.UserMapper;
 import com.bcy.quartz.pojo.Helps;
 import com.bcy.quartz.pojo.Qa;
 import com.bcy.quartz.utils.RedisUtils;
@@ -22,6 +23,7 @@ public class QACountsJob implements Job {
 
     @Autowired
     private QaMapper qaMapper;
+
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {

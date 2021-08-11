@@ -26,7 +26,6 @@ public class MessageController {
     @Autowired
     private TimeoutService timeoutService;
 
-
     //超时或内部出错调用方法，进行服务降级
     public Result<JSONObject> timeoutHandler(){
         log.error("用户问答服务超时或发生错误");

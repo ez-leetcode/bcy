@@ -6,7 +6,9 @@ import com.bcy.mq.HotCosMsg;
 import com.bcy.mq.HotQAMsg;
 import com.bcy.pojo.SystemInfo;
 import com.bcy.utils.WebsocketResultUtils;
+import com.bcy.websocket.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -19,6 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @ServerEndpoint(value = "/websocket/{id}")
 public class WebsocketService {
+
+    @Autowired
+    private RedisUtils redisUtils;
 
     //与某个客户端连接会话，以此来给客户端发送数据
     private Session session;
@@ -35,6 +40,8 @@ public class WebsocketService {
         this.session = session;
         //放入hashmap中
         websocketServiceConcurrentHashMap.put(id,this);
+        //登录信息存入redis
+        redisUtils.saveByHoursTime("websocket_" + id,"1",999);
         log.info("有新的连接建立，当前总连接数：" + websocketServiceConcurrentHashMap.size());
     }
 
@@ -43,6 +50,8 @@ public class WebsocketService {
     public void onClose(@PathParam("id") String id){
         log.info("正在关闭与app的连接，用户：" + id);
         websocketServiceConcurrentHashMap.remove(id);
+        //登录信息移除
+        redisUtils.delete("websocket_" + id);
         log.info("连接已断开，当前连接数：" + websocketServiceConcurrentHashMap.size());
     }
 
