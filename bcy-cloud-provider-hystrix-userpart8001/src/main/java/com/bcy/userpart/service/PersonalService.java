@@ -20,4 +20,6 @@ public interface PersonalService {
     JSONObject getUserCounts(List<Long> userId);
 
     JSONObject judgeNew(Long id);
+
+    String setPassword(Long id,String password);
 }

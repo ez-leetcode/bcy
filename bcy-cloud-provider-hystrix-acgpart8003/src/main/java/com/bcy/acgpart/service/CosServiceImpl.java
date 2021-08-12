@@ -7,6 +7,8 @@ import com.bcy.acgpart.mapper.*;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.mq.CommentMsg;
+import com.bcy.mq.LikeMsg;
 import com.bcy.utils.CommentUtils;
 import com.bcy.utils.PhotoUtils;
 import com.bcy.vo.*;
@@ -54,6 +56,9 @@ public class CosServiceImpl implements CosService {
 
     @Autowired
     private CosMonthMapper cosMonthMapper;
+
+    @Autowired
+    private RabbitmqProducerService rabbitmqProducerService;
 
     @Override
     public String deleteCos(List<Long> numbers) {
@@ -314,6 +319,11 @@ public class CosServiceImpl implements CosService {
             redisUtils.saveByHoursTime("cosCommentLikeCounts_" + number,cosComment.getLikeCounts().toString(),12);
         }
         redisUtils.addKeyByTime("cosCommentLikeCounts_" + number,12);
+        //推送
+        User user = userMapper.selectById(id);
+        if(user != null){
+            rabbitmqProducerService.sendLikeMessage(new LikeMsg(cosComment.getNumber(),4,user.getUsername(),cosComment.getFromId()));
+        }
         log.info("点赞cos下评论成功");
         return "success";
     }
@@ -387,6 +397,18 @@ public class CosServiceImpl implements CosService {
     public String addComment(Long id, Long cosNumber, String description, Long fatherNumber, Long toId, Long replyNumber) {
         //插入评论内容
         cosCommentMapper.insert(new CosComment(null,cosNumber,fatherNumber,id,toId,replyNumber,0,0,description,null));
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        QueryWrapper<CosComment> wrapper = new QueryWrapper<>();
+        wrapper.eq("cos_number",cosNumber)
+                .eq("father_number",fatherNumber)
+                .eq("from_id",id)
+                .eq("to_id",toId)
+                .eq("reply_number",replyNumber);
+        CosComment cosComment1 = cosCommentMapper.selectOne(wrapper);
         //添加父级评论评论数
         if(fatherNumber != null && fatherNumber != 0){
             String ck = redisUtils.getValue("cosCommentCommentCounts_" + fatherNumber);
@@ -408,6 +430,23 @@ public class CosServiceImpl implements CosService {
         }
         redisUtils.addKeyByTime("cosCommentCounts_" + cosNumber,12);
         //推送待完成
+        User user = userMapper.selectById(id);
+        if(fatherNumber == null || fatherNumber == 0){
+            //是cos下的评论
+            Cos cos = cosMapper.selectById(cosNumber);
+            //这个number给评论编号
+            rabbitmqProducerService.sendCommentMessage(new CommentMsg(cosComment1.getNumber(),cos.getId(),user.getUsername(),description));
+        }else{
+            CosComment cosComment;
+            if(replyNumber == null || replyNumber == 0){
+                //评论下的评论，给父级评论
+                cosComment = cosCommentMapper.selectById(fatherNumber);
+            }else{
+                //评论下的回复评论
+                cosComment = cosCommentMapper.selectById(replyNumber);
+            }
+            rabbitmqProducerService.sendCommentMessage(new CommentMsg(fatherNumber,cosComment.getFromId(),user.getUsername(),description));
+        }
         log.info("添加cos下的评论成功");
         return "success";
     }

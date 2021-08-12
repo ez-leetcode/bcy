@@ -7,6 +7,7 @@ import com.bcy.acgpart.mapper.*;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.mq.LikeMsg;
 import com.bcy.utils.CommentUtils;
 import com.bcy.utils.PhotoUtils;
 import com.bcy.vo.*;
@@ -53,6 +54,9 @@ public class QAServiceImpl implements QAService{
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RabbitmqProducerService rabbitmqProducerService;
 
     @Override
     public String followQA(Long id, Long number) {
@@ -134,6 +138,11 @@ public class QAServiceImpl implements QAService{
         }
         //redis加1
         redisUtils.addKeyByTime("likeQaAnswer_" + number,12);
+        //推送给被点赞用户
+        User user = userMapper.selectById(id);
+        if(user != null){
+            rabbitmqProducerService.sendLikeMessage(new LikeMsg(qaAnswer.getNumber(),2,user.getUsername(),qaAnswer.getId()));
+        }
         log.info("点赞回答成功");
         return "success";
     }
@@ -190,6 +199,11 @@ public class QAServiceImpl implements QAService{
         }
         //redis加1
         redisUtils.addKeyByTime("likeQaComment_" + number,12);
+        //推送
+        User user = userMapper.selectById(id);
+        if(user != null){
+            rabbitmqProducerService.sendLikeMessage(new LikeMsg(qaComment.getNumber(),3,user.getUsername(),qaComment.getToId()));
+        }
         log.info("点赞评论成功");
         return "success";
     }

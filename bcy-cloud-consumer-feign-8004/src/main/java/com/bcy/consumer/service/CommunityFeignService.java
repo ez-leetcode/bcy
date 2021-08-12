@@ -23,11 +23,11 @@ public interface CommunityFeignService {
     @DeleteMapping("/community/ask")
     Result<JSONObject> deleteAsk(@RequestParam("id") Long id, @RequestParam("number") Long number);
 
-    @DeleteMapping("/community/ask")
+    @PostMapping("/community/ask")
     Result<JSONObject> addAsk(@RequestParam("fromId") Long fromId, @RequestParam("toId") Long toId,
                               @RequestParam("question") String question);
 
-    @DeleteMapping("/community/answer")
+    @PostMapping("/community/answer")
     Result<JSONObject> addAnswer(@RequestParam("number") Long number, @RequestParam("id") Long id,
                                  @RequestParam("answer") String answer);
 
@@ -69,4 +69,7 @@ public interface CommunityFeignService {
 
     @PostMapping("/community/allRead")
     Result<JSONObject> allRead(@RequestParam("id") Long id,@RequestParam("toId") Long toId);
+
+    @PostMapping("/community/messageAllRead")
+    Result<JSONObject> allRead(@RequestParam("id") Long id,@RequestParam("type") Integer type);
 }

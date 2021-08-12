@@ -14,6 +14,10 @@ public class WebsocketResultUtils {
         talkResultMap.put("receiveInfoSuccess",2);
         talkResultMap.put("systemInfoSuccess",3);
         talkResultMap.put("fansInfo",4);
+        talkResultMap.put("askInfo",5);
+        talkResultMap.put("likeInfo",6);
+        talkResultMap.put("commentInfo",7);
+        talkResultMap.put("atInfo",8);
     }
 
     //object是json数据，msg是状态

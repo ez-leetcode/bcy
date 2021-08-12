@@ -79,7 +79,7 @@ public class MessageController {
             @ApiImplicitParam(name = "type",value = "类型（1：已读全部@ 2：已读全部评论 3：已读全部收到的赞 4：已读全部的消息）",required = true,dataType = "int",paramType = "query")
     })
     @ApiOperation(value = "将消息盒子中的某个内容全部设为已读",notes = "success：成功")
-    @PostMapping("/community/allRead")
+    @PostMapping("/community/messageAllRead")
     public Result<JSONObject> allRead(@RequestParam("id") Long id,@RequestParam("type") Integer type){
         log.info("正在将消息盒子中某个内容全部设为已读，用户：" + id + " 类型：" + type);
         return ResultUtils.getResult(new JSONObject(),messageService.allRead(id, type));

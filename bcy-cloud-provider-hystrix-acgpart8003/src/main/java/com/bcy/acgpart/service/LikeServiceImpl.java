@@ -9,6 +9,7 @@ import com.bcy.acgpart.mapper.LikesMapper;
 import com.bcy.acgpart.mapper.UserMapper;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.mq.LikeMsg;
 import com.bcy.utils.PhotoUtils;
 import com.bcy.vo.CosJudgeLikeForList;
 import com.bcy.vo.CosLikeForList;
@@ -37,6 +38,9 @@ public class LikeServiceImpl implements LikeService{
 
     @Autowired
     private CosMapper cosMapper;
+
+    @Autowired
+    private RabbitmqProducerService rabbitmqProducerService;
 
     @Override
     public String addLike(Long id, Long number) {
@@ -72,6 +76,12 @@ public class LikeServiceImpl implements LikeService{
         redisUtils.addKeyByTime("cosLikeCounts_" + number,12);
         redisUtils.addKeyByTime("cosHotLikeCounts_" + number,48);
         redisUtils.addKeyByTime("cosHotLikeWeekCounts_" + number,24 * 8);
+        //websocket推送
+        Cos cos = cosMapper.selectById(number);
+        User user = userMapper.selectById(id);
+        if(cos != null && user != null){
+            rabbitmqProducerService.sendLikeMessage(new LikeMsg(number,1,user.getUsername(),cos.getId()));
+        }
         log.info("添加cos点赞成功");
         return "success";
     }

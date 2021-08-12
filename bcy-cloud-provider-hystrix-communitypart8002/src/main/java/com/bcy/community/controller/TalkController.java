@@ -98,7 +98,16 @@ public class TalkController {
         return ResultUtils.getResult(new JSONObject(),talkService.allRead(id, toId));
     }
 
+    /*
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "将用户聊天置顶",notes = "existWrong：聊天不存在 success：成功")
+    @PostMapping("/community/setTop")
+    public Result<JSONObject> setTop(){
+
+    }
 
 
-
+     */
 }

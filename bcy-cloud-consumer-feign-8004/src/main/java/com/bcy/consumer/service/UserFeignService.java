@@ -110,4 +110,7 @@ public interface UserFeignService {
 
     @PostMapping("/user/judgeNew")
     Result<JSONObject> judgeNewUser(@RequestParam("id") Long id);
+
+    @PostMapping("/user/setPassword")
+    Result<JSONObject> setPassword(@RequestParam("id") Long id,@RequestParam("password") String password);
 }

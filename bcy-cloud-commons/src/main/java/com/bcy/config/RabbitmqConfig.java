@@ -28,15 +28,39 @@ public class RabbitmqConfig {
 
     public static final String HOT_QA_EXCHANGE_NAME = "hot_qa_exchange";
 
+    //???
     public static final String HOT_QA_QUEUE_NAME = "hot_qa_queue";
 
     public static final String HOT_QA_ROUTING_KEY = "hot_qa_routing_key";
+
+    public static final String AT_EXCHANGE_NAME = "at_exchange";
+
+    public static final String AT_QUEUE_NAME = "at_queue";
+
+    public static final String AT_ROUTING_KEY = "at_routing_key";
+
+    public static final String COMMENT_EXCHANGE_NAME = "comment_exchange";
+
+    public static final String COMMENT_QUEUE_NAME = "comment_queue";
+
+    public static final String COMMENT_ROUTING_KEY = "comment_routing_key";
+
+    public static final String LIKE_QUEUE_NAME = "like_queue";
+
+    public static final String LIKE_EXCHANGE_NAME = "like_exchange";
+
+    public static final String LIKE_ROUTING_NAME = "like_routing_key";
+
+    public static final String ASK_QUEUE_NAME = "ask_queue";
+
+    public static final String ASK_EXCHANGE_NAME = "ask_exchange";
+
+    public static final String ASK_ROUTING_KEY = "ask_routing_key";
 
     public static final String WEBSOCKET_FANOUT_QUEUE_NAME = "websocket_fanout_queue";
 
     public static final String WEBSOCKET_FANOUT_EXCHANGE_NAME = "websocket_fanout_exchange";
 
     public static final String WEBSOCKET_FANOUT_ROUTING_KEY = "websocket_fanout_routing_key";
-
 
 }

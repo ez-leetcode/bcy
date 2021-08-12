@@ -23,12 +23,12 @@ public class CommunityController {
         return communityFeignService.getOthersInfo(id);
     }
 
-    @PostMapping("/community/ask")
+    @DeleteMapping("/community/ask")
     public Result<JSONObject> deleteAsk(@RequestParam("id") Long id,@RequestParam("number") Long number){
         return communityFeignService.deleteAsk(id,number);
     }
 
-    @DeleteMapping("/community/ask")
+    @PostMapping("/community/ask")
     public Result<JSONObject> addAsk(@RequestParam("fromId") Long fromId,@RequestParam("toId") Long toId,
                                      @RequestParam("question") String question){
         return communityFeignService.addAsk(fromId, toId, question);
@@ -100,4 +100,10 @@ public class CommunityController {
     public Result<JSONObject> allRead(@RequestParam("id") Long id,@RequestParam("toId") Long toId){
         return communityFeignService.allRead(id, toId);
     }
+
+    @PostMapping("/community/messageAllRead")
+    public Result<JSONObject> allRead(@RequestParam("id") Long id,@RequestParam("type") Integer type){
+        return communityFeignService.allRead(id, type);
+    }
+
 }

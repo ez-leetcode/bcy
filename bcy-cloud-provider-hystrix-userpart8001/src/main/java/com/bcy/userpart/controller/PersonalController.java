@@ -146,4 +146,16 @@ public class PersonalController {
         }
         return ResultUtils.getResult(jsonObject,"success");
     }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "password",value = "新密码",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "新用户设置密码",notes = "existWrong：用户不存在 success：成功")
+    @PostMapping("/user/setPassword")
+    public Result<JSONObject> setPassword(@RequestParam("id") Long id,@RequestParam("password") String password){
+        log.info("正在设置新用户密码，用户：" + id + " 新密码：" + password);
+        return ResultUtils.getResult(new JSONObject(),personalService.setPassword(id, password));
+    }
+
 }

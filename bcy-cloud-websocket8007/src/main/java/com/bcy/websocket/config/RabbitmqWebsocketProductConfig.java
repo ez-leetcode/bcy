@@ -33,5 +33,4 @@ public class RabbitmqWebsocketProductConfig {
         return BindingBuilder.bind(broadcastQueue()).to(fanoutExchange());
     }
 
-
 }

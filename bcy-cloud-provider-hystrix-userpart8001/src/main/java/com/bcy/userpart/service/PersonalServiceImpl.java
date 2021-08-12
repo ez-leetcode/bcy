@@ -16,6 +16,7 @@ import com.bcy.userpart.utils.OssUtils;
 import com.bcy.vo.UserCountsForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -187,11 +188,25 @@ public class PersonalServiceImpl implements PersonalService{
         if(userLogin.getCreateTime().equals(userLogin.getUpdateTime()) && userMessage.getCreateTime().equals(userMessage.getUpdateTime())){
             jsonObject.put("isNew",1);
         }else{
-            jsonObject.put("isNew",2);
+            jsonObject.put("isNew",0);
         }
         log.info("判断是否为新用户成功");
         log.info(jsonObject.toString());
         return jsonObject;
+    }
+
+    @Override
+    public String setPassword(Long id, String password) {
+        UserLogin userLogin = userLoginMapper.selectById(id);
+        if(userLogin == null){
+            log.error("新用户修改密码失败，用户不存在");
+            return "existWrong";
+        }
+        //这个修改密码不会强制下线
+        userLogin.setPassword(new BCryptPasswordEncoder().encode(password));
+        userLoginMapper.updateById(userLogin);
+        log.info("新用户设置密码成功");
+        return "success";
     }
 
 }

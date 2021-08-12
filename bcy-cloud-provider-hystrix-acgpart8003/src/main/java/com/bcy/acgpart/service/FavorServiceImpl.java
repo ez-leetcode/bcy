@@ -37,7 +37,6 @@ public class FavorServiceImpl implements FavorService{
     @Autowired
     private RedisUtils redisUtils;
 
-
     @Override
     public JSONObject getFavorList(Long id, Long page, Long cnt) {
         JSONObject jsonObject = new JSONObject();

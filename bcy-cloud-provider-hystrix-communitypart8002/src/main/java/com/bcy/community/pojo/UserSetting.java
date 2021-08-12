@@ -1,4 +1,4 @@
-package com.bcy.userpart.pojo;
+package com.bcy.community.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
 
 import java.io.Serializable;
 import java.util.Date;

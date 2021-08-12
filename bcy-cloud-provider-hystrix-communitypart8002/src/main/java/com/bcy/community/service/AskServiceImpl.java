@@ -1,10 +1,15 @@
 package com.bcy.community.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.community.mapper.AskMapper;
 import com.bcy.community.mapper.UserMapper;
+import com.bcy.community.mapper.UserSettingMapper;
 import com.bcy.community.pojo.Ask;
+import com.bcy.community.pojo.User;
+import com.bcy.community.pojo.UserSetting;
+import com.bcy.mq.AskMsg;
 import com.bcy.vo.AskForAnswer;
 import com.bcy.vo.AskForList;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +27,12 @@ public class AskServiceImpl implements AskService{
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserSettingMapper userSettingMapper;
+
+    @Autowired
+    private RabbitmqProducerService rabbitmqProducerService;
 
     //推送待完成
 
@@ -41,6 +52,24 @@ public class AskServiceImpl implements AskService{
     @Override
     public String addAsk(Long fromId, Long toId, String question) {
         askMapper.insert(new Ask(null,question,null,fromId,toId,0,null));
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        QueryWrapper<Ask> wrapper = new QueryWrapper<>();
+        wrapper.eq("question",question)
+                .eq("from_id",fromId)
+                .eq("to_id",toId)
+                .orderByDesc("create_time");
+        List<Ask> asksList = askMapper.selectList(wrapper);
+        //现在还能提问说明没被封号
+        User user = userMapper.selectById(fromId);
+        UserSetting userSetting = userSettingMapper.selectById(fromId);
+        //推送提问
+        if(userSetting.getPushInfo() == 1){
+            rabbitmqProducerService.sendAskMessage(new AskMsg(asksList.get(0).getNumber(),toId,user.getUsername(),question));
+        }
         log.info("向用户提问成功");
         return "success";
     }

@@ -31,9 +31,9 @@ public class SmsController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone",value = "电话",required = true,dataType = "string",paramType = "query"),
-            @ApiImplicitParam(name = "type",value = "哪种验证码（1.登录（没账号会自动注册） 2.修改密码 3.找回密码 ）",required = true,dataType = "int",paramType = "query")
+            @ApiImplicitParam(name = "type",value = "哪种验证码（1.登录（没账号会自动注册） 3.找回密码 ）",required = true,dataType = "int",paramType = "query")
     })
-    @ApiOperation(value = "发送短信验证码（15分钟有效）",notes = "repeatWrong：获取验证码次数过多，existWrong：手机号不存在（验证码发送错误） success：成功")
+    @ApiOperation(value = "发送短信验证码（15分钟有效）",notes = "repeatWrong：获取验证码次数过多24小时超5次，existWrong：手机号不存在（验证码发送错误） success：成功")
     @PostMapping("/oauth/code")
     public Result<JSONObject> sendCode(@RequestParam("phone") String phone, @RequestParam("type") Integer type){
         log.info("正在发送短信验证码，电话：" + phone + " 类型：" + type);
