@@ -106,4 +106,40 @@ public class CommunityController {
         return communityFeignService.allRead(id, type);
     }
 
+    @PostMapping("/community/black")
+    public Result<JSONObject> addBlack(@RequestParam("id") Long id,@RequestParam("blackId") Long blackId){
+        return communityFeignService.addBlack(id, blackId);
+    }
+
+    @DeleteMapping("/community/black")
+    public Result<JSONObject> deleteBlack(@RequestParam("id") Long id,@RequestParam("blackId") Long blackId){
+        return communityFeignService.deleteBlack(id, blackId);
+    }
+
+    @GetMapping("/community/blackList")
+    public Result<JSONObject> getBlackList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                           @RequestParam("page") Long page){
+        return communityFeignService.getBlackList(id, cnt, page);
+    }
+
+    @PostMapping("/community/blackCircle")
+    public Result<JSONObject> addBlackCircle(@RequestParam("id") Long id,@RequestParam("circleName") String circleName){
+        return communityFeignService.addBlackCircle(id, circleName);
+    }
+
+    @DeleteMapping("/community/blackCircle")
+    public Result<JSONObject> deleteBlackCircle(@RequestParam("id") Long id,@RequestParam("circleName") String circleName){
+        return communityFeignService.deleteBlackCircle(id, circleName);
+    }
+
+    @GetMapping("/community/judgeBlackCircle")
+    public Result<JSONObject> judgeBlackCircle(@RequestParam("id") Long id,@RequestParam("circleName") String circleName){
+        return communityFeignService.judgeBlackCircle(id, circleName);
+    }
+
+    @GetMapping("/community/judgeBlack")
+    public Result<JSONObject> judgeBlack(@RequestParam("id") Long id,@RequestParam("toId") Long toId){
+        return communityFeignService.judgeBlack(id, toId);
+    }
+
 }
