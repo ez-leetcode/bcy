@@ -34,5 +34,4 @@ public class RabbitmqProducerService {
         rabbitTemplate.convertAndSend(RabbitmqConfig.ACK_EXCHANGE_NAME,RabbitmqConfig.ACK_ROUTING_KEY,talkAckMsg,correlationData);
     }
 
-
 }

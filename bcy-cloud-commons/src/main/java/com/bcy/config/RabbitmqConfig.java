@@ -57,11 +57,11 @@ public class RabbitmqConfig {
 
     public static final String ASK_ROUTING_KEY = "ask_routing_key";
 
-    public static final String ACK_QUEUE_NAME = "ack_queue";
+    public static final String ACK_QUEUE_NAME = "websocket_ack_queue";
 
-    public static final String ACK_EXCHANGE_NAME = "ack_exchange";
+    public static final String ACK_EXCHANGE_NAME = "websocket_ack_exchange";
 
-    public static final String ACK_ROUTING_KEY = "ack_routing_key";
+    public static final String ACK_ROUTING_KEY = "websocket_ack_routing_key";
 
     public static final String WEBSOCKET_FANOUT_QUEUE_NAME = "websocket_fanout_queue";
 

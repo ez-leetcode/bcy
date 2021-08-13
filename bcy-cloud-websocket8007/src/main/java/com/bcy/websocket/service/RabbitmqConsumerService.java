@@ -24,14 +24,15 @@ public class RabbitmqConsumerService {
     private WebsocketService websocketService;
 
     //黑名单待完成
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(value = RabbitmqConfig.FANS_QUEUE_NAME,durable = "true"),
-            exchange = @Exchange(value = RabbitmqConfig.FANS_EXCHANGE_NAME),key = RabbitmqConfig.FANS_ROUTING_KEY))
+    @RabbitListener(bindings = @QueueBinding(value = @Queue(value = RabbitmqConfig.WEBSOCKET_FANOUT_QUEUE_NAME,durable = "true"),
+            exchange = @Exchange(value = RabbitmqConfig.WEBSOCKET_FANOUT_EXCHANGE_NAME,type = "fanout"),key = RabbitmqConfig.WEBSOCKET_FANOUT_ROUTING_KEY))
     @RabbitHandler
     public void getTalk(Channel channel,Message message,TalkMsg talkMsg) throws IOException{
         log.info("已接收到用户消息");
         log.info(message.toString());
         log.info(talkMsg.toString());
         //待完成
+        websocketService.getTalk(talkMsg);
         channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
         log.info("接收用户数据成功");
     }
@@ -136,7 +137,7 @@ public class RabbitmqConsumerService {
 
 
     @RabbitListener(bindings = @QueueBinding(value = @Queue(value = RabbitmqConfig.ACK_QUEUE_NAME,durable = "true"),
-            exchange = @Exchange(value = RabbitmqConfig.ACK_EXCHANGE_NAME),key = RabbitmqConfig.ACK_ROUTING_KEY))
+            exchange = @Exchange(value = RabbitmqConfig.ACK_EXCHANGE_NAME,type = "fanout"),key = RabbitmqConfig.ACK_ROUTING_KEY))
     @RabbitHandler
     public void ackListenerQueue(Channel channel,Message message,TalkAckMsg talkAckMsg) throws IOException{
         log.info("已收到ack返回消息");
