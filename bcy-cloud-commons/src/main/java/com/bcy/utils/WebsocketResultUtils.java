@@ -10,9 +10,9 @@ public class WebsocketResultUtils {
     private static final HashMap<String,Integer> talkResultMap = new HashMap<>();
 
     static {
-        talkResultMap.put("sendInfoSuccess",1);
-        talkResultMap.put("receiveInfoSuccess",2);
-        talkResultMap.put("systemInfoSuccess",3);
+        talkResultMap.put("talkInfo",1);
+        talkResultMap.put("talkReceive",2);
+        talkResultMap.put("systemInfo",3);
         talkResultMap.put("fansInfo",4);
         talkResultMap.put("askInfo",5);
         talkResultMap.put("likeInfo",6);
@@ -21,7 +21,7 @@ public class WebsocketResultUtils {
     }
 
     //object是json数据，msg是状态
-    public static WebsocketResult<JSONObject> getResult(JSONObject object, String msg,Long number){
+    public static WebsocketResult<JSONObject> getResult(JSONObject object, String msg,String number){
         WebsocketResult<JSONObject> result = new WebsocketResult<>();
         result.setStatus(talkResultMap.get(msg));
         result.setMsg(msg);

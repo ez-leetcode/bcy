@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -92,5 +97,31 @@ public class RedisUtils {
     public boolean isAfterDate(String key,int minutes){
         return redisTemplate.getExpire(key,TimeUnit.SECONDS) > (long) minutes * 60;
     }
+
+    public void updateTalkTime(Long id1,Long id2){
+        String updateTime = redisTemplate.opsForValue().get("updateTime_" + id1 + id2);
+        String updateTime1 = redisTemplate.opsForValue().get("updateTime_" + id2 + id1);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(updateTime1 == null && updateTime == null){
+            saveByHoursTime("updateTime_" + id1 + id2,simpleDateFormat.format(new Date()),48);
+        }else if(updateTime != null){
+            saveByHoursTime("updateTime_" + id1 + id2,simpleDateFormat.format(new Date()),48);
+        }else{
+            saveByMinutesTime("updateTime_" + id2 + id1,simpleDateFormat.format(new Date()),48);
+        }
+    }
+
+    public void updateTalkInfo(Long id1,Long id2,String lastInfo){
+        String lastInfo1 = redisTemplate.opsForValue().get("lastInfo_" + id1 + id2);
+        String lastInfo2 = redisTemplate.opsForValue().get("lastInfo_" + id2 + id1);
+        if(lastInfo1 == null && lastInfo2 == null){
+            saveByHoursTime("lastInfo_" + id1 + id2,lastInfo,48);
+        }else if(lastInfo1 != null){
+            saveByHoursTime("lastInfo_" + id1 + id2,lastInfo,48);
+        }else{
+            saveByHoursTime("lastInfo_" + id2 + id1,lastInfo,48);
+        }
+    }
+
 
 }

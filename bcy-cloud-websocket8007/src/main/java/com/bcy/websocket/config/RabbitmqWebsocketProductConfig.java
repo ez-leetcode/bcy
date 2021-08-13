@@ -33,4 +33,23 @@ public class RabbitmqWebsocketProductConfig {
         return BindingBuilder.bind(broadcastQueue()).to(fanoutExchange());
     }
 
+    @Bean
+    public Queue ackQueue(){
+        log.info("创建了ack广播队列");
+        return new Queue(RabbitmqConfig.ACK_QUEUE_NAME,true);
+    }
+
+    @Bean
+    public FanoutExchange ackExchange(){
+        log.info("创建了ack交换机");
+        return new FanoutExchange(RabbitmqConfig.ACK_EXCHANGE_NAME);
+    }
+
+    //这里路由键不知道
+    @Bean
+    public Binding ackBinding(){
+        log.info("正在绑定ack广播交换机与队列");
+        return BindingBuilder.bind(ackQueue()).to(ackExchange());
+    }
+
 }

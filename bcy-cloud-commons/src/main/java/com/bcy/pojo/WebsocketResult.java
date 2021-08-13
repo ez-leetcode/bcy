@@ -14,7 +14,7 @@ public class WebsocketResult<T> implements Serializable {
     private Integer status;
 
     //跳转编号
-    private Long number;
+    private String number;
 
     //消息
     private String msg;
