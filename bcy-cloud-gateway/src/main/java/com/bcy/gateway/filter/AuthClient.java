@@ -2,6 +2,7 @@ package com.bcy.gateway.filter;
 
 import com.bcy.gateway.utils.RedisUtils;
 import com.bcy.pojo.TokenInfo;
+import com.bcy.utils.BloomFilterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -22,6 +23,9 @@ public class AuthClient {
     @Autowired
     private RedisUtils redisUtils;
 
+    @Autowired
+    private BloomFilterUtils bloomFilterUtils;
+
     private final String checkTokenUrl = "http://47.107.108.55:8006/oauth/check_token";
 
     private RestTemplate restTemplate = new RestTemplate();
@@ -38,6 +42,11 @@ public class AuthClient {
         long realId = 0;
         if(id != null){
             realId = Long.parseLong(id);
+        }
+        //用布隆过滤器判断是否为恶意id
+        if(id != null && !redisUtils.includeByBloomFilter(bloomFilterUtils,"bcy",id)){
+            log.error("布隆过滤器检测到恶意id，正在过滤");
+            return false;
         }
         if(phone != null){
             //关于手机号的直接通过
@@ -76,10 +85,7 @@ public class AuthClient {
             if(realTokenForSms != null && realTokenForSms.equals(token)){
                 return true;
             }
-            if(realTokenForSms1 != null && realTokenForSms1.equals(token)){
-                return true;
-            }
-            return false;
+            return realTokenForSms1 != null && realTokenForSms1.equals(token);
         }
     }
 

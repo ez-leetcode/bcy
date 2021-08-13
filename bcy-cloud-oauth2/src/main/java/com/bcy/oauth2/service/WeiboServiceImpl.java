@@ -8,6 +8,7 @@ import com.bcy.oauth2.mapper.*;
 import com.bcy.oauth2.pojo.*;
 import com.bcy.oauth2.utils.JwtUtils;
 import com.bcy.oauth2.utils.RedisUtils;
+import com.bcy.utils.BloomFilterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,6 +38,9 @@ public class WeiboServiceImpl implements WeiboService{
 
     @Autowired
     private UserMessageMapper userMessageMapper;
+
+    @Autowired
+    private BloomFilterUtils bloomFilterUtils;
 
     @Override
     public String weiboLogin(String code) throws InterruptedException {
@@ -74,6 +78,8 @@ public class WeiboServiceImpl implements WeiboService{
             userLoginMapper.insert(userLogin1);
             Thread.sleep(100);
             UserLogin userLogin2 = userLoginMapper.selectOne(wrapper);
+            //布隆过滤器添加id
+            redisUtils.addByBloomFilter(bloomFilterUtils,"bcy",userLogin2.getId().toString());
             //添加用户权限
             userRoleMapper.insert(new UserRole(null,userLogin2.getId(),1,null,null));
             //插入用户基本信息

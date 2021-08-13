@@ -1,9 +1,14 @@
 package com.bcy.oauth2.utils;
 
+import com.bcy.utils.BloomFilterUtils;
+import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
+import com.google.common.hash.Funnel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -93,5 +98,36 @@ public class RedisUtils {
         return redisTemplate.getExpire(key,TimeUnit.SECONDS) > (long) minutes * 60;
     }
 
+    /**
+     * 根据给定的布隆过滤器添加值
+     */
+    public <T> void addByBloomFilter(BloomFilterUtils<T> bloomFilterHelper, String key, T value) {
+        Preconditions.checkArgument(bloomFilterHelper != null, "bloomFilterHelper不能为空");
+        int[] offset = bloomFilterHelper.murmurHashOffset(value);
+        for (int i : offset) {
+            System.out.println("key : " + key + " " + "value : " + i);
+            redisTemplate.opsForValue().setBit(key, i, true);
+        }
+    }
+
+    /**
+     * 根据给定的布隆过滤器判断值是否存在
+     */
+    public <T> boolean includeByBloomFilter(BloomFilterUtils<T> bloomFilterHelper, String key, T value) {
+        Preconditions.checkArgument(bloomFilterHelper != null, "bloomFilterHelper不能为空");
+        int[] offset = bloomFilterHelper.murmurHashOffset(value);
+        for (int i : offset) {
+            System.out.println("key : " + key + " " + "value : " + i);
+            if (!redisTemplate.opsForValue().getBit(key, i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Bean
+    public BloomFilterUtils<String> initBloomFilterHelper() {
+        return new BloomFilterUtils<>((Funnel<String>) (from, into) -> into.putString(from, Charsets.UTF_8).putString(from, Charsets.UTF_8), 1000000, 0.01);
+    }
 
 }

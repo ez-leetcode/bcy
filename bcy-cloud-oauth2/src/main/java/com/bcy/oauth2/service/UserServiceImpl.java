@@ -5,6 +5,7 @@ import com.bcy.oauth2.mapper.*;
 import com.bcy.oauth2.pojo.*;
 import com.bcy.oauth2.utils.JwtUtils;
 import com.bcy.oauth2.utils.RedisUtils;
+import com.bcy.utils.BloomFilterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,6 +32,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserMessageMapper userMessageMapper;
+
+    @Autowired
+    private BloomFilterUtils bloomFilterUtils;
 
     @Override
     public String changePassword(String phone, String newPassword, String code) {
@@ -73,6 +77,8 @@ public class UserServiceImpl implements UserService{
                 e.printStackTrace();
             }
             UserLogin userLogin1 = userLoginMapper.selectOne(wrapper);
+            //id添加布隆过滤器
+            redisUtils.addByBloomFilter(bloomFilterUtils,"bcy",userLogin1.getId().toString());
             //添加用户权限
             userRoleMapper.insert(new UserRole(null,userLogin1.getId(),1,null,null));
             //插入用户基本信息
