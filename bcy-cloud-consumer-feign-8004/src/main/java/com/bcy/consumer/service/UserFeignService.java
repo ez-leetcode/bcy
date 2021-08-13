@@ -67,7 +67,7 @@ public interface UserFeignService {
                                          @RequestParam(value = "birthday",required = false) String birthday);
 
     @GetMapping("/user/personalInfo")
-    Result<JSONObject> getPersonalInfo(@RequestParam("id") Long id);
+    Result<JSONObject> getPersonalInfo(@RequestParam(value = "id",required = false) Long id,@RequestParam(value = "phone",required = false) String phone);
 
     @PatchMapping("/user/personalSetting")
     Result<JSONObject> changeSetting(@RequestParam("id") Long id,

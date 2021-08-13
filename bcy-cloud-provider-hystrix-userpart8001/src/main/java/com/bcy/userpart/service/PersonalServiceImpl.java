@@ -1,6 +1,7 @@
 package com.bcy.userpart.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bcy.userpart.mapper.UserLoginMapper;
 import com.bcy.userpart.mapper.UserMessageMapper;
 import com.bcy.userpart.pojo.UserLogin;
@@ -123,8 +124,18 @@ public class PersonalServiceImpl implements PersonalService{
     }
 
     @Override
-    public JSONObject getPersonalInfo(Long id) {
-        User user = userMapper.selectById(id);
+    public JSONObject getPersonalInfo(Long id,String phone) {
+        User user = null;
+        if(id != null){
+            user = userMapper.selectById(id);
+        }else{
+            QueryWrapper<UserLogin> wrapper = new QueryWrapper<>();
+            wrapper.eq("phone",phone);
+            UserLogin userLogin = userLoginMapper.selectOne(wrapper);
+            if(userLogin != null){
+                user = userMapper.selectById(userLogin.getId());
+            }
+        }
         if(user == null){
             log.error("获取个人信息失败，用户不存在或已被冻结");
             return null;

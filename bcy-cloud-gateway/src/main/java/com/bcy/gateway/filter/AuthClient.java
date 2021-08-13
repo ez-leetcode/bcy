@@ -34,9 +34,14 @@ public class AuthClient {
     public boolean accessable(ServerHttpRequest request) {
         String token = request.getQueryParams().getFirst("token");
         String id = request.getQueryParams().getFirst("id");
+        String phone = request.getQueryParams().getFirst("phone");
         long realId = 0;
         if(id != null){
             realId = Long.parseLong(id);
+        }
+        if(phone != null){
+            //关于手机号的直接通过
+            return true;
         }
         log.info("token：" + token);
         if(token == null){
@@ -59,12 +64,22 @@ public class AuthClient {
             }
         }else{
             //redis找token
-            String realTokenForQQ = redisUtils.getValue("qq_" + realId);
-            if(realTokenForQQ != null && realTokenForQQ.equals(token)){
+            String realTokenForWeibo = redisUtils.getValue("3token_" + realId);
+            log.info(realTokenForWeibo);
+            if(realTokenForWeibo != null && realTokenForWeibo.equals(token)){
                 return true;
             }
-            String realTokenForSms = redisUtils.getValue("sms_" + realId);
-            return realTokenForSms != null && realTokenForSms.equals(token);
+            String realTokenForSms = redisUtils.getValue("1token_" + realId);
+            String realTokenForSms1 = redisUtils.getValue("2token_" + realId);
+            log.info(realTokenForSms);
+            log.info(realTokenForSms1);
+            if(realTokenForSms != null && realTokenForSms.equals(token)){
+                return true;
+            }
+            if(realTokenForSms1 != null && realTokenForSms1.equals(token)){
+                return true;
+            }
+            return false;
         }
     }
 

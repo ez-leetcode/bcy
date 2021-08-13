@@ -3,6 +3,7 @@ package com.bcy.websocket.service;
 import com.bcy.config.RabbitmqConfig;
 import com.bcy.mq.TalkAckMsg;
 import com.bcy.mq.TalkMsg;
+import com.bcy.websocket.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -18,8 +19,14 @@ public class RabbitmqProducerService {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private RedisUtils redisUtils;
+
     //推送聊天消息
     public void sendTalkMsg(TalkMsg talkMsg){
+        //把uuid放进redis，在下游接收的时候验证uuid是否重复，确保消息的幂等性
+        //就设置1分钟好了
+        redisUtils.saveByMinutesTime(talkMsg.getUuId(),talkMsg.getMsg(),1);
         log.info("正在向消息队列推送聊天消息");
         log.info(talkMsg.toString());
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());

@@ -15,7 +15,7 @@ public interface PersonalService {
 
     JSONObject getPersonalSetting(Long id);
 
-    JSONObject getPersonalInfo(Long id);
+    JSONObject getPersonalInfo(Long id,String phone);
 
     JSONObject getUserCounts(List<Long> userId);
 

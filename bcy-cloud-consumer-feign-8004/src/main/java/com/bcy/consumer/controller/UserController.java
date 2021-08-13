@@ -100,8 +100,8 @@ public class UserController {
     }
 
     @GetMapping("/user/personalInfo")
-    public Result<JSONObject> getPersonalInfo(@RequestParam("id") Long id){
-        return userFeignService.getPersonalInfo(id);
+    public Result<JSONObject> getPersonalInfo(@RequestParam(value = "id",required = false) Long id,@RequestParam(value = "phone",required = false) String phone){
+        return userFeignService.getPersonalInfo(id,phone);
     }
 
     @PatchMapping("/user/personalSetting")

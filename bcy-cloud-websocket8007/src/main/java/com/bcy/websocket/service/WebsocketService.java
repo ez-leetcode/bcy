@@ -99,6 +99,12 @@ public class WebsocketService {
 
     public void getTalk(TalkMsg talkMsg){
         log.info("正在消费聊天消息");
+        //先判断uuid是否存在，确保消息队列幂等性
+        String judgeRepeat = redisUtils.getValue(talkMsg.getUuId());
+        if(judgeRepeat != null){
+            log.warn("聊天消息重复消费，直接返回ack不做处理");
+            return;
+        }
         WebsocketService websocketService = websocketServiceConcurrentHashMap.get(talkMsg.getToId().toString());
         if(websocketService != null){
             UserSetting userSetting = userSettingMapper.selectById(talkMsg.getToId());

@@ -75,13 +75,14 @@ public class PersonalController {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "phone",value = "手机号",dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "获取用户基本个人信息（个人主页）P",notes = "existWrong：账号不存在或已被冻结 success：成功 返回data personalInfo（id：用户id username：昵称 sex：用户性别 photo：头像url description：用户简介 province：省 city：市 birthday：生日）")
     @GetMapping("/user/personalInfo")
-    public Result<JSONObject> getPersonalInfo(@RequestParam("id") Long id){
-        log.info("正在获取用户基本个人信息，用户：" + id);
-        JSONObject jsonObject = personalService.getPersonalInfo(id);
+    public Result<JSONObject> getPersonalInfo(@RequestParam(value = "id",required = false) Long id,@RequestParam(value = "phone",required = false) String phone){
+        log.info("正在获取用户基本个人信息，用户：" + id + " 手机号：" + phone);
+        JSONObject jsonObject = personalService.getPersonalInfo(id,phone);
         if(jsonObject == null){
             return ResultUtils.getResult(new JSONObject(),"existWrong");
         }
