@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,8 +15,8 @@ import java.util.List;
 @FeignClient(value = "BCY-CLOUD-HYSTRIX-ACGPART")
 public interface AcgFeignService {
 
-    @PostMapping("/acg/circlePhoto")
-    Result<JSONObject> circlePhotoUpload(@RequestParam("photo") MultipartFile file, @RequestParam("id") Long id);
+    @PostMapping(value = "/acg/circlePhoto",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    Result<JSONObject> circlePhotoUpload(@RequestPart("photo") MultipartFile file, @RequestParam("id") Long id);
 
     @PostMapping("/acg/circle")
     Result<JSONObject> createCircle(@RequestParam("id") Long id, @RequestParam("circleName") String circleName,

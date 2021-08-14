@@ -33,7 +33,7 @@ public class HistoryServiceImpl implements HistoryService{
     private QaAnswerMapper qaAnswerMapper;
 
     @Autowired
-    private CosMapper cosMapper;
+    private CosPlayMapper cosPlayMapper;
 
     @Autowired
     private CosCommentMapper cosCommentMapper;
@@ -45,16 +45,16 @@ public class HistoryServiceImpl implements HistoryService{
     public JSONObject getHistory(Long id, Long cnt, Long page) {
         JSONObject jsonObject = new JSONObject();
         Page<CosHistoryForList> page1 = new Page<>(page,cnt);
-        List<CosHistoryForList> cosHistoryForList = cosMapper.getCosHistoryForList(id,page1);
+        List<CosHistoryForList> cosHistoryForList = cosPlayMapper.getCosHistoryForList(id,page1);
         for(CosHistoryForList x:cosHistoryForList){
             User user = userMapper.selectById(x.getId());
             if(user != null){
                 x.setUsername(user.getUsername());
                 x.setPhoto(user.getPhoto());
             }
-            Cos cos =cosMapper.selectById(x.getId());
-            if(cos != null){
-                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getId());
+            if(cosPlay != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
             }
         }
         jsonObject.put("historyCosList",cosHistoryForList);

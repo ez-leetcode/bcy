@@ -2,9 +2,9 @@ package com.bcy.quartz.job;
 
 import com.bcy.mq.HotCosMsg;
 import com.bcy.quartz.mapper.CosDayHotMapper;
-import com.bcy.quartz.mapper.CosMapper;
+import com.bcy.quartz.mapper.CosPlayMapper;
 import com.bcy.quartz.mapper.UserMapper;
-import com.bcy.quartz.pojo.Cos;
+import com.bcy.quartz.pojo.CosPlay;
 import com.bcy.quartz.pojo.CosDayHot;
 import com.bcy.quartz.pojo.User;
 import com.bcy.quartz.service.RabbitmqProducerService;
@@ -33,7 +33,7 @@ public class CosHotCountsJob implements Job {
     private UserMapper userMapper;
 
     @Autowired
-    private CosMapper cosMapper;
+    private CosPlayMapper cosPlayMapper;
 
     @Autowired
     private RabbitmqProducerService rabbitmqProducerService;
@@ -78,11 +78,11 @@ public class CosHotCountsJob implements Job {
             log.info("新日榜热门cos编号：" + list.get(map.size() - i).toString());
             if(i == 1){
                 //推送最火的
-                Cos cos = cosMapper.selectById(list.get(map.size() - i).getKey());
-                if(cos != null){
-                    User user = userMapper.selectById(cos.getId());
+                CosPlay cosPlay = cosPlayMapper.selectById(list.get(map.size() - i).getKey());
+                if(cosPlay != null){
+                    User user = userMapper.selectById(cosPlay.getId());
                     if(user != null){
-                        rabbitmqProducerService.sendHotCos(new HotCosMsg(cos.getNumber(),cos.getDescription(),user.getUsername()));
+                        rabbitmqProducerService.sendHotCos(new HotCosMsg(cosPlay.getNumber(), cosPlay.getDescription(),user.getUsername()));
                     }
                 }
             }

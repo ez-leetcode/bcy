@@ -21,7 +21,7 @@ import java.util.Date;
 @ToString
 @Data
 @ApiModel(description = "cos类")
-public class Cos implements Serializable {
+public class CosPlay implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
     @ApiModelProperty("cos编号")

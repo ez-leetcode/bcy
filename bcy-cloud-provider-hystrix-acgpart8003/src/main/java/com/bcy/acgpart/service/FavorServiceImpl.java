@@ -4,10 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.acgpart.mapper.CosCountsMapper;
-import com.bcy.acgpart.mapper.CosMapper;
+import com.bcy.acgpart.mapper.CosPlayMapper;
 import com.bcy.acgpart.mapper.FavorMapper;
-import com.bcy.acgpart.mapper.UserMapper;
-import com.bcy.acgpart.pojo.Cos;
+import com.bcy.acgpart.pojo.CosPlay;
 import com.bcy.acgpart.pojo.CosCounts;
 import com.bcy.acgpart.pojo.Favor;
 import com.bcy.acgpart.utils.RedisUtils;
@@ -26,7 +25,7 @@ import java.util.List;
 public class FavorServiceImpl implements FavorService{
 
     @Autowired
-    private CosMapper cosMapper;
+    private CosPlayMapper cosPlayMapper;
 
     @Autowired
     private FavorMapper favorMapper;
@@ -43,10 +42,10 @@ public class FavorServiceImpl implements FavorService{
         Page<CosForFavor> page1 = new Page<>(page,cnt);
         List<CosForFavor> cosForFavorList = favorMapper.getCosForFavor(id,page1);
         for(CosForFavor x:cosForFavorList){
-            Cos cos = cosMapper.selectById(x.getCosNumber());
-            if(cos != null){
-                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
-                x.setDescription(cos.getDescription());
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getCosNumber());
+            if(cosPlay != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
+                x.setDescription(cosPlay.getDescription());
             }
         }
         jsonObject.put("favorList",cosForFavorList);

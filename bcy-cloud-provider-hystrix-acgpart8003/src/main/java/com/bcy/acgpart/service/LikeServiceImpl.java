@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.acgpart.mapper.CosCountsMapper;
-import com.bcy.acgpart.mapper.CosMapper;
+import com.bcy.acgpart.mapper.CosPlayMapper;
 import com.bcy.acgpart.mapper.LikesMapper;
 import com.bcy.acgpart.mapper.UserMapper;
 import com.bcy.acgpart.pojo.*;
@@ -37,7 +37,7 @@ public class LikeServiceImpl implements LikeService{
     private UserMapper userMapper;
 
     @Autowired
-    private CosMapper cosMapper;
+    private CosPlayMapper cosPlayMapper;
 
     @Autowired
     private RabbitmqProducerService rabbitmqProducerService;
@@ -77,10 +77,10 @@ public class LikeServiceImpl implements LikeService{
         redisUtils.addKeyByTime("cosHotLikeCounts_" + number,48);
         redisUtils.addKeyByTime("cosHotLikeWeekCounts_" + number,24 * 8);
         //websocket推送
-        Cos cos = cosMapper.selectById(number);
+        CosPlay cosPlay = cosPlayMapper.selectById(number);
         User user = userMapper.selectById(id);
-        if(cos != null && user != null){
-            rabbitmqProducerService.sendLikeMessage(new LikeMsg(number,1,user.getUsername(),cos.getId()));
+        if(cosPlay != null && user != null){
+            rabbitmqProducerService.sendLikeMessage(new LikeMsg(number,1,user.getUsername(), cosPlay.getId()));
         }
         log.info("添加cos点赞成功");
         return "success";
@@ -157,9 +157,9 @@ public class LikeServiceImpl implements LikeService{
                 x.setUsername(user.getUsername());
                 x.setPhoto(user.getPhoto());
             }
-            Cos cos = cosMapper.selectById(x.getId());
-            if(cos != null){
-                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getId());
+            if(cosPlay != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
             }
         }
         jsonObject.put("likeCosList",cosLikeForList);

@@ -25,7 +25,7 @@ import java.util.List;
 public class CosServiceImpl implements CosService {
 
     @Autowired
-    private CosMapper cosMapper;
+    private CosPlayMapper cosPlayMapper;
 
     @Autowired
     private RedisUtils redisUtils;
@@ -67,9 +67,9 @@ public class CosServiceImpl implements CosService {
     public String deleteCos(List<Long> numbers) {
         //先删动态
         for(Long x:numbers){
-            Cos cos = cosMapper.selectById(x);
-            if(cos != null){
-                User user = userMapper.selectById(cos.getId());
+            CosPlay cosPlay = cosPlayMapper.selectById(x);
+            if(cosPlay != null){
+                User user = userMapper.selectById(cosPlay.getId());
                 if(user != null){
                     user.setMomentCounts(user.getMomentCounts() - 1);
                     userMapper.updateById(user);
@@ -77,7 +77,7 @@ public class CosServiceImpl implements CosService {
             }
         }
         //删除cos
-        int result = cosMapper.deleteBatchIds(numbers);
+        int result = cosPlayMapper.deleteBatchIds(numbers);
         //删除cosCounts
         cosCountsMapper.deleteBatchIds(numbers);
         if(result == 0){
@@ -150,14 +150,14 @@ public class CosServiceImpl implements CosService {
         //list转string
         String photoString = PhotoUtils.photoListToString(photo);
         //插入cos
-        cosMapper.insert(new Cos(null,id,description,photoString,null,null));
-        QueryWrapper<Cos> wrapper = new QueryWrapper<>();
+        cosPlayMapper.insert(new CosPlay(null,id,description,photoString,null,null));
+        QueryWrapper<CosPlay> wrapper = new QueryWrapper<>();
         wrapper.eq("id",id)
                 .eq("description",description)
                 .eq("photo",photoString);
-        Cos cos = cosMapper.selectOne(wrapper);
+        CosPlay cosPlay = cosPlayMapper.selectOne(wrapper);
         //插入cos计数
-        cosCountsMapper.insert(new CosCounts(cos.getNumber(),0,0,0,0,null));
+        cosCountsMapper.insert(new CosCounts(cosPlay.getNumber(),0,0,0,0,null));
         //插入发布
         for(String x:label){
             Circle circle = circleMapper.selectById(x);
@@ -175,7 +175,7 @@ public class CosServiceImpl implements CosService {
                 }
             }
             //加一
-            circleCosMapper.insert(new CircleCos(null,x,cos.getNumber(),null));
+            circleCosMapper.insert(new CircleCos(null,x, cosPlay.getNumber(),null));
         }
         //把标签给redis做个推荐标签
         for(String x:label){
@@ -193,12 +193,12 @@ public class CosServiceImpl implements CosService {
 
     @Override
     public JSONObject getCosTopic(Long id, Long number) {
-        Cos cos = cosMapper.selectById(number);
-        if(cos == null){
+        CosPlay cosPlay = cosPlayMapper.selectById(number);
+        if(cosPlay == null){
             log.error("获取cos内容失败，cos不存在");
             return null;
         }
-        User user = userMapper.selectById(cos.getId());
+        User user = userMapper.selectById(cosPlay.getId());
         if(user == null){
             log.error("获取cos内容失败，cos作者已被封禁");
             return null;
@@ -218,9 +218,9 @@ public class CosServiceImpl implements CosService {
                 historyMapper.updateById(history);
             }
         }
-        List<String> cosPhoto = PhotoUtils.photoStringToList(cos.getPhoto());
+        List<String> cosPhoto = PhotoUtils.photoStringToList(cosPlay.getPhoto());
         List<String> label = circleCosMapper.getAllCircleNameFromCosNumber(number);
-        CosForTopic cosForTopic = new CosForTopic(number,cos.getId(),user.getUsername(),user.getPhoto(),user.getFansCounts(),cos.getDescription(),cosPhoto,label,cos.getCreateTime());
+        CosForTopic cosForTopic = new CosForTopic(number, cosPlay.getId(),user.getUsername(),user.getPhoto(),user.getFansCounts(), cosPlay.getDescription(),cosPhoto,label, cosPlay.getCreateTime());
         String ck = redisUtils.getValue("fansCounts_" + user.getId());
         if(ck == null){
             redisUtils.saveByHoursTime("fansCounts_" + user.getId(),user.getFansCounts().toString(),12);
@@ -441,9 +441,9 @@ public class CosServiceImpl implements CosService {
         User user = userMapper.selectById(id);
         if(fatherNumber == null || fatherNumber == 0){
             //是cos下的评论
-            Cos cos = cosMapper.selectById(cosNumber);
+            CosPlay cosPlay = cosPlayMapper.selectById(cosNumber);
             //这个number给评论编号
-            rabbitmqProducerService.sendCommentMessage(new CommentMsg(cosComment1.getNumber(),cos.getId(),user.getUsername(),description));
+            rabbitmqProducerService.sendCommentMessage(new CommentMsg(cosComment1.getNumber(), cosPlay.getId(),user.getUsername(),description));
         }else{
             CosComment cosComment;
             if(replyNumber == null || replyNumber == 0){
@@ -499,9 +499,9 @@ public class CosServiceImpl implements CosService {
                 x.setUsername(user.getUsername());
                 x.setPhoto(user.getPhoto());
             }
-            Cos cos = cosMapper.selectById(x.getCosNumber());
-            if(cos != null){
-                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getCosNumber());
+            if(cosPlay != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
             }
             List<String> circleNameList = circleCosMapper.getAllCircleNameFromCosNumber(x.getCosNumber());
             x.setCosLabel(circleNameList);
@@ -517,9 +517,9 @@ public class CosServiceImpl implements CosService {
         JSONObject jsonObject = new JSONObject();
         List<CosForHot> cosForHotList = cosMonthMapper.getMonthHotList(time);
         for(CosForHot x:cosForHotList){
-            Cos cos = cosMapper.selectById(x.getCosNumber());
-            if(cos != null){
-                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getCosNumber());
+            if(cosPlay != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
             }
             User user = userMapper.selectById(x.getId());
             if(user != null){
@@ -539,7 +539,7 @@ public class CosServiceImpl implements CosService {
     public JSONObject getFollowList(Long id, Long page, Long cnt) {
         JSONObject jsonObject = new JSONObject();
         Page<CosForFollow> page1 = new Page<>(page,cnt);
-        List<CosForFollow> cosForFollowList = cosMapper.getFollowCosList(id,page1);
+        List<CosForFollow> cosForFollowList = cosPlayMapper.getFollowCosList(id,page1);
         for(CosForFollow x:cosForFollowList){
             //用户信息
             User user = userMapper.selectById(x.getId());
@@ -549,9 +549,9 @@ public class CosServiceImpl implements CosService {
                 x.setPhoto(user.getPhoto());
             }
             //cos信息
-            Cos cos = cosMapper.selectById(x.getNumber());
-            if(cos != null){
-                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getNumber());
+            if(cosPlay != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
             }
             //标签
             List<String> label = circleCosMapper.getAllCircleNameFromCosNumber(x.getNumber());
@@ -583,23 +583,23 @@ public class CosServiceImpl implements CosService {
 
     @Override
     public String patchCos(Long id, Long number, String description, List<String> cosPhoto) {
-        Cos cos = cosMapper.selectById(number);
-        if(cos == null){
+        CosPlay cosPlay = cosPlayMapper.selectById(number);
+        if(cosPlay == null){
             log.error("修改cos失败，cos不存在");
             return "existWrong";
         }
-        if(!cos.getId().equals(id)){
+        if(!cosPlay.getId().equals(id)){
             log.error("修改cos失败，号主不对");
             return "userWrong";
         }
         if(description != null && !description.equals("")){
-            cos.setDescription(description);
+            cosPlay.setDescription(description);
         }
         if(cosPhoto != null){
-            cos.setPhoto(PhotoUtils.photoListToString(cosPhoto));
+            cosPlay.setPhoto(PhotoUtils.photoListToString(cosPhoto));
         }
         //更新cos
-        cosMapper.updateById(cos);
+        cosPlayMapper.updateById(cosPlay);
         log.info("修改cos成功");
         return "success";
     }
