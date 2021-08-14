@@ -34,4 +34,11 @@ public interface CosService {
     JSONObject getCosDayHotList(String time);
 
     JSONObject getCosMonthHotList(String time);
+
+    JSONObject getFollowList(Long id,Long page,Long cnt);
+
+    JSONObject getFollowNoRead(Long id);
+
+    String patchCos(Long id,Long number,String description,List<String> cosPhoto);
+
 }

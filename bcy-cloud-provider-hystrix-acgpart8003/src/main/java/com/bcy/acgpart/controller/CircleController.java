@@ -57,21 +57,22 @@ public class CircleController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "description",value = "圈子简介",required = true,dataType = "string",paramType = "query"),
-            @ApiImplicitParam(name = "photo",value = "圈子图片url",required = true,dataType = "string",paramType = "query")
+            @ApiImplicitParam(name = "photo",value = "圈子图片url",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "nickName",value = "成员昵称",required = true,dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "创建圈子P",notes = "repeatWrong：圈子已存在 success：成功")
     @PostMapping("/acg/circle")
     public Result<JSONObject> createCircle(@RequestParam("id") Long id,@RequestParam("circleName") String circleName,
                                            @RequestParam("description") String description,
-                                           @RequestParam("photo") String photo){
-        log.info("正在创建圈子，用户：" + id + " 圈子名：" + circleName + " 图片：" + photo + " 描述：" + description);
-        return ResultUtils.getResult(new JSONObject(),circleService.createCircle(circleName,description,photo));
+                                           @RequestParam("photo") String photo,@RequestParam("nickName") String nickName){
+        log.info("正在创建圈子，用户：" + id + " 圈子名：" + circleName + " 图片：" + photo + " 描述：" + description + " 成员昵称：" + nickName);
+        return ResultUtils.getResult(new JSONObject(),circleService.createCircle(circleName,description,photo,nickName));
     }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query")
     })
-    @ApiOperation(value = "获取圈子基本信息P",notes = "existWrong：圈子不存在 success：成功 返回data circleInfo：（circleName：圈子名 description：圈子简介 photo：圈子图片url postCounts：圈子发帖数 followCounts：圈子成员数 createTime：创建时间）")
+    @ApiOperation(value = "获取圈子基本信息P",notes = "existWrong：圈子不存在 success：成功 返回data circleInfo：（circleName：圈子名 description：圈子简介 photo：圈子图片url nickName：成员昵称 postCounts：圈子发帖数 followCounts：圈子成员数 createTime：创建时间）")
     @GetMapping("/acg/circle")
     public Result<JSONObject> getCircleInfo(@RequestParam("circleName") String circleName){
         log.info("正在获取圈子基本信息，圈子：" + circleName);
@@ -81,7 +82,6 @@ public class CircleController {
         }
         return ResultUtils.getResult(jsonObject,"success");
     }
-
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),

@@ -32,14 +32,14 @@ public class CircleServiceImpl implements CircleService{
     }
 
     @Override
-    public String createCircle(String circleName, String description, String photo) {
+    public String createCircle(String circleName, String description, String photo, String nickName) {
         Circle circle = circleMapper.selectById(circleName);
         if(circle != null){
             log.error("创建圈子失败，圈子已存在");
             return "repeatWrong";
         }
         //创建圈子
-        circleMapper.insert(new Circle(circleName,description,photo,0,0,null));
+        circleMapper.insert(new Circle(circleName,description,photo,nickName,0,0,null));
         return "success";
     }
 
@@ -57,6 +57,7 @@ public class CircleServiceImpl implements CircleService{
             log.error("关注圈子失败，圈子已被关注");
             return "repeatWrong";
         }
+        //这个比较少就不缓存了
         circle.setFollowCounts(circle.getFollowCounts() + 1);
         circleMapper.updateById(circle);
         circleFollowMapper.insert(new CircleFollow(null,circleName,id,null));

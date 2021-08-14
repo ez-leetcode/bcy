@@ -26,8 +26,8 @@ public class AcgController {
     @PostMapping("/acg/circle")
     public Result<JSONObject> createCircle(@RequestParam("id") Long id,@RequestParam("circleName") String circleName,
                                            @RequestParam("description") String description,
-                                           @RequestParam("photo") String photo){
-        return acgFeignService.createCircle(id, circleName, description, photo);
+                                           @RequestParam("photo") String photo,@RequestParam("nickName") String nickName){
+        return acgFeignService.createCircle(id, circleName, description, photo, nickName);
     }
 
     @GetMapping("/acg/circle")
@@ -254,5 +254,23 @@ public class AcgController {
     @GetMapping("/acg/hotWeekCos")
     public Result<JSONObject> getHotMonthCos(@RequestParam("time") String time){
         return acgFeignService.getHotMonthCos(time);
+    }
+
+    @GetMapping("/acg/followCos")
+    public Result<JSONObject> getFollowList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                            @RequestParam("page") Long page){
+        return acgFeignService.getFollowList(id, cnt, page);
+    }
+
+    @GetMapping("/acg/followNoRead")
+    public Result<JSONObject> getFollowNoRead(@RequestParam("id") Long id){
+        return acgFeignService.getFollowNoRead(id);
+    }
+
+    @PatchMapping("/acg/cos")
+    public Result<JSONObject> patchCos(@RequestParam("id") Long id,@RequestParam("number") Long number,
+                                       @RequestParam(value = "description",required = false) String description,
+                                       @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto){
+        return acgFeignService.patchCos(id, number, description, cosPhoto);
     }
 }

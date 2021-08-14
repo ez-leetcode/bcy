@@ -5,10 +5,7 @@ import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -23,7 +20,7 @@ public interface AcgFeignService {
     @PostMapping("/acg/circle")
     Result<JSONObject> createCircle(@RequestParam("id") Long id, @RequestParam("circleName") String circleName,
                                     @RequestParam("description") String description,
-                                    @RequestParam("photo") String photo);
+                                    @RequestParam("photo") String photo,@RequestParam("nickName") String nickName);
     @GetMapping("/acg/circle")
     Result<JSONObject> getCircleInfo(@RequestParam("circleName") String circleName);
 
@@ -167,4 +164,16 @@ public interface AcgFeignService {
 
     @GetMapping("/acg/hotWeekCos")
     Result<JSONObject> getHotMonthCos(@RequestParam("time") String time);
+
+    @GetMapping("/acg/followCos")
+    Result<JSONObject> getFollowList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                            @RequestParam("page") Long page);
+
+    @GetMapping("/acg/followNoRead")
+    Result<JSONObject> getFollowNoRead(@RequestParam("id") Long id);
+
+    @PatchMapping("/acg/cos")
+    Result<JSONObject> patchCos(@RequestParam("id") Long id,@RequestParam("number") Long number,
+                                       @RequestParam(value = "description",required = false) String description,
+                                       @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto);
 }

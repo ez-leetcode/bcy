@@ -25,6 +25,8 @@ public class AccessGatewayFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+        log.info(request.getMethod().name());
+        log.info(request.toString());
         String url = request.getPath().value();
         log.info("url：" + url);
         if (authClient.hasPermissionControl(url)) {

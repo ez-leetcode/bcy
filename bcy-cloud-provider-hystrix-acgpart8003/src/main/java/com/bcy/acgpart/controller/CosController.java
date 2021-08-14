@@ -83,6 +83,23 @@ public class CosController {
         return ResultUtils.getResult(new JSONObject(),cosService.generateCos(id, description, photo, label));
     }
 
+
+    //es同步要考虑
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "description",value = "描述",dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "cosPhoto",value = "新的图片列表（list）",allowMultiple = true,dataType = "string",paramType = "query")
+    })
+    @ApiOperation(value = "修改cos内容（没改的参数不要带，或者可以带空，图片要注意下带空就是没图）",notes = "userWrong：用户不存在在 existWrong：cos不存在 success：成功")
+    @PatchMapping("/acg/cos")
+    public Result<JSONObject> patchCos(@RequestParam("id") Long id,@RequestParam("number") Long number,
+                                       @RequestParam(value = "description",required = false) String description,
+                                       @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto){
+        log.info("正在修改cos内容，用户：" + id  + " cos编号：" + number + " 描述：" + description + " 图片列表：" + cosPhoto.toString());
+        return ResultUtils.getResult(new JSONObject(),cosService.patchCos(id, number, description, cosPhoto));
+    }
+
     //会存入历史记录
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
@@ -229,6 +246,29 @@ public class CosController {
     public Result<JSONObject> getRecommendList(){
         log.info("正在获取推荐cos标签");
         return ResultUtils.getResult(cosService.getRecommendLabelList(),"success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取关注的未读数（获取关注的cos的关注列表后会清空）",notes = "success：成功 noReadCounts（未读数）")
+    @GetMapping("/acg/followNoRead")
+    public Result<JSONObject> getFollowNoRead(@RequestParam("id") Long id){
+        log.info("正在获取关注的未读数，用户：" + id);
+        return ResultUtils.getResult(cosService.getFollowNoRead(id),"success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取关注用户的cos列表",notes = "success：成功 返回data cosFollowList（number：cos编号 id：用户id username：昵称 photo：用户头像 cosPhoto：cos图片（list） label：标签（list） createTime：发布时间）")
+    @GetMapping("/acg/followCos")
+    public Result<JSONObject> getFollowList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                            @RequestParam("page") Long page){
+        log.info("正在获取用户cos列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(cosService.getFollowList(id, cnt, page),"success");
     }
 
 }

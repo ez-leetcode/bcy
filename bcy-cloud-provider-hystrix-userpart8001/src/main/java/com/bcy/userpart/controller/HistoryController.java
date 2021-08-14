@@ -43,7 +43,7 @@ public class HistoryController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取历史浏览列表（cos）",notes = "success：成功 historyCosList（number：cos编号 id：发布者id username：用户昵称 photo：头像 description：内容 cosPhoto：cos图片 create_time：发布时间）")
+    @ApiOperation(value = "获取历史浏览列表（cos）",notes = "success：成功 返回historyCosList（number：cos编号 id：发布者id username：用户昵称 photo：头像 description：内容 cosPhoto：cos图片 create_time：发布时间）")
     @GetMapping("/user/historyList")
     public Result<JSONObject> getHistoryList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                              @RequestParam("page") Long page){
@@ -51,17 +51,18 @@ public class HistoryController {
         return ResultUtils.getResult(historyService.getHistory(id, cnt, page),"success");
     }
 
+
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取历史浏览列表（问答）",notes = "success：成功")
+    @ApiOperation(value = "获取历史浏览列表（问答）",notes = "success：成功 返回historyQaList（number：问答编号 id：发布者id username：用户昵称 photo：头像 description：内容 title：标题 qaPhoto：问答图片 createTime：发布时间）")
     @GetMapping("/user/qaHistoryList")
     public Result<JSONObject> getQaHistoryList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                                @RequestParam("page") Long page){
         log.info("正在获取用户历史浏览列表（问答），用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return null;
+        return ResultUtils.getResult(historyService.getQaHistory(id, cnt, page),"success");
     }
 
     @ApiImplicitParams({

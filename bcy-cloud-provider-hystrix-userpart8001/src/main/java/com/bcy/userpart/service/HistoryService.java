@@ -17,5 +17,4 @@ public interface HistoryService {
     String deleteAllHistory(Long id);
 
     String deleteQaAllHistory(Long id);
-
 }

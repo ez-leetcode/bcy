@@ -60,6 +60,9 @@ public class CosServiceImpl implements CosService {
     @Autowired
     private RabbitmqProducerService rabbitmqProducerService;
 
+    @Autowired
+    private FansMapper fansMapper;
+
     @Override
     public String deleteCos(List<Long> numbers) {
         //先删动态
@@ -177,6 +180,11 @@ public class CosServiceImpl implements CosService {
         //把标签给redis做个推荐标签
         for(String x:label){
             redisUtils.addKeyByTime("recommendLabel_" + x,48);
+        }
+        //发布之后，给所有关注的人新内容+1
+        List<Long> fansIdList = fansMapper.getAllFansId(id);
+        for(Long x:fansIdList){
+            redisUtils.addKeyByTime("followNoRead_" + x,999);
         }
         log.info("生成cos成功");
         return "success";
@@ -526,5 +534,75 @@ public class CosServiceImpl implements CosService {
         log.info(jsonObject.toString());
         return jsonObject;
     }
+
+    @Override
+    public JSONObject getFollowList(Long id, Long page, Long cnt) {
+        JSONObject jsonObject = new JSONObject();
+        Page<CosForFollow> page1 = new Page<>(page,cnt);
+        List<CosForFollow> cosForFollowList = cosMapper.getFollowCosList(id,page1);
+        for(CosForFollow x:cosForFollowList){
+            //用户信息
+            User user = userMapper.selectById(x.getId());
+            if(user != null){
+                x.setUsername(user.getUsername());
+                x.setId(user.getId());
+                x.setPhoto(user.getPhoto());
+            }
+            //cos信息
+            Cos cos = cosMapper.selectById(x.getNumber());
+            if(cos != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cos.getPhoto()));
+            }
+            //标签
+            List<String> label = circleCosMapper.getAllCircleNameFromCosNumber(x.getNumber());
+            x.setLabel(label);
+        }
+        jsonObject.put("cosFollowList",cosForFollowList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        //把redis的未读清掉
+        redisUtils.delete("followNoRead_" + id);
+        log.info("获取关注cos列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    @Override
+    public JSONObject getFollowNoRead(Long id) {
+        JSONObject jsonObject = new JSONObject();
+        String cnt = redisUtils.getValue("followNoRead_" + id);
+        if(cnt == null){
+            jsonObject.put("noReadCounts",0);
+        }else{
+            jsonObject.put("noReadCounts",cnt);
+        }
+        log.info("获取关注未读数成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    @Override
+    public String patchCos(Long id, Long number, String description, List<String> cosPhoto) {
+        Cos cos = cosMapper.selectById(number);
+        if(cos == null){
+            log.error("修改cos失败，cos不存在");
+            return "existWrong";
+        }
+        if(!cos.getId().equals(id)){
+            log.error("修改cos失败，号主不对");
+            return "userWrong";
+        }
+        if(description != null && !description.equals("")){
+            cos.setDescription(description);
+        }
+        if(cosPhoto != null){
+            cos.setPhoto(PhotoUtils.photoListToString(cosPhoto));
+        }
+        //更新cos
+        cosMapper.updateById(cos);
+        log.info("修改cos成功");
+        return "success";
+    }
+
 
 }

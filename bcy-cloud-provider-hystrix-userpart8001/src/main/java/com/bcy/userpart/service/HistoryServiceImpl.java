@@ -4,12 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.userpart.mapper.*;
-import com.bcy.userpart.pojo.Cos;
-import com.bcy.userpart.pojo.History;
-import com.bcy.userpart.pojo.QaHistory;
-import com.bcy.userpart.pojo.User;
+import com.bcy.userpart.pojo.*;
 import com.bcy.utils.PhotoUtils;
 import com.bcy.vo.CosHistoryForList;
+import com.bcy.vo.QaHistoryForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,6 +68,22 @@ public class HistoryServiceImpl implements HistoryService{
     @Override
     public JSONObject getQaHistory(Long id, Long cnt, Long page) {
         JSONObject jsonObject = new JSONObject();
+        Page<QaHistoryForList> page1 = new Page<>(page,cnt);
+        List<QaHistoryForList> qaHistoryForListList = qaHistoryMapper.getQaHistory(id,page1);
+        for(QaHistoryForList x:qaHistoryForListList){
+            Qa qa = qaMapper.selectById(x.getId());
+            if(qa != null){
+                x.setQaPhoto(PhotoUtils.photoStringToList(qa.getPhoto()));
+            }
+            User user = userMapper.selectById(x.getId());
+            if(user != null){
+                x.setUsername(user.getUsername());
+                x.setPhoto(user.getPhoto());
+            }
+        }
+        jsonObject.put("historyQaList",qaHistoryForListList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
         log.info("获取问答历史记录成功");
         log.info(jsonObject.toString());
         return jsonObject;

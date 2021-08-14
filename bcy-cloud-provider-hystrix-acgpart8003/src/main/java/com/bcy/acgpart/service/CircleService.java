@@ -7,7 +7,7 @@ public interface CircleService {
 
     String circlePhotoUpload(MultipartFile file,Long id);
 
-    String createCircle(String circleName,String description,String photo);
+    String createCircle(String circleName,String description,String photo,String nickName);
 
     String followCircle(Long id,String circleName);
 
