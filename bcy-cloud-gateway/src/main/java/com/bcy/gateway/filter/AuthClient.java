@@ -3,6 +3,7 @@ package com.bcy.gateway.filter;
 import com.bcy.gateway.utils.RedisUtils;
 import com.bcy.pojo.TokenInfo;
 import com.bcy.utils.BloomFilterUtils;
+import com.bcy.utils.BngelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -39,12 +40,14 @@ public class AuthClient {
         String token = request.getQueryParams().getFirst("token");
         String id = request.getQueryParams().getFirst("id");
         String phone = request.getQueryParams().getFirst("phone");
+        String id1 = null;
         long realId = 0;
         if(id != null){
-            realId = Long.parseLong(id);
+            id1 = BngelUtils.getRealFileName(id);
+            realId = Long.parseLong(id1);
         }
         //用布隆过滤器判断是否为恶意id
-        if(id != null && !redisUtils.includeByBloomFilter(bloomFilterUtils,"bcy",id)){
+        if(id1 != null && !redisUtils.includeByBloomFilter(bloomFilterUtils,"bcy",id1)){
             log.error("布隆过滤器检测到恶意id，正在过滤");
             return false;
         }

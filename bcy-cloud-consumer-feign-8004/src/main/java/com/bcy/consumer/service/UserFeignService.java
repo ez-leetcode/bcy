@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,8 +56,9 @@ public interface UserFeignService {
     @PostMapping("/user/judgeHelp")
     Result<JSONObject> judgeHelp(@RequestParam("number") Long number,@RequestParam("isSolved") Integer isSolved);
 
-    @PostMapping("/user/photoUpload")
-    Result<JSONObject> userPhotoUpload(@RequestParam("photo") MultipartFile file, Long id);
+    @PostMapping(value = "/user/photoUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    Result<JSONObject> userPhotoUpload(@RequestPart("photo") MultipartFile file, @RequestParam("id") String id);
+
     @PatchMapping("/user/personalInfo")
     Result<JSONObject> changeInfo(@RequestParam("id") Long id,
                                          @RequestParam(value = "sex",required = false) String sex,

@@ -84,7 +84,7 @@ public class UserController {
     }
 
     @PostMapping("/user/photoUpload")
-    public Result<JSONObject> userPhotoUpload(@RequestParam("photo") MultipartFile file, Long id){
+    public Result<JSONObject> userPhotoUpload(@RequestParam("photo") MultipartFile file, @RequestParam("id") String id){
         return userFeignService.userPhotoUpload(file,id);
     }
 

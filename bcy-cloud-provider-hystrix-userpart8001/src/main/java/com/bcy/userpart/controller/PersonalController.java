@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bcy.pojo.Result;
 import com.bcy.userpart.service.PersonalService;
 import com.bcy.userpart.service.TimeoutService;
+import com.bcy.utils.BngelUtils;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import io.swagger.annotations.Api;
@@ -37,14 +38,16 @@ public class PersonalController {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "photo",value = "头像文件",required = true,dataType = "file",paramType = "query")
     })
     @ApiOperation(value = "用户头像上传P",notes = "fileWrong：文件为空 typeWrong：上传格式错误 success：成功（就不返回url了，会自动替换头像）")
     @PostMapping("/user/photoUpload")
-    public Result<JSONObject> userPhotoUpload(@RequestParam("photo")MultipartFile file,Long id){
+    public Result<JSONObject> userPhotoUpload(@RequestParam("photo")MultipartFile file,@RequestParam("id") String id){
         log.info("正在上传头像，用户：" + id);
-        String url = personalService.userPhotoUpload(file,id);
+        String realId = BngelUtils.getRealFileName(id);
+        log.info(realId);
+        String url = personalService.userPhotoUpload(file,Long.parseLong(realId));
         if(url.length() < 12){
             //没上传成功返回了错误的信息
             return ResultUtils.getResult(new JSONObject(),url);
