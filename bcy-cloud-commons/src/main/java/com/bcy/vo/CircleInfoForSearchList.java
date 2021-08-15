@@ -8,16 +8,16 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
-@Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonalCircleForList implements Serializable {
+@Data
+@ToString
+public class CircleInfoForSearchList implements Serializable {
 
     private String circleName;
 
-    private String description;
-
     private String photo;
+
+    private String description;
 
 }

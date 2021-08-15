@@ -8,6 +8,7 @@ import com.bcy.acgpart.mapper.CircleMapper;
 import com.bcy.acgpart.pojo.Circle;
 import com.bcy.acgpart.pojo.CircleFollow;
 import com.bcy.acgpart.utils.OssUtils;
+import com.bcy.vo.CircleInfoForSearchList;
 import com.bcy.vo.PersonalCircleForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,5 +115,19 @@ public class CircleServiceImpl implements CircleService{
         log.info(jsonObject.toString());
         return jsonObject;
     }
+
+    @Override
+    public JSONObject searchCircle(Long id, Long cnt, Long page, String keyword) {
+        JSONObject jsonObject = new JSONObject();
+        Page<CircleInfoForSearchList> page1 = new Page<>(page,cnt);
+        List<CircleInfoForSearchList> circleInfoForSearchListList = circleMapper.searchCircle(keyword,page1);
+        jsonObject.put("searchCircleList",circleInfoForSearchListList);
+        jsonObject.put("counts",page1.getTotal());
+        jsonObject.put("pages",page1.getPages());
+        log.info("搜索圈子成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
 
 }

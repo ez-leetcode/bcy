@@ -37,6 +37,9 @@ public class CosPlay implements Serializable {
     @ApiModelProperty("图片")
     private String photo;
 
+    @ApiModelProperty("权限 1：所有人可见 2：粉丝可见 3：自己可见")
+    private Integer permission;
+
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("创建时间")
     private Date createTime;

@@ -49,7 +49,8 @@ public interface AcgFeignService {
 
     @PostMapping("/acg/cos")
     Result<JSONObject> createCos(@RequestParam("id") Long id, @RequestParam("description") String description,
-                                        @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label);
+                                 @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label,
+                                 @RequestParam("permission") Integer permission);
     @GetMapping("/acg/cos")
     Result<JSONObject> getCosTopic(@RequestParam(value = "id",required = false) Long id,@RequestParam("number") Long number);
 
@@ -93,8 +94,8 @@ public interface AcgFeignService {
     @PostMapping("/acg/likeComment")
     Result<JSONObject> likeComment(@RequestParam("id") Long id,@RequestParam("number") Long number);
 
-    @PostMapping("/acg/cosPhotoUpload")
-    Result<JSONObject> photoUpload(@RequestParam("photo") MultipartFile file);
+    @PostMapping(value = "/acg/cosPhotoUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    Result<JSONObject> photoUpload(@RequestPart("photo") MultipartFile file);
 
     @GetMapping("/acg/likeList")
     Result<JSONObject> getLikeList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
@@ -175,6 +176,11 @@ public interface AcgFeignService {
 
     @PatchMapping("/acg/cos")
     Result<JSONObject> patchCos(@RequestParam("id") Long id,@RequestParam("number") Long number,
-                                       @RequestParam(value = "description",required = false) String description,
-                                       @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto);
+                                @RequestParam(value = "description",required = false) String description,
+                                @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto,
+                                @RequestParam(value = "permission",required = false) Integer permission);
+
+    @GetMapping("/acg/searchCircle")
+    Result<JSONObject> searchCircle(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                           @RequestParam("page") Long page,@RequestParam("keyword") String keyword);
 }

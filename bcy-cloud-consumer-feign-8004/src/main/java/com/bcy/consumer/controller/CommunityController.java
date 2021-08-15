@@ -142,4 +142,10 @@ public class CommunityController {
         return communityFeignService.judgeBlack(id, toId);
     }
 
+    @GetMapping("/community/searchUser")
+    public Result<JSONObject> searchUser(@RequestParam("id") Long id,@RequestParam("page") Long page,
+                                         @RequestParam("cnt") Long cnt,@RequestParam("keyword") String keyword){
+        return communityFeignService.searchUser(id, page, cnt, keyword);
+    }
+
 }

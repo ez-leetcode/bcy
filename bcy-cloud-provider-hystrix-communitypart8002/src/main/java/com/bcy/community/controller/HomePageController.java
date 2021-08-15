@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = "他人主页管理类（注意是别人的主页！）")
+@Api(tags = "他人主页管理类（注意是别人的主页！） 里面还有搜索别的用户的接口")
 @Slf4j
 @RestController
 //默认服务降级处理
@@ -47,6 +47,21 @@ public class HomePageController {
             return ResultUtils.getResult(new JSONObject(),"existWrong");
         }
         return ResultUtils.getResult(jsonObject,"success");
+    }
+
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "keyword",value = "搜索关键词（不能给空）",required = true,dataType = "string",paramType = "query")
+    })
+    @ApiOperation(value = "搜索用户（默认搜索不到自己）",notes = "success：成功 返回data searchUserList（id：用户id username：昵称 photo：头像 粉丝数和是否关注在统一接口里获取 ）")
+    @GetMapping("/community/searchUser")
+    public Result<JSONObject> searchUser(@RequestParam("id") Long id,@RequestParam("page") Long page,
+                                         @RequestParam("cnt") Long cnt,@RequestParam("keyword") String keyword){
+        log.info("正在搜索用户，用户：" + id + " 当前页面：" + page + " 页面数据量：" + cnt + " 关键词：" + keyword);
+        return ResultUtils.getResult(homePageService.searchUser(id, page, cnt, keyword),"success");
     }
 
 }

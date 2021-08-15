@@ -16,4 +16,6 @@ public interface CircleService {
     JSONObject getCircleInfo(String circleName);
 
     JSONObject getPersonalCircle(Long id,Long cnt,Long page);
+
+    JSONObject searchCircle(Long id,Long cnt,Long page,String keyword);
 }

@@ -69,8 +69,9 @@ public class AcgController {
 
     @PostMapping("/acg/cos")
     public Result<JSONObject> createCos(@RequestParam("id") Long id, @RequestParam("description") String description,
-                                        @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label){
-        return acgFeignService.createCos(id, description, photo, label);
+                                        @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label,
+                                        @RequestParam("permission") Integer permission){
+        return acgFeignService.createCos(id, description, photo, label, permission);
     }
 
     @GetMapping("/acg/cos")
@@ -270,7 +271,14 @@ public class AcgController {
     @PatchMapping("/acg/cos")
     public Result<JSONObject> patchCos(@RequestParam("id") Long id,@RequestParam("number") Long number,
                                        @RequestParam(value = "description",required = false) String description,
-                                       @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto){
-        return acgFeignService.patchCos(id, number, description, cosPhoto);
+                                       @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto,
+                                       @RequestParam(value = "permission",required = false) Integer permission){
+        return acgFeignService.patchCos(id, number, description, cosPhoto, permission);
+    }
+
+    @GetMapping("/acg/searchCircle")
+    public Result<JSONObject> searchCircle(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                           @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
+        return acgFeignService.searchCircle(id, cnt, page, keyword);
     }
 }

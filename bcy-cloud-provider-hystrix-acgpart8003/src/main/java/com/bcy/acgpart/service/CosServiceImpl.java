@@ -126,7 +126,7 @@ public class CosServiceImpl implements CosService {
 
     //内容检测待完成
     @Override
-    public String generateCos(Long id, String description, List<String> photo, List<String> label) {
+    public String generateCos(Long id, String description, List<String> photo, List<String> label,Integer permission) {
         String ck = redisUtils.getValue("generateCos_" + id);
         int cosCounts = 0;
         if(ck != null){
@@ -150,7 +150,7 @@ public class CosServiceImpl implements CosService {
         //list转string
         String photoString = PhotoUtils.photoListToString(photo);
         //插入cos
-        cosPlayMapper.insert(new CosPlay(null,id,description,photoString,null,null));
+        cosPlayMapper.insert(new CosPlay(null,id,description,photoString,permission,null,null));
         QueryWrapper<CosPlay> wrapper = new QueryWrapper<>();
         wrapper.eq("id",id)
                 .eq("description",description)
@@ -182,9 +182,12 @@ public class CosServiceImpl implements CosService {
             redisUtils.addKeyByTime("recommendLabel_" + x,48);
         }
         //发布之后，给所有关注的人新内容+1
-        List<Long> fansIdList = fansMapper.getAllFansId(id);
-        for(Long x:fansIdList){
-            redisUtils.addKeyByTime("followNoRead_" + x,999);
+        if(permission != 3){
+            //不是仅自己可见就有推送
+            List<Long> fansIdList = fansMapper.getAllFansId(id);
+            for(Long x:fansIdList){
+                redisUtils.addKeyByTime("followNoRead_" + x,999);
+            }
         }
         log.info("生成cos成功");
         return "success";
@@ -582,7 +585,7 @@ public class CosServiceImpl implements CosService {
     }
 
     @Override
-    public String patchCos(Long id, Long number, String description, List<String> cosPhoto) {
+    public String patchCos(Long id, Long number, String description, List<String> cosPhoto, Integer permission) {
         CosPlay cosPlay = cosPlayMapper.selectById(number);
         if(cosPlay == null){
             log.error("修改cos失败，cos不存在");
@@ -598,11 +601,13 @@ public class CosServiceImpl implements CosService {
         if(cosPhoto != null){
             cosPlay.setPhoto(PhotoUtils.photoListToString(cosPhoto));
         }
+        if(permission != null && !permission.equals("")){
+            cosPlay.setPermission(permission);
+        }
         //更新cos
         cosPlayMapper.updateById(cosPlay);
         log.info("修改cos成功");
         return "success";
     }
-
 
 }

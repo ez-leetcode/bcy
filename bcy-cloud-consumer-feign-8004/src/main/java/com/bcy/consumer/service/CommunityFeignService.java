@@ -95,4 +95,7 @@ public interface CommunityFeignService {
     @GetMapping("/community/judgeBlack")
     Result<JSONObject> judgeBlack(@RequestParam("id") Long id, @RequestParam("toId") Long toId);
 
+    @GetMapping("/community/searchUser")
+    Result<JSONObject> searchUser(@RequestParam("id") Long id,@RequestParam("page") Long page,
+                                         @RequestParam("cnt") Long cnt,@RequestParam("keyword") String keyword);
 }

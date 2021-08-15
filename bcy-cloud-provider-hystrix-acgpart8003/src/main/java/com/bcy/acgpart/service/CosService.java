@@ -13,7 +13,7 @@ public interface CosService {
 
     String cosPhotoUpload(MultipartFile file);
 
-    String generateCos(Long id,String description,List<String> photo,List<String> label);
+    String generateCos(Long id,String description,List<String> photo,List<String> label,Integer permission);
 
     JSONObject getCosTopic(Long id,Long number);
 
@@ -39,6 +39,6 @@ public interface CosService {
 
     JSONObject getFollowNoRead(Long id);
 
-    String patchCos(Long id,Long number,String description,List<String> cosPhoto);
+    String patchCos(Long id,Long number,String description,List<String> cosPhoto,Integer permission);
 
 }

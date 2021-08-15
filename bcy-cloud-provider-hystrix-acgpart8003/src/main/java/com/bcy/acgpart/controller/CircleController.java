@@ -110,12 +110,27 @@ public class CircleController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取个人圈子列表P",notes = "success：成功 返回data personalCircleList（circleName：圈子名 photo：圈子图片）")
+    @ApiOperation(value = "获取个人圈子列表P",notes = "success：成功 返回data personalCircleList（circleName：圈子名 photo：圈子图片 description：圈子描述）")
     @GetMapping("/acg/personalCircle")
     public Result<JSONObject> getPersonalCircle(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                                 @RequestParam("page") Long page){
         log.info("正在获取个人圈子列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
         return ResultUtils.getResult(circleService.getPersonalCircle(id, cnt, page),"success");
+    }
+
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "keyword",value = "关键词（不要带空）",required = true,dataType = "string",paramType = "query")
+    })
+    @ApiOperation(value = "搜索圈子",notes = "success：成功 返回searchCircleList（circleName：圈子名 photo：圈子图片 description：圈子描述）")
+    @GetMapping("/acg/searchCircle")
+    public Result<JSONObject> searchCircle(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                           @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
+        log.info("正在搜索圈子，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page + " 关键词：" + keyword);
+        return ResultUtils.getResult(circleService.searchCircle(id, cnt, page, keyword),"success");
     }
 
 }

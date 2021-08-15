@@ -73,14 +73,16 @@ public class CosController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "description",value = "描述",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "photo",value = "图片列表（list）",required = true,allowMultiple = true,dataType = "string",paramType = "query"),
-            @ApiImplicitParam(name = "label",value = "标签（list）",required = true,allowMultiple = true,dataType = "string",paramType = "query")
+            @ApiImplicitParam(name = "label",value = "标签（list）",required = true,allowMultiple = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "permission",value = "权限（1：所有人可见 2：粉丝和自己可见 3：仅自己可见）",required = true,dataType = "int",paramType = "query")
     })
     @ApiOperation(value = "发布cos",notes = "dirtyWrong：描述里有敏感词汇（会推送） repeatWrong：24小时内发布cos超过15次 不让发了 success：成功")
     @PostMapping("/acg/cos")
     public Result<JSONObject> createCos(@RequestParam("id") Long id, @RequestParam("description") String description,
-                                            @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label){
-        log.info("正在发起讨论，用户：" + id + " 描述：" + description + " 图片列表：" + photo.toString() + " 标签列表：" + label.toString());
-        return ResultUtils.getResult(new JSONObject(),cosService.generateCos(id, description, photo, label));
+                                        @RequestParam("photo") List<String> photo,@RequestParam("label") List<String> label,
+                                        @RequestParam("permission") Integer permission){
+        log.info("正在发起讨论，用户：" + id + " 描述：" + description + " 图片列表：" + photo.toString() + " 标签列表：" + label.toString() + " 权限：" + permission);
+        return ResultUtils.getResult(new JSONObject(),cosService.generateCos(id, description, photo, label,permission));
     }
 
 
@@ -89,15 +91,17 @@ public class CosController {
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "description",value = "描述",dataType = "string",paramType = "query"),
-            @ApiImplicitParam(name = "cosPhoto",value = "新的图片列表（list）",allowMultiple = true,dataType = "string",paramType = "query")
+            @ApiImplicitParam(name = "cosPhoto",value = "新的图片列表（list）",allowMultiple = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "permission",value = "权限",dataType = "int",paramType = "query")
     })
     @ApiOperation(value = "修改cos内容（没改的参数不要带，或者可以带空，图片要注意下带空就是没图）",notes = "userWrong：用户不存在在 existWrong：cos不存在 success：成功")
     @PatchMapping("/acg/cos")
     public Result<JSONObject> patchCos(@RequestParam("id") Long id,@RequestParam("number") Long number,
                                        @RequestParam(value = "description",required = false) String description,
-                                       @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto){
-        log.info("正在修改cos内容，用户：" + id  + " cos编号：" + number + " 描述：" + description + " 图片列表：" + cosPhoto.toString());
-        return ResultUtils.getResult(new JSONObject(),cosService.patchCos(id, number, description, cosPhoto));
+                                       @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto,
+                                       @RequestParam(value = "permission",required = false) Integer permission){
+        log.info("正在修改cos内容，用户：" + id  + " cos编号：" + number + " 描述：" + description + " 图片列表：" + cosPhoto.toString() + " 权限：" + permission);
+        return ResultUtils.getResult(new JSONObject(),cosService.patchCos(id, number, description, cosPhoto, permission));
     }
 
     //会存入历史记录

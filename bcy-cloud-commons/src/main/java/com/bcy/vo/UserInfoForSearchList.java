@@ -1,5 +1,6 @@
 package com.bcy.vo;
 
+import com.alibaba.fastjson.annotation.JSONCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,14 +10,15 @@ import lombok.ToString;
 import java.io.Serializable;
 
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonalCircleForList implements Serializable {
+@ToString
+public class UserInfoForSearchList implements Serializable {
 
-    private String circleName;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long id;
 
-    private String description;
+    private String username;
 
     private String photo;
 
