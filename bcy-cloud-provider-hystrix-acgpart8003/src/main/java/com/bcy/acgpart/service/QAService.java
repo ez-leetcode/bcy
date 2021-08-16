@@ -28,6 +28,12 @@ public interface QAService {
 
     String addAnswerComment(Long id,Long answerNumber,String description,Long fatherNumber,Long replyNumber,Long toId);
 
+    JSONObject getQACountsList(Long id,List<Long> numbers);
+
+    JSONObject getQACommentCountsList(Long id,List<Long> numbers);
+
+    JSONObject getQAAnswerCountsList(Long id,List<Long> numbers);
+
     JSONObject getFollowQAList(Long id,Long number,String keyword,Long page,Long cnt);
 
     JSONObject getQATopic(Long id,Long number);

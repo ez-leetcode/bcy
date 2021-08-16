@@ -192,4 +192,16 @@ public interface AcgFeignService {
     @PostMapping("/acg/addAnswer")
     Result<JSONObject> addAnswer(@RequestParam("id") Long id,@RequestParam("description") String description,
                                         @RequestParam("photo") List<String> photo,@RequestParam("number") Long number);
+
+    @GetMapping("/acg/qaCountsList")
+    Result<JSONObject> getQaCountsList(@RequestParam(value = "id",required = false) Long id,
+                                              @RequestParam("numbers") List<Long> numbers);
+
+    @GetMapping("/acg/qaCommentCountsList")
+    Result<JSONObject> getCommentCountsList(@RequestParam(value = "id",required = false) Long id,
+                                                   @RequestParam("numbers") List<Long> numbers);
+
+    @GetMapping("/acg/qaAnswerCountsList")
+    Result<JSONObject> getQaAnswerCountsList(@RequestParam(value = "id",required = false) Long id,
+                                                    @RequestParam("numbers") List<Long> numbers);
 }

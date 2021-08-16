@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -367,6 +365,7 @@ public class QAServiceImpl implements QAService{
             wrapper.orderByDesc("create_time");
         }
         Page<QaComment> page1 = new Page<>(page,cnt);
+        qaCommentMapper.selectPage(page1,wrapper);
         List<QaComment> qaCommentList = page1.getRecords();
         List<QAAnswerCommentForList> qaAnswerCommentForList = new LinkedList<>();
         for(QaComment x:qaCommentList){
@@ -400,6 +399,7 @@ public class QAServiceImpl implements QAService{
         }
         qaCommentMapper.selectPage(page1,wrapper);
         List<QaComment> qaCommentList = page1.getRecords();
+        log.info(qaCommentList.toString());
         List<QACommentCommentForList> qaCommentCommentForList = new LinkedList<>();
         for(QaComment x:qaCommentList){
             QACommentCommentForList qaCommentCommentForList1 = new QACommentCommentForList(x.getNumber(),x.getFromId(),null,null,x.getDescription(),x.getToId(),null,x.getCreateTime());
@@ -459,7 +459,7 @@ public class QAServiceImpl implements QAService{
     @Override
     public String addAnswer(Long id, Long number, String description, List<String> photo) {
         //检测回答是否有违规内容
-        if(!CommentUtils.judgeComment(description)){
+        if(CommentUtils.judgeComment(description)){
             log.info("回答问答失败，有脏话");
             return "dirtyWrong";
         }
@@ -469,7 +469,7 @@ public class QAServiceImpl implements QAService{
             return "existWrong";
         }
         //插入数据
-        qaAnswerMapper.insert(new QaAnswer(null,id,number,PhotoUtils.photoListToString(photo),description,0,0,null));
+        qaAnswerMapper.insert(new QaAnswer(null,number,id,PhotoUtils.photoListToString(photo),description,0,0,null));
         String ck = redisUtils.getValue("answerQA_" + number);
         if(ck == null){
             //redis中没有
@@ -536,6 +536,99 @@ public class QAServiceImpl implements QAService{
         return "success";
     }
 
+
+    @Override
+    public JSONObject getQACountsList(Long id, List<Long> numbers) {
+        JSONObject jsonObject = new JSONObject();
+        List<QACountsForList> qaCountsForListList = new LinkedList<>();
+        for(Long x:numbers){
+            QACountsForList qaCountsForList = new QACountsForList(x,null,null);
+            String ck = redisUtils.getValue("followQA_" + x);
+            String ck1 = redisUtils.getValue("answerQA_" + x);
+            Qa qa = new Qa();
+            if(ck == null || ck1 == null){
+                qa = qaMapper.selectById(x);
+            }
+            if(ck == null){
+                qaCountsForList.setFollowCounts(qa.getFollowCounts());
+                redisUtils.saveByHoursTime("followQA_" + x,qa.getFollowCounts().toString(),48);
+            }else{
+                qaCountsForList.setFollowCounts(Integer.parseInt(ck));
+            }
+            if(ck1 == null){
+                qaCountsForList.setAnswerCounts(qa.getAnswerCounts());
+                redisUtils.saveByHoursTime("answerQA_" + x,qa.getAnswerCounts().toString(),48);
+            }else{
+                qaCountsForList.setAnswerCounts(Integer.parseInt(ck1));
+            }
+            qaCountsForListList.add(qaCountsForList);
+        }
+        jsonObject.put("qaCountsList",qaCountsForListList);
+        log.info("获取问答计数列表成功");
+        return jsonObject;
+    }
+
+    @Override
+    public JSONObject getQACommentCountsList(Long id, List<Long> numbers) {
+        JSONObject jsonObject = new JSONObject();
+        List<QACommentCountsForList> qaCommentCountsForListList = new LinkedList<>();
+        for(Long x:numbers){
+            QACommentCountsForList qaCommentCountsForList = new QACommentCountsForList(x,null,null);
+            String ck = redisUtils.getValue("likeQaComment_" + x);
+            String ck1 = redisUtils.getValue("qaAnswerCommentCommentCounts_" + x);
+            QaComment qaComment = new QaComment();
+            if(ck == null || ck1 == null){
+                qaComment = qaCommentMapper.selectById(x);
+            }
+            if(ck == null){
+                qaCommentCountsForList.setLikeCounts(qaComment.getLikeCounts());
+                redisUtils.saveByHoursTime("likeQaComment_" + x,qaComment.getLikeCounts().toString(),48);
+            }else {
+                qaCommentCountsForList.setLikeCounts(Integer.parseInt(ck));
+            }
+            if(ck1 == null){
+                qaCommentCountsForList.setCommentCounts(qaComment.getCommentCounts());
+                redisUtils.saveByHoursTime("qaAnswerCommentCommentCounts_" + x,qaComment.getCommentCounts().toString(),48);
+            }else{
+                qaCommentCountsForList.setCommentCounts(Integer.parseInt(ck1));
+            }
+            qaCommentCountsForListList.add(qaCommentCountsForList);
+        }
+        jsonObject.put("qaCommentCountsList",qaCommentCountsForListList);
+        log.info("获取问答评论计数列表成功");
+        return jsonObject;
+    }
+
+    @Override
+    public JSONObject getQAAnswerCountsList(Long id, List<Long> numbers) {
+        JSONObject jsonObject = new JSONObject();
+        List<QAAnswerCountsForList> qaAnswerCountsForListList = new LinkedList<>();
+        for(Long x:numbers){
+            QAAnswerCountsForList qaAnswerCountsForList = new QAAnswerCountsForList(x,null,null);
+            String ck = redisUtils.getValue("likeQaAnswer_" + x);
+            String ck1 = redisUtils.getValue("qaAnswerCommentCounts_" + x);
+            QaAnswer qaAnswer = new QaAnswer();
+            if(ck == null || ck1 == null){
+                qaAnswer = qaAnswerMapper.selectById(x);
+            }
+            if(ck == null){
+                qaAnswerCountsForList.setLikeCounts(qaAnswer.getLikeCounts());
+                redisUtils.saveByHoursTime("likeQaAnswer_" + x,qaAnswer.getLikeCounts().toString(),48);
+            }else{
+                qaAnswerCountsForList.setLikeCounts(Integer.parseInt(ck));
+            }
+            if(ck1 != null){
+                qaAnswerCountsForList.setCommentCounts(qaAnswer.getCommentCounts());
+                redisUtils.saveByHoursTime("qaAnswerCommentCounts_" + x,qaAnswer.getCommentCounts().toString(),48);
+            }else{
+                qaAnswerCountsForList.setCommentCounts(Integer.parseInt(ck1));
+            }
+            qaAnswerCountsForListList.add(qaAnswerCountsForList);
+        }
+        jsonObject.put("qaAnswerCountsList",qaAnswerCountsForListList);
+        log.info("获取问答回答计数列表成功");
+        return jsonObject;
+    }
 
     @Override
     public String photoUpload(MultipartFile file) {

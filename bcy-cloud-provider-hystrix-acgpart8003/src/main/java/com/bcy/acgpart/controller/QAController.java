@@ -223,7 +223,7 @@ public class QAController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "description",value = "回答内容",required = true,dataType = "string",paramType = "query"),
-            @ApiImplicitParam(name = "photo",value = "回答图片（list）",required = true,allowMultiple = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "photo",value = "回答图片（list）",required = true,allowMultiple = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问题编号",required = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "回答问题",notes = "existWrong：问题不存在 dirtyWrong：有脏话 success：成功")
@@ -251,5 +251,45 @@ public class QAController {
         log.info("正在添加问题评论，用户：" + id + " 评论内容：" + description + " 问答编号：" + answerNumber + " 父评论：" + fatherNumber + " 回复id：" + toId + " 回复评论编号：" + replyNumber);
         return ResultUtils.getResult(new JSONObject(),qaService.addAnswerComment(id,answerNumber,description,fatherNumber,replyNumber,toId));
     }
+
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "numbers",value = "回答编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取问答回答的点赞 评论数",notes = "success：成功 返回qaAnswerCountsList：（number：问答回答编号 likeCounts：点赞数 commentCounts：评论数）")
+    @GetMapping("/acg/qaAnswerCountsList")
+    public Result<JSONObject> getQaAnswerCountsList(@RequestParam(value = "id",required = false) Long id,
+                                                    @RequestParam("numbers") List<Long> numbers){
+        log.info("正在获取问答回答的点赞评论数，用户：" + id + " 回答编号：" + numbers.toString());
+        return ResultUtils.getResult(qaService.getQAAnswerCountsList(id, numbers),"success");
+    }
+
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "numbers",value = "评论编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取问答评论的点赞 评论数",notes = "success：成功 返回qaCommentCountList：（number：问答评论编号 likeCounts：点赞数 commentCounts：评论数）")
+    @GetMapping("/acg/qaCommentCountsList")
+    public Result<JSONObject> getCommentCountsList(@RequestParam(value = "id",required = false) Long id,
+                                                   @RequestParam("numbers") List<Long> numbers){
+        log.info("正在获取评论的点赞评论数，用户：" + id + " 评论编号：" + numbers.toString());
+        return ResultUtils.getResult(qaService.getQACommentCountsList(id, numbers),"success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "numbers",value = "问答编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取问答的关注数 回答数",notes = "success：成功 返回qaCountsList：（number：问答编号 followCounts：关注数 answerCounts：回答数）")
+    @GetMapping("/acg/qaCountsList")
+    public Result<JSONObject> getQaCountsList(@RequestParam(value = "id",required = false) Long id,
+                                              @RequestParam("numbers") List<Long> numbers){
+        log.info("正在获取问答关注回答数，用户：" + id + " 问答编号：" + numbers.toString());
+        return ResultUtils.getResult(qaService.getQACountsList(id, numbers),"success");
+    }
+
+
 
 }

@@ -295,4 +295,22 @@ public class AcgController {
                                         @RequestParam("photo") List<String> photo,@RequestParam("number") Long number){
         return acgFeignService.addAnswer(id, description, photo, number);
     }
+
+    @GetMapping("/acg/qaCountsList")
+    public Result<JSONObject> getQaCountsList(@RequestParam(value = "id",required = false) Long id,
+                                              @RequestParam("numbers") List<Long> numbers){
+        return acgFeignService.getQaCountsList(id,numbers);
+    }
+
+    @GetMapping("/acg/qaCommentCountsList")
+    public Result<JSONObject> getCommentCountsList(@RequestParam(value = "id",required = false) Long id,
+                                                   @RequestParam("numbers") List<Long> numbers){
+        return acgFeignService.getCommentCountsList(id, numbers);
+    }
+
+    @GetMapping("/acg/qaAnswerCountsList")
+    public Result<JSONObject> getQaAnswerCountsList(@RequestParam(value = "id",required = false) Long id,
+                                                    @RequestParam("numbers") List<Long> numbers){
+        return acgFeignService.getQaAnswerCountsList(id, numbers);
+    }
 }
