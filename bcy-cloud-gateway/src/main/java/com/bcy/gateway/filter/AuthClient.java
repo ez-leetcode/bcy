@@ -55,6 +55,10 @@ public class AuthClient {
             //关于手机号的直接通过
             return true;
         }
+        //如果id不存在 直接通过
+        if(id == null){
+            return true;
+        }
         log.info("token：" + token);
         if(token == null){
             log.warn("用户不带token访问除了oauth以外的服务");

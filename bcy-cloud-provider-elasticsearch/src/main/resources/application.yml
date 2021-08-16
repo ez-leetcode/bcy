@@ -1,10 +1,28 @@
 server:
   port: 8008
 
+
 spring:
+  datasource:
+    username: mycat
+    password: 123456
+    url: jdbc:mysql://47.115.128.193:8066/mycatdb?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
   application:
     name: bcy-cloud-elasticsearch
-
+  #rabbitmq
+  rabbitmq:
+    host: 47.115.128.193
+    port: 5672
+    username: ck
+    password: 123456
+    virtual-host: /
+  elasticsearch:
+    rest:
+      username: elastic
+      password: Yqc3585435854
+      uris: https://es-k3rtclmf.public.tencentelasticsearch.com:9200
 
 eureka:
   client:

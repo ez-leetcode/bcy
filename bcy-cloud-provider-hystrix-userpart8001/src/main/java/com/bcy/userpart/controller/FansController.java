@@ -59,11 +59,11 @@ public class FansController {
             @ApiImplicitParam(name = "fromId",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "对方用户id",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "判断用户的关注情况P",notes = "返回data中 status：0未关注 1已关注 2已相互关注")
+    @ApiOperation(value = "判断用户的关注情况P",notes = "返回data中 status：0未关注 1已关注 2已相互关注 3被关注（用来判断关注后是互粉还是单纯关注）")
     @PostMapping("/user/judgeFollow")
     public Result<JSONObject> judgeFollow(@RequestParam("fromId") Long fromId,@RequestParam("toId") Long toId){
         log.info("正在判断用户的关注情况，用户id：" + fromId + " 对方id：" + toId);
-        return ResultUtils.getResult(new JSONObject(),fansService.judgeFollow(fromId,toId));
+        return ResultUtils.getResult(fansService.judgeFollow(fromId,toId),"success");
     }
 
 

@@ -92,7 +92,8 @@ public class FansServiceImpl implements FansService{
     }
 
     @Override
-    public String judgeFollow(Long fromId, Long toId) {
+    public JSONObject judgeFollow(Long fromId, Long toId) {
+        JSONObject jsonObject = new JSONObject();
         QueryWrapper<Fans> wrapper = new QueryWrapper<>();
         wrapper.eq("from_id",fromId)
                 .eq("to_id",toId);
@@ -102,15 +103,22 @@ public class FansServiceImpl implements FansService{
                 .eq("from_id",toId);
         Fans fans1 = fansMapper.selectOne(wrapper1);
         if(fans == null){
+            if(fans1 == null){
+                jsonObject.put("status",0);
+            }else{
+                jsonObject.put("status",3);
+            }
             log.info("用户未关注");
-            return "0";
+            return jsonObject;
         }
         if(fans1 == null){
+            jsonObject.put("status",1);
             log.info("用户已关注");
-            return "1";
+            return jsonObject;
         }
+        jsonObject.put("status",2);
         log.info("用户已相互关注");
-        return "2";
+        return jsonObject;
     }
 
     @Override
