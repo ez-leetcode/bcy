@@ -143,6 +143,50 @@ public class QuartzConfig {
     }
 
     @Bean
+    public JobDetail qaAnswerCountsJobDetail(){
+        //关联业务类
+        return JobBuilder.newJob(QAAnswerCountsJob.class)
+                //给JobDetail起名字
+                .withIdentity("qaAnswerCountsDetail")
+                .storeDurably()
+                .build();
+    }
+
+    @Bean
+    public Trigger qaAnswerCountsTrigger(){
+        //十五分钟一刷新
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 6/15 * * * ?");
+        return TriggerBuilder.newTrigger()
+                //关联上述JobDetail
+                .forJob(qaAnswerCountsJobDetail())
+                .withIdentity("qaAnswerCountsTrigger")
+                .withSchedule(cronScheduleBuilder)
+                .build();
+    }
+
+    @Bean
+    public JobDetail qaAnswerCommentCountsJobDetail(){
+        //关联业务类
+        return JobBuilder.newJob(QAAnswerCommentCountsJob.class)
+                //给JobDetail起名字
+                .withIdentity("qaAnswerCommentCountsDetail")
+                .storeDurably()
+                .build();
+    }
+
+    @Bean
+    public Trigger qaAnswerCommentCountsTrigger(){
+        //十五分钟一刷新
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 7/15 * * * ?");
+        return TriggerBuilder.newTrigger()
+                //关联上述JobDetail
+                .forJob(qaAnswerCommentCountsJobDetail())
+                .withIdentity("qaAnswerCommentCountsTrigger")
+                .withSchedule(cronScheduleBuilder)
+                .build();
+    }
+
+    @Bean
     public JobDetail cosHotCountsJobDetail(){
         //关联业务类
         return JobBuilder.newJob(CosHotCountsJob.class)

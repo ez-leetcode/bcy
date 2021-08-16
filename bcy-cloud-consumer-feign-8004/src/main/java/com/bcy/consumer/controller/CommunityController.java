@@ -148,4 +148,10 @@ public class CommunityController {
         return communityFeignService.searchUser(id, page, cnt, keyword);
     }
 
+    @GetMapping("/community/cosList")
+    public Result<JSONObject> getUserCosList(@RequestParam("userId") Long userId,@RequestParam("cnt") Long cnt,
+                                             @RequestParam("page") Long page){
+        return communityFeignService.getUserCosList(userId, cnt, page);
+    }
+
 }

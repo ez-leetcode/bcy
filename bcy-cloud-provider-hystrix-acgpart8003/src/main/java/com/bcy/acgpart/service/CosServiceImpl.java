@@ -154,8 +154,14 @@ public class CosServiceImpl implements CosService {
         QueryWrapper<CosPlay> wrapper = new QueryWrapper<>();
         wrapper.eq("id",id)
                 .eq("description",description)
-                .eq("photo",photoString);
-        CosPlay cosPlay = cosPlayMapper.selectOne(wrapper);
+                .eq("photo",photoString)
+                .eq("permission",permission)
+                .orderByDesc("create_time");
+        List<CosPlay> cosPlayList = cosPlayMapper.selectList(wrapper);
+        CosPlay cosPlay = new CosPlay();
+        if(!cosPlayList.isEmpty()){
+            cosPlay = cosPlayList.get(0);
+        }
         //插入cos计数
         cosCountsMapper.insert(new CosCounts(cosPlay.getNumber(),0,0,0,0,null));
         //插入发布
@@ -262,7 +268,7 @@ public class CosServiceImpl implements CosService {
         JSONObject jsonObject = new JSONObject();
         List<CosCountsForList> cosCountsForList = new LinkedList<>();
         for(Long x:number){
-            CosCounts cosCounts = new CosCounts();
+            CosCounts cosCounts = new CosCounts(x,-1,-1,-1,-1,null);
             CosCountsForList cosCountsForList1 = new CosCountsForList();
             String favorCounts = redisUtils.getValue("cosFavorCounts_" + x);
             String likeCounts = redisUtils.getValue("cosLikeCounts_" + x);
@@ -299,6 +305,7 @@ public class CosServiceImpl implements CosService {
                 //redis插入
                 redisUtils.saveByHoursTime("cosCommentCounts_" + x,cosCounts.getCommentCounts().toString(),12);
             }
+            cosCountsForList1.setNumber(x);
             cosCountsForList.add(cosCountsForList1);
         }
         jsonObject.put("cosCountsList",cosCountsForList);
@@ -407,6 +414,15 @@ public class CosServiceImpl implements CosService {
     @Override
     public String addComment(Long id, Long cosNumber, String description, Long fatherNumber, Long toId, Long replyNumber) {
         //插入评论内容
+        if(fatherNumber == null){
+            fatherNumber = 0L;
+        }
+        if(replyNumber == null){
+            replyNumber = 0L;
+        }
+        if(toId == null){
+            toId = 0L;
+        }
         cosCommentMapper.insert(new CosComment(null,cosNumber,fatherNumber,id,toId,replyNumber,0,0,description,null));
         try {
             Thread.sleep(100);
@@ -415,11 +431,14 @@ public class CosServiceImpl implements CosService {
         }
         QueryWrapper<CosComment> wrapper = new QueryWrapper<>();
         wrapper.eq("cos_number",cosNumber)
-                .eq("father_number",fatherNumber)
                 .eq("from_id",id)
                 .eq("to_id",toId)
-                .eq("reply_number",replyNumber);
-        CosComment cosComment1 = cosCommentMapper.selectOne(wrapper);
+                .orderByDesc("create_time");
+        List<CosComment> cosCommentList = cosCommentMapper.selectList(wrapper);
+        CosComment cosComment1 = new CosComment(null,cosNumber,fatherNumber,id,toId,replyNumber,0,0,description,null);
+        if(!cosCommentList.isEmpty()){
+            cosComment1 = cosCommentList.get(0);
+        }
         //添加父级评论评论数
         if(fatherNumber != null && fatherNumber != 0){
             String ck = redisUtils.getValue("cosCommentCommentCounts_" + fatherNumber);
@@ -440,12 +459,13 @@ public class CosServiceImpl implements CosService {
             }
         }
         redisUtils.addKeyByTime("cosCommentCounts_" + cosNumber,12);
-        //推送待完成
+        //推送
         User user = userMapper.selectById(id);
         if(fatherNumber == null || fatherNumber == 0){
             //是cos下的评论
             CosPlay cosPlay = cosPlayMapper.selectById(cosNumber);
             //这个number给评论编号
+            log.info(cosPlay.toString());
             rabbitmqProducerService.sendCommentMessage(new CommentMsg(cosComment1.getNumber(), cosPlay.getId(),user.getUsername(),description));
         }else{
             CosComment cosComment;

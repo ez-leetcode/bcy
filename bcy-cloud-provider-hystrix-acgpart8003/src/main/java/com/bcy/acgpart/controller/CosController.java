@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@Api(tags = "圈子下面的讨论管理类")
+@Api(tags = "cos管理类")
 @Slf4j
 //默认服务降级处理
 @DefaultProperties(defaultFallback = "timeoutHandler")
@@ -95,7 +95,7 @@ public class CosController {
             @ApiImplicitParam(name = "permission",value = "权限",dataType = "int",paramType = "query")
     })
     @ApiOperation(value = "修改cos内容（没改的参数不要带，或者可以带空，图片要注意下带空就是没图）",notes = "userWrong：用户不存在在 existWrong：cos不存在 success：成功")
-    @PatchMapping("/acg/cos")
+    @PutMapping("/acg/cos")
     public Result<JSONObject> patchCos(@RequestParam("id") Long id,@RequestParam("number") Long number,
                                        @RequestParam(value = "description",required = false) String description,
                                        @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto,
@@ -157,7 +157,7 @@ public class CosController {
                                             @RequestParam("description") String description,
                                             @RequestParam(value = "fatherNumber",required = false) Long fatherNumber,
                                             @RequestParam(value = "toId",required = false) Long toId,
-                                            @RequestParam(value = "reply",required = false) Long replyNumber){
+                                            @RequestParam(value = "replyNumber",required = false) Long replyNumber){
         log.info("正在发表cos下面的评论，用户：" + id + " cos编号：" + cosNumber + " 内容：" + description
                 + " 父评论编号：" + fatherNumber + " 回复id：" + toId + " 回复评论编号：" + replyNumber);
         return ResultUtils.getResult(new JSONObject(), cosService.addComment(id, cosNumber, description, fatherNumber, toId, replyNumber));
@@ -272,7 +272,7 @@ public class CosController {
     public Result<JSONObject> getFollowList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                             @RequestParam("page") Long page){
         log.info("正在获取用户cos列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return ResultUtils.getResult(cosService.getFollowList(id, cnt, page),"success");
+        return ResultUtils.getResult(cosService.getFollowList(id,page,cnt),"success");
     }
 
 }

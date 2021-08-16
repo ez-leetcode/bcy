@@ -88,7 +88,7 @@ public class UserController {
         return userFeignService.userPhotoUpload(file,id);
     }
 
-    @PatchMapping("/user/personalInfo")
+    @PutMapping("/user/personalInfo")
     public Result<JSONObject> changeInfo(@RequestParam("id") Long id,
                                          @RequestParam(value = "sex",required = false) String sex,
                                          @RequestParam(value = "description",required = false) String description,
@@ -104,7 +104,7 @@ public class UserController {
         return userFeignService.getPersonalInfo(id,phone);
     }
 
-    @PatchMapping("/user/personalSetting")
+    @PutMapping("/user/personalSetting")
     public Result<JSONObject> changeSetting(@RequestParam("id") Long id,
                                             @RequestParam(value = "pushComment",required = false) Integer pushComment,
                                             @RequestParam(value = "pushLike",required = false) Integer pushLike,

@@ -455,6 +455,88 @@ public class QAServiceImpl implements QAService{
         return "success";
     }
 
+
+    @Override
+    public String addAnswer(Long id, Long number, String description, List<String> photo) {
+        //检测回答是否有违规内容
+        if(!CommentUtils.judgeComment(description)){
+            log.info("回答问答失败，有脏话");
+            return "dirtyWrong";
+        }
+        Qa qa = qaMapper.selectById(number);
+        if(qa == null){
+            log.info("回答问答失败，问答不存在");
+            return "existWrong";
+        }
+        //插入数据
+        qaAnswerMapper.insert(new QaAnswer(null,id,number,PhotoUtils.photoListToString(photo),description,0,0,null));
+        String ck = redisUtils.getValue("answerQA_" + number);
+        if(ck == null){
+            //redis中没有
+            redisUtils.saveByHoursTime("answerQA_" + number,qa.getAnswerCounts().toString(),48);
+        }
+        //加1
+        redisUtils.addKeyByTime("answerQA_" + number,48);
+        //通知待完成
+        log.info("添加回答成功");
+        return "success";
+    }
+
+
+    @Override
+    public String addAnswerComment(Long id, Long answerNumber, String description, Long fatherNumber, Long replyNumber, Long toId) {
+        if(fatherNumber == null){
+            fatherNumber = 0L;
+        }
+        if(replyNumber == null){
+            replyNumber = 0L;
+        }
+        if(toId == null){
+            toId = 0L;
+        }
+        qaCommentMapper.insert(new QaComment(null,answerNumber,fatherNumber,id,toId,replyNumber,0,0,description,null));
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        QueryWrapper<QaComment> wrapper = new QueryWrapper<>();
+        wrapper.eq("answer_number",answerNumber)
+                .eq("father_number",fatherNumber)
+                .eq("reply_number",replyNumber)
+                .eq("description",description)
+                .orderByDesc("create_time");
+        List<QaComment> qaCommentList = qaCommentMapper.selectList(wrapper);
+        QaComment qaComment = qaCommentList.get(0);
+        if(!qaCommentList.isEmpty()){
+            qaComment = qaCommentList.get(0);
+        }
+        //添加父级评论数
+        if(fatherNumber != 0L){
+            String ck = redisUtils.getValue("qaAnswerCommentCommentCounts_" + fatherNumber);
+            if(ck == null){
+                QaComment qaComment1 = qaCommentMapper.selectById(fatherNumber);
+                if(qaComment1 != null){
+                    redisUtils.saveByHoursTime("qaAnswerCommentCommentCounts_" + fatherNumber,qaComment1.getCommentCounts().toString(),48);
+                }
+            }
+            redisUtils.addKeyByTime("qaAnswerCommentCommentCounts_" + fatherNumber,48);
+        }
+        //添加回答评论数
+        String ck = redisUtils.getValue("qaAnswerCommentCounts_" + answerNumber);
+        if(ck == null){
+            QaAnswer qaAnswer = qaAnswerMapper.selectById(answerNumber);
+            if(qaAnswer != null){
+                redisUtils.saveByHoursTime("qaAnswerCommentCounts_" + answerNumber,qaAnswer.getCommentCounts().toString(),48);
+            }
+            redisUtils.addKeyByTime("qaAnswerCommentCounts_" + answerNumber,48);
+        }
+        //推送待完成
+        log.info("添加回答评论成功");
+        return "success";
+    }
+
+
     @Override
     public String photoUpload(MultipartFile file) {
         String url = OssUtils.uploadPhoto(file,"QAPhoto");

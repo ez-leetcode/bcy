@@ -1,4 +1,4 @@
-package com.bcy.acgpart.pojo;
+package com.bcy.community.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -19,35 +19,21 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "问答回答类")
-public class QaAnswer implements Serializable {
+@ApiModel(description = "圈子的cos类")
+public class CircleCos implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
-    @ApiModelProperty("回答编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("圈子与cos关联编号")
     private Long number;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("问答编号")
-    private Long qaNumber;
+    @ApiModelProperty("圈子")
+    private String circleName;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("用户id")
-    private Long id;
+    @ApiModelProperty("cos编号")
+    private Long cosNumber;
 
-    @ApiModelProperty("图片")
-    private String photo;
-
-    @ApiModelProperty("内容")
-    private String description;
-
-    @ApiModelProperty("点赞数")
-    private Integer likeCounts;
-
-    @ApiModelProperty("评论数")
-    private Integer commentCounts;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("创建时间")
     private Date createTime;
 

@@ -182,7 +182,7 @@ public class QAController {
                                                    @RequestParam("cnt") Long cnt ,@RequestParam("page") Long page,
                                                    @RequestParam("type") Integer type){
         log.info("正在获取问答下回答的评论列表，用户：" + id + " 回答编号：" + answerNumber + " 页面数据量：" + cnt + " 当前页面：" + page + " 排序类型：" + type);
-        return ResultUtils.getResult(qaService.getAnswerCommentList(id, answerNumber, cnt, page, type),"success");
+        return ResultUtils.getResult(qaService.getAnswerCommentList(id, answerNumber, page, cnt, type),"success");
     }
 
     @ApiImplicitParams({
@@ -200,7 +200,7 @@ public class QAController {
                                                           @RequestParam("cnt") Long cnt,@RequestParam("page") Long page,
                                                           @RequestParam("type") Integer type){
         log.info("正在获取问答下回答的评论的评论列表，用户：" + id + " 问答评论编号：" + number + " 页面数据量：" + cnt + " 当前页面：" + page + " 排序顺序：" + type);
-        return ResultUtils.getResult(qaService.getAnswerCommentCommentList(id, number, cnt, page, type),"success");
+        return ResultUtils.getResult(qaService.getAnswerCommentCommentList(id, number, page, cnt, type),"success");
     }
 
 
@@ -220,5 +220,36 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(), qaService.generateQA(id, title, description, photo, label));
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "description",value = "回答内容",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "photo",value = "回答图片（list）",required = true,allowMultiple = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "问题编号",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "回答问题",notes = "existWrong：问题不存在 dirtyWrong：有脏话 success：成功")
+    @PostMapping("/acg/addAnswer")
+    public Result<JSONObject> addAnswer(@RequestParam("id") Long id,@RequestParam("description") String description,
+                                        @RequestParam("photo") List<String> photo,@RequestParam("number") Long number){
+        log.info("正在回答问题，用户：" + id + " 回答内容：" + description + " 图片：" + photo + " 问题编号：" + number);
+        return ResultUtils.getResult(new JSONObject(),qaService.addAnswer(id,number,description,photo));
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "answerNumber",value = "回答编号",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "description",value = "评论内容",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "fatherNumber",value = "父评论",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "toId",value = "回复id",dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "replyNumber",value = "回复评论编号",dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "添加问题评论",notes = "success：成功")
+    @PostMapping("/acg/answerComment")
+    public Result<JSONObject> addAnswerComment(@RequestParam("id") Long id,@RequestParam("description") String description,
+                                               @RequestParam("answerNumber") Long answerNumber,@RequestParam(value = "fatherNumber",required = false) Long fatherNumber,
+                                               @RequestParam(value = "toId",required = false) Long toId,
+                                               @RequestParam(value = "replyNumber",required = false) Long replyNumber){
+        log.info("正在添加问题评论，用户：" + id + " 评论内容：" + description + " 问答编号：" + answerNumber + " 父评论：" + fatherNumber + " 回复id：" + toId + " 回复评论编号：" + replyNumber);
+        return ResultUtils.getResult(new JSONObject(),qaService.addAnswerComment(id,answerNumber,description,fatherNumber,replyNumber,toId));
+    }
 
 }

@@ -2,8 +2,14 @@ package com.bcy.community.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bcy.community.mapper.CircleCosMapper;
+import com.bcy.community.mapper.CosPlayMapper;
 import com.bcy.community.mapper.UserMapper;
+import com.bcy.community.pojo.CosPlay;
 import com.bcy.community.pojo.User;
+import com.bcy.community.utils.RedisUtils;
+import com.bcy.utils.PhotoUtils;
+import com.bcy.vo.CosHomePageForList;
 import com.bcy.vo.UserInfo;
 import com.bcy.vo.UserInfoForSearchList;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +24,15 @@ public class HomePageServiceImpl implements HomePageService{
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private CosPlayMapper cosPlayMapper;
+
+    @Autowired
+    private CircleCosMapper circleCosMapper;
+
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Override
     public JSONObject getOthersInfo(Long id) {
@@ -42,6 +57,27 @@ public class HomePageServiceImpl implements HomePageService{
         jsonObject.put("counts",page1.getTotal());
         jsonObject.put("searchUserList",userInfoForSearchListList);
         log.info("搜索用户成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    @Override
+    public JSONObject getUserCosList(Long userId, Long cnt, Long page) {
+        JSONObject jsonObject = new JSONObject();
+        Page<CosHomePageForList> page1 = new Page<>(page,cnt);
+        List<CosHomePageForList> cosHomePageForListList = cosPlayMapper.getUserCosList(userId,page1);
+        for(CosHomePageForList x:cosHomePageForListList){
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getNumber());
+            if(cosPlay != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
+            }
+            List<String> label = circleCosMapper.getAllCircleNameFromCosNumber(x.getNumber());
+            x.setLabel(label);
+        }
+        jsonObject.put("counts",page1.getTotal());
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("cosUserList",cosHomePageForListList);
+        log.info("获取用户个人cos列表成功");
         log.info(jsonObject.toString());
         return jsonObject;
     }

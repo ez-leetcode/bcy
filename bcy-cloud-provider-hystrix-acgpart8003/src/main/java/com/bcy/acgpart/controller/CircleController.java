@@ -130,7 +130,7 @@ public class CircleController {
     public Result<JSONObject> searchCircle(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                            @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
         log.info("正在搜索圈子，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page + " 关键词：" + keyword);
-        return ResultUtils.getResult(circleService.searchCircle(id, cnt, page, keyword),"success");
+        return ResultUtils.getResult(circleService.searchCircle(id,cnt,page,keyword),"success");
     }
 
 }

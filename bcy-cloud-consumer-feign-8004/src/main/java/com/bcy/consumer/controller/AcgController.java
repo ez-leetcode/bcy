@@ -91,7 +91,7 @@ public class AcgController {
                                             @RequestParam("description") String description,
                                             @RequestParam(value = "fatherNumber",required = false) Long fatherNumber,
                                             @RequestParam(value = "toId",required = false) Long toId,
-                                            @RequestParam(value = "reply",required = false) Long replyNumber){
+                                            @RequestParam(value = "replyNumber",required = false) Long replyNumber){
         return acgFeignService.addCosComment(id, cosNumber, description, fatherNumber, toId, replyNumber);
     }
 
@@ -268,7 +268,7 @@ public class AcgController {
         return acgFeignService.getFollowNoRead(id);
     }
 
-    @PatchMapping("/acg/cos")
+    @PutMapping("/acg/cos")
     public Result<JSONObject> patchCos(@RequestParam("id") Long id,@RequestParam("number") Long number,
                                        @RequestParam(value = "description",required = false) String description,
                                        @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto,
@@ -280,5 +280,19 @@ public class AcgController {
     public Result<JSONObject> searchCircle(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                            @RequestParam("page") Long page,@RequestParam("keyword") String keyword){
         return acgFeignService.searchCircle(id, cnt, page, keyword);
+    }
+
+    @PostMapping("/acg/answerComment")
+    public Result<JSONObject> addAnswerComment(@RequestParam("id") Long id,@RequestParam("description") String description,
+                                               @RequestParam("answerNumber") Long answerNumber,@RequestParam(value = "fatherNumber",required = false) Long fatherNumber,
+                                               @RequestParam(value = "toId",required = false) Long toId,
+                                               @RequestParam(value = "replyNumber",required = false) Long replyNumber){
+        return acgFeignService.addAnswerComment(id, description, answerNumber, fatherNumber, toId, replyNumber);
+    }
+
+    @PostMapping("/acg/addAnswer")
+    public Result<JSONObject> addAnswer(@RequestParam("id") Long id,@RequestParam("description") String description,
+                                        @RequestParam("photo") List<String> photo,@RequestParam("number") Long number){
+        return acgFeignService.addAnswer(id, description, photo, number);
     }
 }

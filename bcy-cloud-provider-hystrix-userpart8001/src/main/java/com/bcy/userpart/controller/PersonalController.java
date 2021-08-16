@@ -65,7 +65,7 @@ public class PersonalController {
             @ApiImplicitParam(name = "birthday",value = "生日（请传yyyy-MM-dd格式）",dataType = "string",paramType = "query")
     })
     @ApiOperation(value = "用户修改基本个人信息（修改头像在上传头像那个接口会自动修改）P",notes = "existWrong：账号不存在或已被冻结 success：成功")
-    @PatchMapping("/user/personalInfo")
+    @PutMapping("/user/personalInfo")
     public Result<JSONObject> changeInfo(@RequestParam("id") Long id,
                                          @RequestParam(value = "sex",required = false) String sex,
                                          @RequestParam(value = "description",required = false) String description,
@@ -102,7 +102,7 @@ public class PersonalController {
             @ApiImplicitParam(name = "pushInfo",value = "推送聊天",dataType = "int",paramType = "query"),
     })
     @ApiOperation(value = "修改个人设置P",notes = "existWrong：账号不存在或已被冻结 success：成功")
-    @PatchMapping("/user/personalSetting")
+    @PutMapping("/user/personalSetting")
     public Result<JSONObject> changeSetting(@RequestParam("id") Long id,
                                             @RequestParam(value = "pushComment",required = false) Integer pushComment,
                                             @RequestParam(value = "pushLike",required = false) Integer pushLike,

@@ -1,4 +1,4 @@
-package com.bcy.acgpart.pojo;
+package com.bcy.community.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -19,36 +19,33 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "问答回答类")
-public class QaAnswer implements Serializable {
+@ApiModel(description = "cos类")
+public class CosPlay implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
-    @ApiModelProperty("回答编号")
+    @ApiModelProperty("cos编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("问答编号")
-    private Long qaNumber;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("用户id")
+    @ApiModelProperty("发布者id")
     private Long id;
-
-    @ApiModelProperty("图片")
-    private String photo;
 
     @ApiModelProperty("内容")
     private String description;
 
-    @ApiModelProperty("点赞数")
-    private Integer likeCounts;
+    @ApiModelProperty("图片")
+    private String photo;
 
-    @ApiModelProperty("评论数")
-    private Integer commentCounts;
+    @ApiModelProperty("权限 1：所有人可见 2：粉丝可见 3：自己可见")
+    private Integer permission;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("创建时间")
     private Date createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty("更新时间")
+    private Date updateTime;
 
 }

@@ -85,6 +85,7 @@ public class PersonalServiceImpl implements PersonalService{
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            log.info(date.toString());
             user.setBirthday(date);
         }
         //生日转化待完成

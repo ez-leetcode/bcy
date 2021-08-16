@@ -48,7 +48,7 @@ public class FansServiceImpl implements FansService{
     public String addFollow(Long fromId, Long toId) {
         QueryWrapper<Fans> wrapper = new QueryWrapper<>();
         wrapper.eq("from_id",fromId)
-                .eq("to_id",toId);
+                .eq("to_id",fromId);
         Fans fans = fansMapper.selectOne(wrapper);
         if(fans != null){
             log.error("关注用户失败，用户已被关注");

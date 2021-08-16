@@ -13,10 +13,10 @@ import java.util.List;
 @Mapper
 public interface QaFollowMapper extends BaseMapper<QaFollow> {
 
-    @Select("SELECT user.* FROM qa_follow as a, user as b WHERE a.qa_number = #{number} AND a.id = b.id AND b.username LIKE concat('%',#{keyword},'%') ORDER BY a.create_time DESC")
+    @Select("SELECT b.* FROM qa_follow as a, user as b WHERE a.qa_number = #{number} AND a.id = b.id AND b.username LIKE concat('%',#{keyword},'%') ORDER BY a.create_time DESC")
     List<FollowQAForList> getFollowQAListByKeyWord(@Param("keyword") String keyword, @Param("number") Long number, Page<FollowQAForList> page);
 
-    @Select("SELECT user.* FROM qa_follow as a, user as b WHERE a.qa_number = #{number} AND a.id = b.id ORDER BY a.create_time DESC")
+    @Select("SELECT b.* FROM qa_follow as a, user as b WHERE a.qa_number = #{number} AND a.id = b.id ORDER BY a.create_time DESC")
     List<FollowQAForList> getFollowQAList(@Param("number") Long number, Page<FollowQAForList> page);
 
 }

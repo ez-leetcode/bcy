@@ -44,7 +44,7 @@ public class FavorController {
     public Result<JSONObject> getFavorList(@RequestParam("id") Long id,
                                            @RequestParam("page") Long page,@RequestParam("cnt") Long cnt){
         log.info("正在获取收藏列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return ResultUtils.getResult(favorService.getFavorList(id, page, cnt),"success");
+        return ResultUtils.getResult(favorService.getFavorList(id,page,cnt),"success");
     }
 
     @ApiImplicitParams({

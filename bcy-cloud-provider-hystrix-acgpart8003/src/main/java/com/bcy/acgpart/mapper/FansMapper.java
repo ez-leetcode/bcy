@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface FansMapper extends BaseMapper<Fans> {
 
-    @Select("SELECT a.from_id FROM fans as a WHERE a,to_id = #{id} ORDER BY a.create_time")
+    @Select("SELECT a.from_id FROM fans as a WHERE a.to_id = #{id} ORDER BY a.create_time DESC")
     List<Long> getAllFansId(@Param("id") Long id);
 
 }

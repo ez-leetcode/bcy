@@ -59,7 +59,7 @@ public interface UserFeignService {
     @PostMapping(value = "/user/photoUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Result<JSONObject> userPhotoUpload(@RequestPart("photo") MultipartFile file, @RequestParam("id") String id);
 
-    @PatchMapping("/user/personalInfo")
+    @PutMapping("/user/personalInfo")
     Result<JSONObject> changeInfo(@RequestParam("id") Long id,
                                          @RequestParam(value = "sex",required = false) String sex,
                                          @RequestParam(value = "description",required = false) String description,
@@ -71,7 +71,7 @@ public interface UserFeignService {
     @GetMapping("/user/personalInfo")
     Result<JSONObject> getPersonalInfo(@RequestParam(value = "id",required = false) Long id,@RequestParam(value = "phone",required = false) String phone);
 
-    @PatchMapping("/user/personalSetting")
+    @PutMapping("/user/personalSetting")
     Result<JSONObject> changeSetting(@RequestParam("id") Long id,
                                             @RequestParam(value = "pushComment",required = false) Integer pushComment,
                                             @RequestParam(value = "pushLike",required = false) Integer pushLike,

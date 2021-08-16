@@ -24,6 +24,10 @@ public interface QAService {
 
     String generateQA(Long id, String title, String description, List<String> photo, List<String> label);
 
+    String addAnswer(Long id,Long number,String description,List<String> photo);
+
+    String addAnswerComment(Long id,Long answerNumber,String description,Long fatherNumber,Long replyNumber,Long toId);
+
     JSONObject getFollowQAList(Long id,Long number,String keyword,Long page,Long cnt);
 
     JSONObject getQATopic(Long id,Long number);

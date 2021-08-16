@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = "他人主页管理类（注意是别人的主页！） 里面还有搜索别的用户的接口")
+@Api(tags = "主页管理类（注意是别人的主页！） 里面还有搜索别的用户的接口")
 @Slf4j
 @RestController
 //默认服务降级处理
@@ -48,6 +48,22 @@ public class HomePageController {
         }
         return ResultUtils.getResult(jsonObject,"success");
     }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId",value = "该用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取他人页面下的所有cos",notes = "返回data cosUserList（number：cos编号 id：发布用户id username：昵称 photo：头像 " +
+            "cosPhoto：cos图片（list） label：标签（list）  description：内容 createTime：发布时间）")
+    @GetMapping("/community/cosList")
+    public Result<JSONObject> getUserCosList(@RequestParam("userId") Long userId,@RequestParam("cnt") Long cnt,
+                                             @RequestParam("page") Long page){
+        log.info("正在获取他人页面下所有cos，用户：" + userId + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(homePageService.getUserCosList(userId,cnt,page),"success");
+    }
+
+
 
 
     @ApiImplicitParams({

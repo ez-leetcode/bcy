@@ -98,4 +98,8 @@ public interface CommunityFeignService {
     @GetMapping("/community/searchUser")
     Result<JSONObject> searchUser(@RequestParam("id") Long id,@RequestParam("page") Long page,
                                          @RequestParam("cnt") Long cnt,@RequestParam("keyword") String keyword);
+
+    @GetMapping("/community/cosList")
+    Result<JSONObject> getUserCosList(@RequestParam("userId") Long userId,@RequestParam("cnt") Long cnt,
+                                             @RequestParam("page") Long page);
 }
