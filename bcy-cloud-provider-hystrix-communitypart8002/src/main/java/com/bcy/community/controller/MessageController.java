@@ -5,6 +5,7 @@ import com.bcy.community.service.MessageService;
 import com.bcy.community.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class MessageController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -46,6 +48,7 @@ public class MessageController {
         return ResultUtils.getResult(messageService.getAtMessageList(id, cnt, page),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -60,6 +63,7 @@ public class MessageController {
         return ResultUtils.getResult(messageService.getLikeMessageList(id, cnt, page),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -74,6 +78,7 @@ public class MessageController {
         return ResultUtils.getResult(messageService.getCommentMessageList(id, cnt, page),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "type",value = "类型（1：已读全部@ 2：已读全部评论 3：已读全部收到的赞 4：已读全部的消息）",required = true,dataType = "int",paramType = "query")
@@ -85,6 +90,7 @@ public class MessageController {
         return ResultUtils.getResult(new JSONObject(),messageService.allRead(id, type));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })

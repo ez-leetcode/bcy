@@ -6,6 +6,7 @@ import com.bcy.acgpart.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -35,18 +36,19 @@ public class LikeController {
         return timeoutService.timeoutHandler();
     }
 
-    //待修改
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "numbers",value = "cos编号（list）",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取是否被喜欢",notes = "success：成功 judgeLikeList（0：未点赞 1：已点赞）")
+    @ApiOperation(value = "获取是否被喜欢",notes = "success：成功 judgeLikeList（number：编号 status 0：未点赞 1：已点赞）")
     @GetMapping("/acg/judgeLikes")
     public Result<JSONObject> judgeLikes(@RequestParam("id") Long id, @RequestParam("numbers")List<Long> numbers){
         log.info("正在判断是否被喜欢，用户：" + id + " cos编号：" + numbers.toString());
         return ResultUtils.getResult(likeService.getLikeStatus(id,numbers),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -61,6 +63,7 @@ public class LikeController {
         return ResultUtils.getResult(likeService.getLikeList(id,cnt,page),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query")
@@ -72,6 +75,7 @@ public class LikeController {
         return ResultUtils.getResult(new JSONObject(),likeService.addLike(id,number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query")

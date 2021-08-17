@@ -7,6 +7,7 @@ import com.bcy.acgpart.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class FavorController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
@@ -47,6 +49,7 @@ public class FavorController {
         return ResultUtils.getResult(favorService.getFavorList(id,page,cnt),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos文章编号",required = true,dataType = "Long",paramType = "query")
@@ -58,6 +61,7 @@ public class FavorController {
         return ResultUtils.getResult(new JSONObject(), favorService.addFavor(id, number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos文章编号",required = true,dataType = "Long",paramType = "query")
@@ -69,6 +73,7 @@ public class FavorController {
         return ResultUtils.getResult(new JSONObject(), favorService.deleteFavor(id, number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos文章编号（list）",allowMultiple = true,required = true,dataType = "Long",paramType = "query")

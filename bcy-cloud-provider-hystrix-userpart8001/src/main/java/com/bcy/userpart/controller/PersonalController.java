@@ -7,6 +7,7 @@ import com.bcy.userpart.service.TimeoutService;
 import com.bcy.utils.BngelUtils;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,6 +38,7 @@ public class PersonalController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "photo",value = "头像文件",required = true,dataType = "file",paramType = "query")
@@ -55,6 +57,7 @@ public class PersonalController {
         return ResultUtils.getResult(new JSONObject(),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "sex",value = "性别",dataType = "string",paramType = "query"),
@@ -77,6 +80,7 @@ public class PersonalController {
         return ResultUtils.getResult(new JSONObject(),personalService.changeInfo(id,username,sex,description,province,city,birthday));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "phone",value = "手机号",dataType = "string",paramType = "query")
@@ -92,7 +96,7 @@ public class PersonalController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
-
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "pushComment",value = "推送评论",dataType = "int",paramType = "query"),
@@ -113,6 +117,7 @@ public class PersonalController {
         return ResultUtils.getResult(new JSONObject(),personalService.changeSetting(id,pushComment,pushLike,pushFans,pushSystem,pushInfo));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
@@ -127,6 +132,7 @@ public class PersonalController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId",value = "用户id（这里不用id做参数是因为过过滤器会检测）",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
@@ -137,6 +143,7 @@ public class PersonalController {
         return ResultUtils.getResult(personalService.getUserCounts(userId),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
@@ -151,6 +158,7 @@ public class PersonalController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "password",value = "新密码",required = true,dataType = "Long",paramType = "query")

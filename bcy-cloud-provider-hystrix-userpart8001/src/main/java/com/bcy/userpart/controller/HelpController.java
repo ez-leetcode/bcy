@@ -6,6 +6,7 @@ import com.bcy.userpart.service.HelpService;
 import com.bcy.userpart.service.TimeoutService;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,6 +34,7 @@ public class HelpController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "question",value = "帮助问题",required = true,dataType = "String",paramType = "query"),
             @ApiImplicitParam(name = "answer",value = "回答",required = true,dataType = "String",paramType = "query"),
@@ -46,6 +48,7 @@ public class HelpController {
         return ResultUtils.getResult(new JSONObject(), helpService.addHelp(question,answer,type));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "number",value = "帮助编号",required = true,dataType = "Long",paramType = "query")
     })
@@ -56,6 +59,7 @@ public class HelpController {
         return ResultUtils.getResult(new JSONObject(), helpService.deleteHelp(number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "number",value = "帮助编号",required = true,dataType = "Long",paramType = "query")
     })
@@ -71,6 +75,7 @@ public class HelpController {
     }
 
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
@@ -84,6 +89,7 @@ public class HelpController {
         return ResultUtils.getResult(helpService.getHelpList(cnt,page,type),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "number",value = "帮助编号",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "isSolved",value = "是否已解决（0：未解决 1：已解决）",required = true,dataType = "int",paramType = "query")

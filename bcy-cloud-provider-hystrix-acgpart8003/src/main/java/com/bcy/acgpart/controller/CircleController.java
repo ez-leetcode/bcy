@@ -8,6 +8,7 @@ import com.bcy.acgpart.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -36,6 +37,7 @@ public class CircleController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "photo",value = "圈子图片",required = true,dataType = "file",paramType = "query")
@@ -53,6 +55,7 @@ public class CircleController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query"),
@@ -69,6 +72,7 @@ public class CircleController {
         return ResultUtils.getResult(new JSONObject(),circleService.createCircle(circleName,description,photo,nickName));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query")
     })
@@ -83,6 +87,7 @@ public class CircleController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query")
@@ -94,6 +99,7 @@ public class CircleController {
         return ResultUtils.getResult(new JSONObject(),circleService.followCircle(id,circleName));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query")
@@ -105,6 +111,7 @@ public class CircleController {
         return ResultUtils.getResult(new JSONObject(),circleService.disFollowCircle(id,circleName));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -119,6 +126,7 @@ public class CircleController {
     }
 
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),

@@ -6,6 +6,7 @@ import com.bcy.userpart.service.FansService;
 import com.bcy.userpart.service.TimeoutService;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,6 +34,7 @@ public class FansController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fromId",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "被关注用户id",required = true,dataType = "Long",paramType = "query")
@@ -44,6 +46,7 @@ public class FansController {
         return ResultUtils.getResult(new JSONObject(),fansService.addFollow(fromId,toId));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fromId",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "被关注用户id",required = true,dataType = "Long",paramType = "query")
@@ -55,6 +58,7 @@ public class FansController {
         return ResultUtils.getResult(new JSONObject(),fansService.deleteFollow(fromId,toId));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fromId",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "对方用户id",required = true,dataType = "Long",paramType = "query")
@@ -66,7 +70,7 @@ public class FansController {
         return ResultUtils.getResult(fansService.judgeFollow(fromId,toId),"success");
     }
 
-
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "keyword",value = "关键词（查全部给空或不带）",dataType = "string",paramType = "query"),
@@ -81,6 +85,7 @@ public class FansController {
         return ResultUtils.getResult(fansService.getFollowList(id, keyword, cnt, page),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "keyword",value = "关键词（查全部给空或不带）",dataType = "string",paramType = "query"),

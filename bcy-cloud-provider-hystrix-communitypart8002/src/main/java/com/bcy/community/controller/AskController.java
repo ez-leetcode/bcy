@@ -6,6 +6,7 @@ import com.bcy.community.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,6 +34,7 @@ public class AskController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "提问编号",required = true,dataType = "Long",paramType = "query")
@@ -44,6 +46,7 @@ public class AskController {
         return ResultUtils.getResult(new JSONObject(),askService.deleteAsk(id,number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fromId",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "被提问用户id",required = true,dataType = "Long",paramType = "query"),
@@ -57,6 +60,7 @@ public class AskController {
         return ResultUtils.getResult(new JSONObject(),askService.addAsk(fromId,toId,question));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "number",value = "提问编号",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
@@ -70,6 +74,7 @@ public class AskController {
         return ResultUtils.getResult(new JSONObject(),askService.addAnswer(id,number,answer));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -83,6 +88,7 @@ public class AskController {
         return ResultUtils.getResult(askService.getWaitingAsk(id,page,cnt),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),

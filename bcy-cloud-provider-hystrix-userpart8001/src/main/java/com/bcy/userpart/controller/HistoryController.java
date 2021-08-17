@@ -6,6 +6,7 @@ import com.bcy.userpart.service.HistoryService;
 import com.bcy.userpart.service.TimeoutService;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -38,6 +39,7 @@ public class HistoryController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -51,7 +53,7 @@ public class HistoryController {
         return ResultUtils.getResult(historyService.getHistory(id, cnt, page),"success");
     }
 
-
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -65,6 +67,7 @@ public class HistoryController {
         return ResultUtils.getResult(historyService.getQaHistory(id, cnt, page),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "numbers",value = "历史浏览编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
@@ -77,6 +80,7 @@ public class HistoryController {
         return ResultUtils.getResult(new JSONObject(),historyService.deleteQaHistory(id, numbers));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
@@ -87,7 +91,7 @@ public class HistoryController {
         return ResultUtils.getResult(new JSONObject(),historyService.deleteQaAllHistory(id));
     }
 
-
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "numbers",value = "历史浏览编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
@@ -100,6 +104,7 @@ public class HistoryController {
         return ResultUtils.getResult(new JSONObject(),historyService.deleteHistory(id,numbers));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })

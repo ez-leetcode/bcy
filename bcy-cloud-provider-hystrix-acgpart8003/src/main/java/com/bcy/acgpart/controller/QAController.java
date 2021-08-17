@@ -6,6 +6,7 @@ import com.bcy.acgpart.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -36,6 +37,7 @@ public class QAController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "photo",required = true,dataType = "file",paramType = "query")
     })
@@ -52,6 +54,7 @@ public class QAController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问答编号",required = true,dataType = "Long",paramType = "query")
@@ -63,7 +66,7 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(),qaService.followQA(id,number));
     }
 
-
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问答编号",required = true,dataType = "Long",paramType = "query"),
@@ -80,7 +83,7 @@ public class QAController {
         return ResultUtils.getResult(qaService.getFollowQAList(id, number, keyword, page, cnt),"success");
     }
 
-
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问答编号",required = true,dataType = "Long",paramType = "query")
@@ -92,6 +95,7 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(), qaService.disFollowQA(id,number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "回答编号",required = true,dataType = "Long",paramType = "query")
@@ -103,6 +107,7 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(), qaService.likeAnswer(id,number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "回答编号",required = true,dataType = "Long",paramType = "query")
@@ -114,6 +119,7 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(), qaService.dislikeAnswer(id,number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "评论编号",required = true,dataType = "Long",paramType = "query")
@@ -125,6 +131,7 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(), qaService.likeComment(id,number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "回答编号",required = true,dataType = "Long",paramType = "query")
@@ -136,6 +143,7 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(), qaService.dislikeComment(id,number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问答编号",required = true,dataType = "string",paramType = "query")
@@ -151,6 +159,7 @@ public class QAController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问题编号",required = true,dataType = "Long",paramType = "query"),
@@ -168,6 +177,7 @@ public class QAController {
         return ResultUtils.getResult(qaService.getQAAnswerList(id, number, type, cnt, page),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "answerNumber",value = "回答编号",required = true,dataType = "Long",paramType = "query"),
@@ -185,6 +195,7 @@ public class QAController {
         return ResultUtils.getResult(qaService.getAnswerCommentList(id, answerNumber, page, cnt, type),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "问答评论编号",required = true,dataType = "Long",paramType = "query"),
@@ -203,7 +214,7 @@ public class QAController {
         return ResultUtils.getResult(qaService.getAnswerCommentCommentList(id, number, page, cnt, type),"success");
     }
 
-
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "title",value = "问答标题",required = true,dataType = "string",paramType = "query"),
@@ -220,6 +231,7 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(), qaService.generateQA(id, title, description, photo, label));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "description",value = "回答内容",required = true,dataType = "string",paramType = "query"),
@@ -234,6 +246,7 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(),qaService.addAnswer(id,number,description,photo));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "answerNumber",value = "回答编号",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "description",value = "评论内容",required = true,dataType = "string",paramType = "query"),
@@ -252,9 +265,9 @@ public class QAController {
         return ResultUtils.getResult(new JSONObject(),qaService.addAnswerComment(id,answerNumber,description,fatherNumber,replyNumber,toId));
     }
 
-
+    @HystrixCommand
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "numbers",value = "回答编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "获取问答回答的点赞 评论数",notes = "success：成功 返回qaAnswerCountsList：（number：问答回答编号 likeCounts：点赞数 commentCounts：评论数）")
@@ -265,9 +278,9 @@ public class QAController {
         return ResultUtils.getResult(qaService.getQAAnswerCountsList(id, numbers),"success");
     }
 
-
+    @HystrixCommand
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "numbers",value = "评论编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "获取问答评论的点赞 评论数",notes = "success：成功 返回qaCommentCountList：（number：问答评论编号 likeCounts：点赞数 commentCounts：评论数）")
@@ -278,6 +291,7 @@ public class QAController {
         return ResultUtils.getResult(qaService.getQACommentCountsList(id, numbers),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "numbers",value = "问答编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
@@ -289,7 +303,5 @@ public class QAController {
         log.info("正在获取问答关注回答数，用户：" + id + " 问答编号：" + numbers.toString());
         return ResultUtils.getResult(qaService.getQACountsList(id, numbers),"success");
     }
-
-
 
 }

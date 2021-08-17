@@ -173,6 +173,11 @@ public class UserController {
         return userFeignService.setPassword(id, password);
     }
 
+    @PostMapping("/user/changePhone")
+    public Result<JSONObject> changePhone(@RequestParam("id") Long id,@RequestParam("phone") String phone,
+                                          @RequestParam("code") String code){
+        return userFeignService.changePhone(id, phone, code);
+    }
 
     @GetMapping("/user/timeout")
     public Result<JSONObject> globalTimeout(){

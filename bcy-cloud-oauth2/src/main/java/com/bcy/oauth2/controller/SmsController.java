@@ -29,9 +29,10 @@ public class SmsController {
     @Autowired
     private RedisUtils redisUtils;
 
+    //自己发自己接收的话，就不过mq了
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone",value = "电话",required = true,dataType = "string",paramType = "query"),
-            @ApiImplicitParam(name = "type",value = "哪种验证码（1.登录（没账号会自动注册） 3.找回密码 ）",required = true,dataType = "int",paramType = "query")
+            @ApiImplicitParam(name = "type",value = "哪种验证码（1.登录（没账号会自动注册） 3.找回密码  5.改绑手机）",required = true,dataType = "int",paramType = "query")
     })
     @ApiOperation(value = "发送短信验证码（15分钟有效）",notes = "repeatWrong：获取验证码次数过多24小时超5次，existWrong：手机号不存在（验证码发送错误） success：成功")
     @PostMapping("/oauth/code")

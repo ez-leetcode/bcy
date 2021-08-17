@@ -5,6 +5,7 @@ import com.bcy.community.service.TalkService;
 import com.bcy.community.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class TalkController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId",value = "用户id（list）",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
@@ -40,6 +42,7 @@ public class TalkController {
         return ResultUtils.getResult(talkService.getJudgeOnline(userId),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "聊天记录编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
@@ -52,6 +55,7 @@ public class TalkController {
         return ResultUtils.getResult(new JSONObject(),talkService.deleteTalkMessage(id, number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "对方id",required = true,dataType = "Long",paramType = "query")
@@ -63,6 +67,7 @@ public class TalkController {
         return ResultUtils.getResult(new JSONObject(),talkService.deleteTalk(id, toId));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "对方id（list）",required = true,dataType = "Long",paramType = "query")
@@ -74,6 +79,7 @@ public class TalkController {
         return ResultUtils.getResult(talkService.getTalkCounts(id, toId),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -87,6 +93,7 @@ public class TalkController {
         return ResultUtils.getResult(talkService.getTalkList(id, cnt, page),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "对方id",required = true,dataType = "Long",paramType = "query")

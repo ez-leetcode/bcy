@@ -8,6 +8,7 @@ import com.bcy.userpart.service.TimeoutService;
 import com.bcy.userpart.utils.RedisUtils;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -43,6 +44,21 @@ public class SmsController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "phone",value = "新手机号",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "code",value = "验证码",required = true,dataType = "string",paramType = "query")
+    })
+    @ApiOperation(value = "用户改绑手机",notes = "codeWrong：验证码错误 success：成功")
+    @PostMapping("/user/changePhone")
+    public Result<JSONObject> changePhone(@RequestParam("id") Long id,@RequestParam("phone") String phone,
+                                          @RequestParam("code") String code){
+        log.info("用户正在改绑手机，用户：" + id + " 新电话：" + phone + " 验证码：" + code);
+        return ResultUtils.getResult(new JSONObject(), smsService.changePhone(id,phone,code));
+    }
+
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone",value = "电话",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "type",value = "哪种验证码（1.注册 2.修改密码 3.找回密码 4.登录）",required = true,dataType = "int",paramType = "query")

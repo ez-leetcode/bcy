@@ -12,13 +12,15 @@ public class TencentSmsUtils {
 
     static {
         //注册
-        TEMPLATE.put(1,"959486");
+        TEMPLATE.put(4,"959486");
         //修改密码
         TEMPLATE.put(2,"959520");
         //找回密码
         TEMPLATE.put(3,"959521");
         //登录
-        TEMPLATE.put(4,"959522");
+        TEMPLATE.put(1,"959522");
+        //改绑手机
+        TEMPLATE.put(5,"1081411");
     }
 
 }

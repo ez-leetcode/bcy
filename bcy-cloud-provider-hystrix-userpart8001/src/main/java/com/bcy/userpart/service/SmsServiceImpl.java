@@ -1,5 +1,7 @@
 package com.bcy.userpart.service;
 
+import com.bcy.userpart.mapper.UserLoginMapper;
+import com.bcy.userpart.pojo.UserLogin;
 import com.bcy.userpart.utils.RedisUtils;
 import com.bcy.utils.TencentSmsUtils;
 import com.tencentcloudapi.common.Credential;
@@ -18,6 +20,29 @@ public class SmsServiceImpl implements SmsService{
 
     @Autowired
     private RedisUtils redisUtils;
+
+    @Autowired
+    private UserLoginMapper userLoginMapper;
+
+    @Override
+    public String changePhone(Long id, String phone, String code) {
+        String redisCode = redisUtils.getValue("5_" + phone);
+        if(redisCode == null || !redisCode.equals(code)){
+            log.warn("修改手机号失败，验证码不正确或不存在");
+            return "codeWrong";
+        }
+        UserLogin userLogin = userLoginMapper.selectById(id);
+        if(userLogin != null){
+            //改绑手机
+            userLogin.setPhone(phone);
+            userLoginMapper.updateById(userLogin);
+        }
+        //移除验证码
+        redisUtils.delete("5_" + phone);
+        log.info("用户改绑手机成功");
+        return "success";
+    }
+
 
     @Override
     public boolean sendSms(String phone, String code, int templateCode) {

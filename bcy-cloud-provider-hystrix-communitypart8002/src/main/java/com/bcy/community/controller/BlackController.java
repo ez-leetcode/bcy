@@ -6,6 +6,7 @@ import com.bcy.community.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,6 +34,7 @@ public class BlackController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "blackId",value = "要被拉黑的id",required = true,dataType = "Long",paramType = "query")
@@ -44,6 +46,7 @@ public class BlackController {
         return ResultUtils.getResult(new JSONObject(),blackService.addBlack(id, blackId));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "blackId",value = "要被取消拉黑的id",required = true,dataType = "Long",paramType = "query")
@@ -55,6 +58,7 @@ public class BlackController {
         return ResultUtils.getResult(new JSONObject(),blackService.deleteBlack(id, blackId));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -68,6 +72,7 @@ public class BlackController {
         return ResultUtils.getResult(blackService.getBlackList(id, cnt, page),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "circleName",value = "被屏蔽圈子名",required = true,dataType = "string",paramType = "query")
@@ -79,6 +84,7 @@ public class BlackController {
         return ResultUtils.getResult(new JSONObject(),blackService.addBlackCircle(id, circleName));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "circleName",value = "要取消屏蔽圈子名",required = true,dataType = "string",paramType = "query")
@@ -90,6 +96,7 @@ public class BlackController {
         return ResultUtils.getResult(new JSONObject(),blackService.deleteBlackCircle(id, circleName));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query")
@@ -101,6 +108,7 @@ public class BlackController {
         return ResultUtils.getResult(blackService.judgeBlackCircle(id, circleName),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "toId",value = "对方id",required = true,dataType = "Long",paramType = "query")

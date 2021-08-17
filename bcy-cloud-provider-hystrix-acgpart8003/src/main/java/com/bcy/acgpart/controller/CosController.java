@@ -6,6 +6,7 @@ import com.bcy.acgpart.service.TimeoutService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -36,6 +37,7 @@ public class CosController {
         return timeoutService.timeoutHandler();
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "numbers",value = "讨论编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
@@ -46,6 +48,7 @@ public class CosController {
         return ResultUtils.getResult(new JSONObject(), cosService.deleteCos(numbers));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos编号（list）",allowMultiple = true,required = true,dataType = "Long",paramType = "query")
@@ -57,6 +60,7 @@ public class CosController {
         return ResultUtils.getResult(cosService.getCosCountsList(id,number),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "评论编号（list）",required = true,dataType = "Long",allowMultiple = true,paramType = "query")
@@ -69,6 +73,7 @@ public class CosController {
         return ResultUtils.getResult(cosService.getCosCommentCountsList(id, number),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "description",value = "描述",required = true,dataType = "string",paramType = "query"),
@@ -87,6 +92,7 @@ public class CosController {
 
 
     //es同步要考虑
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query"),
@@ -105,6 +111,7 @@ public class CosController {
     }
 
     //会存入历史记录
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query")
@@ -122,6 +129,7 @@ public class CosController {
     }
 
     //获取下层的评论
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query"),
@@ -143,6 +151,7 @@ public class CosController {
     }
 
     //推送待完成
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cosNumber",value = "cos的编号",required = true,dataType = "Long",paramType = "query"),
@@ -163,6 +172,7 @@ public class CosController {
         return ResultUtils.getResult(new JSONObject(), cosService.addComment(id, cosNumber, description, fatherNumber, toId, replyNumber));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "评论编号",required = true,dataType = "Long",paramType = "query"),
@@ -184,6 +194,7 @@ public class CosController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "评论编号",required = true,dataType = "Long",paramType = "query")
@@ -195,6 +206,7 @@ public class CosController {
         return ResultUtils.getResult(new JSONObject(),cosService.likeCosComment(id, number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "number",value = "评论编号",required = true,dataType = "Long",paramType = "query")
@@ -206,6 +218,7 @@ public class CosController {
         return ResultUtils.getResult(new JSONObject(),cosService.dislikeCosComment(id, number));
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "photo",required = true,dataType = "file",paramType = "query")
     })
@@ -222,6 +235,7 @@ public class CosController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "time",value = "日期（请带yyyy-MM-dd格式）",required = true,dataType = "string",paramType = "query")
     })
@@ -234,6 +248,7 @@ public class CosController {
     }
 
     //这里week写成month了 其实是周榜
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "time",value = "日期（请带yyyy-MM-dd格式）请给周一的日期",required = true,dataType = "string",paramType = "query")
     })
@@ -245,6 +260,7 @@ public class CosController {
         return ResultUtils.getResult(cosService.getCosMonthHotList(time),"success");
     }
 
+    @HystrixCommand
     @ApiOperation(value = "获取推荐cos标签",notes = "success：成功 返回data cosRecommendLabelList：label（list）：推荐标签列表 一般会有20个")
     @GetMapping("/acg/recommendList")
     public Result<JSONObject> getRecommendList(){
@@ -252,6 +268,7 @@ public class CosController {
         return ResultUtils.getResult(cosService.getRecommendLabelList(),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
@@ -262,6 +279,7 @@ public class CosController {
         return ResultUtils.getResult(cosService.getFollowNoRead(id),"success");
     }
 
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
