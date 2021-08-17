@@ -26,6 +26,12 @@ spring:
     #开发者环境
     active: dev
 
+#日志
+logging:
+  file:
+    path: /spring/log
+    name: bcy-oauth2.log
+
 
 eureka:
   instance:

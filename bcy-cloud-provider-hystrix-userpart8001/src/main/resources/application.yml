@@ -45,6 +45,7 @@ spring:
     active: dev
 
 
+
 eureka:
   instance:
     #用ip代替实例名
@@ -66,7 +67,7 @@ eureka:
 logging:
   file:
     path: /spring/log
-    name: lxmRun.log
+    name: bcy-userpart.log
   level:
     io:
       swagger:

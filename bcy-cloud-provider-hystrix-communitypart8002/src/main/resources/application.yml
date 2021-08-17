@@ -45,6 +45,28 @@ spring:
     active: dev
 
 
+#日志
+logging:
+  file:
+    path: /spring/log
+    name: bcy-communitypart.log
+  level:
+    io:
+      swagger:
+        models:
+          parameters:
+            AbstractSerializableParameter: error
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+
 eureka:
   instance:
     #用ip代替实例名

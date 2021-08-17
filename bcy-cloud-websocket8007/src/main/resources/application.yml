@@ -49,6 +49,19 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
+
+logging:
+  file:
+    path: /spring/log
+    name: bcy-websocket.log
+  level:
+    io:
+      swagger:
+        models:
+          parameters:
+            AbstractSerializableParameter: error
+
+
 eureka:
   instance:
     #用ip代替实例名

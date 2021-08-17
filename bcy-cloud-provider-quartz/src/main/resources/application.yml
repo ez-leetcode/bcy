@@ -49,6 +49,18 @@ eureka:
     service-url:
       defaultZone: http://47.115.128.193:8000/eureka
 
+logging:
+  file:
+    path: /spring/log
+    name: bcy-quartz.log
+  level:
+    io:
+      swagger:
+        models:
+          parameters:
+            AbstractSerializableParameter: error
+
+
 
 mybatis-plus:
   configuration:

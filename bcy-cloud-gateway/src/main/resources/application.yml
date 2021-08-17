@@ -62,6 +62,12 @@ spring:
               - DELETE
               - PUT
 
+#日志
+logging:
+  file:
+    path: /spring/log
+    name: bcy-gateway.log
+
 
 eureka:
   instance:

@@ -1,7 +1,6 @@
 server:
   port: 8008
 
-
 spring:
   datasource:
     username: mycat
@@ -23,6 +22,21 @@ spring:
       username: elastic
       password: Yqc3585435854
       uris: https://es-k3rtclmf.public.tencentelasticsearch.com:9200
+
+#日志
+logging:
+  file:
+    path: /spring/log
+    name: bcy-elasticsearch.log
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
 
 eureka:
   client:
