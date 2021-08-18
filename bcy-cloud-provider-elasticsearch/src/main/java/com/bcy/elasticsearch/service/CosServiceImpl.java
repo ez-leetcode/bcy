@@ -1,5 +1,6 @@
 package com.bcy.elasticsearch.service;
 
+import com.bcy.elasticsearch.dto.Ck;
 import com.bcy.elasticsearch.dto.CosPlay;
 import com.bcy.elasticsearch.utils.EsUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,6 @@ public class CosServiceImpl implements CosService{
     @Autowired
     private EsUtils esUtils;
 
-
     @Override
     public String test(String indexName) throws IOException {
         /*
@@ -33,10 +33,13 @@ public class CosServiceImpl implements CosService{
         }
 
          */
-        System.out.println(esUtils.isIndexExists("bngel"));
-        esUtils.createIndex("bngel");
-        System.out.println(esUtils.isIndexExists("bngel"));
         return "success";
     }
+
+    @Override
+    public void searchCos(String keyword, Integer cnt, Integer page) throws IOException {
+        esUtils.CosSearch(keyword,cnt,page);
+    }
+
 
 }

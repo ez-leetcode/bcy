@@ -19,31 +19,39 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-@ApiModel(description = "cos类")
-public class CosPlay implements Serializable {
+@ApiModel(description = "问答类")
+public class Qa implements Serializable {
 
     @TableId(type = IdType.ID_WORKER)
-    @ApiModelProperty("cos编号")
+    @ApiModelProperty("问答编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @ApiModelProperty("发布者id")
+    @ApiModelProperty("提问的id")
     private Long id;
 
-    @ApiModelProperty("内容")
+    @ApiModelProperty("问答标题")
+    private String title;
+
+    @ApiModelProperty("问答内容")
     private String description;
 
     @ApiModelProperty("图片")
     private String photo;
 
-    @ApiModelProperty("权限 1：所有人可见 2：粉丝可见 3：自己可见")
-    private Integer permission;
+    @ApiModelProperty("关注数")
+    private Integer followCounts;
 
+    @ApiModelProperty("回答数")
+    private Integer answerCounts;
+
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("创建时间")
     private Date createTime;
 
-    @ApiModelProperty("更新时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty("最近更新时间")
     private Date updateTime;
 
 }

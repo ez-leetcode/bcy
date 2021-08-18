@@ -110,7 +110,7 @@ public class FavorServiceImpl implements FavorService{
             return "repeatWrong";
         }
         //清除收藏记录
-        favorMapper.deleteById(favor.getId());
+        favorMapper.deleteById(favor.getNumber());
         //收藏数扔给redis
         String ck1 = redisUtils.getValue("cosHotFavorCounts_" + number);
         String ck2 = redisUtils.getValue("cosHotFavorWeekCounts_" + number);
