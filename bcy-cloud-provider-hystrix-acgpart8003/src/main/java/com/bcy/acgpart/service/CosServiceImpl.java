@@ -500,9 +500,9 @@ public class CosServiceImpl implements CosService {
         JSONObject jsonObject = new JSONObject();
         List<String> labelList = new LinkedList<>();
         for(int i = 1 ; i <= 20; i++){
-            String ck = redisUtils.getValue("recommendLabel_" + i);
+            String ck = redisUtils.getValue("hotRecommendLabel_" + i);
             if(ck != null){
-                labelList.add(ck);
+                labelList.add(ck.substring(15));
             }
         }
         jsonObject.put("cosRecommendLabelList",labelList);

@@ -67,6 +67,14 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 4500
+
 eureka:
   instance:
     #用ip代替实例名

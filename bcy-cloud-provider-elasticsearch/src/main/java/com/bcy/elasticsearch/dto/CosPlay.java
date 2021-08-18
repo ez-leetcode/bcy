@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,17 +20,15 @@ import java.util.Date;
 @ToString
 @Data
 @ApiModel(description = "cos类")
-@Document(indexName = "cosPlay")
 public class CosPlay implements Serializable {
 
-    @Id
     @ApiModelProperty("cos编号")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty("发布者id")
-    private Long id;
+    private Long cosId;
 
     @ApiModelProperty("内容")
     private String description;

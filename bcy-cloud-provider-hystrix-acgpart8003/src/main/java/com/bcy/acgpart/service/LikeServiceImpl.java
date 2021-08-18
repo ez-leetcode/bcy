@@ -102,7 +102,7 @@ public class LikeServiceImpl implements LikeService{
             return "repeatWrong";
         }
         //删除likes
-        likesMapper.deleteById(likes.getId());
+        likesMapper.deleteById(likes.getNumber());
         //redis记录
         String ck = redisUtils.getValue("cosLikeCounts_" + number);
         String ck1 = redisUtils.getValue("cosHotLikeCounts_" + number);
@@ -157,7 +157,7 @@ public class LikeServiceImpl implements LikeService{
                 x.setUsername(user.getUsername());
                 x.setPhoto(user.getPhoto());
             }
-            CosPlay cosPlay = cosPlayMapper.selectById(x.getId());
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getNumber());
             if(cosPlay != null){
                 x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
             }

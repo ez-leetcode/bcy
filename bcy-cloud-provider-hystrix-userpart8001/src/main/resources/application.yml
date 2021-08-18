@@ -75,6 +75,14 @@ logging:
           parameters:
             AbstractSerializableParameter: error
 
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 4500
+
 
 mybatis-plus:
   configuration:

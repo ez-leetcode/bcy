@@ -5,9 +5,12 @@ import com.bcy.elasticsearch.service.CosService;
 import com.bcy.pojo.Result;
 import com.bcy.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RestController
 public class CosController {
@@ -17,11 +20,10 @@ public class CosController {
     private CosService cosService;
 
 
-    @RequestMapping("/es/test")
-    public Result<JSONObject> test(@RequestParam("index") String index){
+    @PostMapping("/es/test")
+    public Result<JSONObject> test(@RequestParam("index") String index)throws IOException {
         return ResultUtils.getResult(new JSONObject(), cosService.test(index));
     }
-
 
 
 }

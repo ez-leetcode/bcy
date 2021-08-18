@@ -3,6 +3,8 @@ package com.bcy.elasticsearch.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,13 @@ public class EsUtils {
             e.printStackTrace();
         }
         return exists;
+    }
+
+    public void createIndex(String indexName)throws IOException{
+        CreateIndexRequest request = new CreateIndexRequest(indexName);
+        CreateIndexResponse response = restHighLevelClient.indices().create(request,RequestOptions.DEFAULT);
+        log.info(response.index());
+        log.info(response.toString());
     }
 
 
