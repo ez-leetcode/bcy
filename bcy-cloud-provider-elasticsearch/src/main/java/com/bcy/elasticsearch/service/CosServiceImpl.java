@@ -1,5 +1,6 @@
 package com.bcy.elasticsearch.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bcy.elasticsearch.dto.Ck;
 import com.bcy.elasticsearch.dto.CosPlay;
 import com.bcy.elasticsearch.utils.EsUtils;
@@ -37,9 +38,8 @@ public class CosServiceImpl implements CosService{
     }
 
     @Override
-    public void searchCos(String keyword, Integer cnt, Integer page) throws IOException {
-        esUtils.CosSearch(keyword,cnt,page);
+    public JSONObject searchCos(String keyword, Integer cnt, Integer page) throws IOException {
+        return esUtils.CosSearch(keyword,cnt,page);
     }
-
 
 }

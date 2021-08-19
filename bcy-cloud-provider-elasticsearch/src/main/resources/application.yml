@@ -34,6 +34,8 @@ spring:
       username: elastic
       password: Yqc3585435854
       uris: https://es-k3rtclmf.public.tencentelasticsearch.com:9200
+  profiles:
+    active: dev
 
 #日志
 logging:
@@ -51,6 +53,15 @@ mybatis-plus:
 
 
 eureka:
+  instance:
+    #用ip代替实例名
+    prefer-ip-address: true
+    #实例的主机名
+    hostname: 1.117.75.49
+    #实例的ID规则
+    instance-id: 1.117.75.49:${spring.application.name}:${server.port}
+    #设置ip
+    ip-address: 1.117.75.49
   client:
     #不是注册中心都是true
     register-with-eureka: true

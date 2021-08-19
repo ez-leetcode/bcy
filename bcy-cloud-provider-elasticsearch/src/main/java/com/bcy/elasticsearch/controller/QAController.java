@@ -1,7 +1,40 @@
 package com.bcy.elasticsearch.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.bcy.elasticsearch.service.QAService;
+import com.bcy.pojo.Result;
+import com.bcy.utils.ResultUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+
+@Api(tags = "问答管理类")
+@Slf4j
+@RestController
 public class QAController {
 
+    @Autowired
+    private QAService qaService;
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword",value = "关键词",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "long",paramType = "query")
+    })
+    @ApiOperation(value = "问答搜索（会匹配标签内容和描述 拼音分词（搜拼音也能搜到） + ik细粒度分词）",notes = "success：成功 返回qaList （number：问答编号 id：发布用户id username：发布用户昵称 " +
+            "photo：头像 description：内容 title：标题 label：标签（字符串list） createTime：创建时间）")
+    @PostMapping("/es/searchQa")
+    public Result<JSONObject> searchQa(@RequestParam("keyword") String keyword, @RequestParam("cnt") Integer cnt,
+                                        @RequestParam("page") Integer page)throws IOException {
+        return ResultUtils.getResult(qaService.searchQa(keyword, cnt, page),"success");
+    }
 
 }

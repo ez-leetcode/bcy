@@ -8,6 +8,7 @@ import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
 import com.bcy.mq.CommentMsg;
+import com.bcy.mq.EsMsg;
 import com.bcy.mq.LikeMsg;
 import com.bcy.utils.CommentUtils;
 import com.bcy.utils.PhotoUtils;
@@ -75,6 +76,8 @@ public class CosServiceImpl implements CosService {
                     userMapper.updateById(user);
                 }
             }
+            //es更新
+            rabbitmqProducerService.sendEsMessage(new EsMsg(x,2));
         }
         //删除cos
         int result = cosPlayMapper.deleteBatchIds(numbers);
@@ -152,6 +155,11 @@ public class CosServiceImpl implements CosService {
         //插入cos
         cosPlayMapper.insert(new CosPlay(null,id,description,photoString,permission,null,null));
         QueryWrapper<CosPlay> wrapper = new QueryWrapper<>();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         wrapper.eq("id",id)
                 .eq("description",description)
                 .eq("photo",photoString)
@@ -195,6 +203,8 @@ public class CosServiceImpl implements CosService {
                 redisUtils.addKeyByTime("followNoRead_" + x,999);
             }
         }
+        //es更新
+        rabbitmqProducerService.sendEsMessage(new EsMsg(cosPlay.getNumber(),1));
         log.info("生成cos成功");
         return "success";
     }
@@ -621,11 +631,13 @@ public class CosServiceImpl implements CosService {
         if(cosPhoto != null){
             cosPlay.setPhoto(PhotoUtils.photoListToString(cosPhoto));
         }
-        if(permission != null && !permission.equals("")){
+        if(permission != null){
             cosPlay.setPermission(permission);
         }
         //更新cos
         cosPlayMapper.updateById(cosPlay);
+        //es更新
+        rabbitmqProducerService.sendEsMessage(new EsMsg(number,1));
         log.info("修改cos成功");
         return "success";
     }

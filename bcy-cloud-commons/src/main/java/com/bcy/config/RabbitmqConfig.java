@@ -69,4 +69,9 @@ public class RabbitmqConfig {
 
     public static final String WEBSOCKET_FANOUT_ROUTING_KEY = "websocket_fanout_routing_key";
 
+    public static final String ES_QUEUE_NAME = "es_queue";
+
+    public static final String ES_EXCHANGE_NAME = "es_exchange";
+
+    public static final String ES_ROUTING_KEY = "es_routing_key";
 }

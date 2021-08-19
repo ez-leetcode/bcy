@@ -3,6 +3,7 @@ package com.bcy.acgpart.service;
 import com.bcy.config.RabbitmqConfig;
 import com.bcy.mq.AtMsg;
 import com.bcy.mq.CommentMsg;
+import com.bcy.mq.EsMsg;
 import com.bcy.mq.LikeMsg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -43,5 +44,11 @@ public class RabbitmqProducerService {
         rabbitTemplate.convertAndSend(RabbitmqConfig.COMMENT_EXCHANGE_NAME,RabbitmqConfig.COMMENT_ROUTING_KEY,commentMsg,correlationData);
     }
 
+    public void sendEsMessage(EsMsg esMsg){
+        log.info("正在向消息队列中推送es更新");
+        log.info(esMsg.toString());
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend(RabbitmqConfig.ES_EXCHANGE_NAME,RabbitmqConfig.ES_ROUTING_KEY,esMsg,correlationData);
+    }
 
 }

@@ -44,7 +44,7 @@ public class CosController {
     @ApiOperation(value = "批量删除Cos（管理员用，如果违反规定就删除）（只有一个也扔这个接口~）",notes = "existWrong：讨论不存在 success：成功")
     @DeleteMapping("/acg/cos")
     public Result<JSONObject> deleteCos(@RequestParam("numbers")List<Long> numbers){
-        log.info("正在批量删除讨论" + numbers.toString());
+        log.info("正在批量删除讨论");
         return ResultUtils.getResult(new JSONObject(), cosService.deleteCos(numbers));
     }
 
@@ -106,7 +106,7 @@ public class CosController {
                                        @RequestParam(value = "description",required = false) String description,
                                        @RequestParam(value = "cosPhoto",required = false) List<String> cosPhoto,
                                        @RequestParam(value = "permission",required = false) Integer permission){
-        log.info("正在修改cos内容，用户：" + id  + " cos编号：" + number + " 描述：" + description + " 图片列表：" + cosPhoto.toString() + " 权限：" + permission);
+        log.info("正在修改cos内容，用户：" + id  + " cos编号：" + number + " 描述：" + description + " 权限：" + permission);
         return ResultUtils.getResult(new JSONObject(),cosService.patchCos(id, number, description, cosPhoto, permission));
     }
 

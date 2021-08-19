@@ -6,17 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-
-//是不是还要有标签
 
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class QaHistoryForList implements Serializable {
+@ToString
+public class QaForSearchList {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
@@ -32,7 +28,9 @@ public class QaHistoryForList implements Serializable {
 
     private String title;
 
-    private List<String> qaPhoto;
+    private String label;
+
+    private String qaPhoto;
 
     private Date createTime;
 

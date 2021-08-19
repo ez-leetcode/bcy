@@ -21,5 +21,4 @@ public class Ck {
 
     private String password;
 
-
 }

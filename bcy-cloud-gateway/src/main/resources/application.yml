@@ -47,6 +47,10 @@ spring:
           uri: http://47.107.108.55:8006
           predicates:
             - Path=/oauth/**
+        - id: es_routh
+          uri: http://1.117.75.49:8008
+          predicates:
+            - Path=/es/**
         - id: websocket_routh
           uri: ws://1.117.75.49:8007
           predicates:

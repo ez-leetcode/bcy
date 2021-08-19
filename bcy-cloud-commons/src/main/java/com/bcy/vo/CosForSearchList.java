@@ -10,13 +10,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-//是不是还要有标签
-
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class QaHistoryForList implements Serializable {
+@ToString
+public class CosForSearchList implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
@@ -30,9 +28,9 @@ public class QaHistoryForList implements Serializable {
 
     private String description;
 
-    private String title;
+    private String label;
 
-    private List<String> qaPhoto;
+    private String cosPhoto;
 
     private Date createTime;
 

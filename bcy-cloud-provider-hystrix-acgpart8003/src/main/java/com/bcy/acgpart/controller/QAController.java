@@ -242,7 +242,7 @@ public class QAController {
     @PostMapping("/acg/addAnswer")
     public Result<JSONObject> addAnswer(@RequestParam("id") Long id,@RequestParam("description") String description,
                                         @RequestParam("photo") List<String> photo,@RequestParam("number") Long number){
-        log.info("正在回答问题，用户：" + id + " 回答内容：" + description + " 图片：" + photo + " 问题编号：" + number);
+        log.info("正在回答问题，用户：" + id + " 回答内容：" + description + " 问题编号：" + number);
         return ResultUtils.getResult(new JSONObject(),qaService.addAnswer(id,number,description,photo));
     }
 

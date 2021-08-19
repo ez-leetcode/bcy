@@ -1,4 +1,4 @@
-package com.bcy.acgpart.pojo;
+package com.bcy.elasticsearch.dto;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;

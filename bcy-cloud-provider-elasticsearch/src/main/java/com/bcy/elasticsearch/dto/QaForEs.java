@@ -1,8 +1,5 @@
 package com.bcy.elasticsearch.dto;
 
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,32 +10,30 @@ import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Data
-public class CosPlayForEs {
+@ToString
+public class QaForEs {
 
-    @TableId(type = IdType.ID_WORKER)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
-    private String description;
+    private String title;
 
-    private String photo;
+    private String description;
 
     //标签内容
     private String label;
 
+    private String photo;
+
     private Date createTime;
 
-    private Date updateTime;
-
 }
-// es索引创建如下 拼音分词器 + 细粒度ik分词器
-/*
-PUT cosplay
+/* es索引创建如下 拼音分词器 + 细粒度ik分词器
+PUT qa
 {
       "settings": {
         "analysis": {
@@ -57,6 +52,7 @@ PUT cosplay
             }
         }
     },
+
     "mappings" : {
       "dynamic_templates" : [
         {
@@ -111,8 +107,9 @@ PUT cosplay
         "photo" : {
           "type" : "keyword"
         },
-        "updateTime" : {
-          "type" : "text"
+        "title" :{
+          "type" : "text",
+          "analyzer" : "ik_pinyin_analyzer"
         }
       }
   }

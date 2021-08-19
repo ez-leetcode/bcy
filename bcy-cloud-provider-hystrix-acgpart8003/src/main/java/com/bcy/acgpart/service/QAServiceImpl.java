@@ -7,6 +7,7 @@ import com.bcy.acgpart.mapper.*;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.mq.EsMsg;
 import com.bcy.mq.LikeMsg;
 import com.bcy.utils.CommentUtils;
 import com.bcy.utils.PhotoUtils;
@@ -446,11 +447,18 @@ public class QAServiceImpl implements QAService{
                 .eq("description",description)
                 .eq("id",id)
                 .eq("photo",photoString);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Qa qa = qaMapper.selectOne(wrapper);
         //标签插入
         for(String x:label){
             qaLabelMapper.insert(new QaLabel(null,qa.getNumber(),x,null));
         }
+        //es更新
+        rabbitmqProducerService.sendEsMessage(new EsMsg(qa.getNumber(),3));
         log.info("生成新的问答成功");
         return "success";
     }
