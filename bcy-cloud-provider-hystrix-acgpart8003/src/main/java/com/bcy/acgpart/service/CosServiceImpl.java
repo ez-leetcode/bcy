@@ -64,6 +64,7 @@ public class CosServiceImpl implements CosService {
     @Autowired
     private FansMapper fansMapper;
 
+    //这个接口暂时不用
     @Override
     public String deleteCos(List<Long> numbers) {
         //先删动态
@@ -81,14 +82,47 @@ public class CosServiceImpl implements CosService {
         }
         //删除cos
         int result = cosPlayMapper.deleteBatchIds(numbers);
-        //删除cosCounts
-        cosCountsMapper.deleteBatchIds(numbers);
         if(result == 0){
             log.error("删除cos失败，cos不存在");
             return "existWrong";
         }
         //通知用户待完成
         log.info("删除cos成功，共删除：" + result + "条");
+        return "success";
+    }
+
+    @Override
+    public String deleteCosByOwner(Long id, Long number) {
+        CosPlay cosPlay = cosPlayMapper.selectById(number);
+        if(cosPlay == null){
+            log.error("删除cos失败，cos不存在");
+            return "existWrong";
+        }
+        if(!cosPlay.getId().equals(id)){
+            log.error("删除cos失败，用户不正确");
+            return "userWrong";
+        }
+        //删除cos
+        cosPlayMapper.deleteById(cosPlay.getId());
+        //删除cosCounts
+        cosCountsMapper.deleteById(cosPlay.getId());
+        //删除circleCos
+        QueryWrapper<CircleCos> wrapper = new QueryWrapper<>();
+        wrapper.eq("cos_number",number);
+        List<CircleCos> circleCosList = circleCosMapper.selectList(wrapper);
+        //减少发布次数
+        for(CircleCos x:circleCosList){
+            String ck = redisUtils.getValue("circlePostCounts_" + x.getCircleName());
+            if(ck == null){
+                Circle circle = circleMapper.selectById(x.getCircleName());
+                if(circle != null){
+                    redisUtils.saveByHoursTime("circlePostCounts_" + x.getCircleName(),circle.getCircleName(),12);
+                }
+                redisUtils.subKeyByTime("circlePostCounts_" + x.getCircleName(),12);
+            }
+        }
+        //es更新
+        rabbitmqProducerService.sendEsMessage(new EsMsg(number,2));
         return "success";
     }
 
@@ -146,10 +180,6 @@ public class CosServiceImpl implements CosService {
         }
         //加一
         redisUtils.saveByHoursTime("generateCos_" + id,String.valueOf(cosCounts + 1),24);
-        //个人动态加1
-        User user = userMapper.selectById(id);
-        user.setMomentCounts(user.getMomentCounts() + 1);
-        userMapper.updateById(user);
         //list转string
         String photoString = PhotoUtils.photoListToString(photo);
         //插入cos
@@ -172,6 +202,13 @@ public class CosServiceImpl implements CosService {
         }
         //插入cos计数
         cosCountsMapper.insert(new CosCounts(cosPlay.getNumber(),0,0,0,0,null));
+        //个人动态加1
+        String ck2 = redisUtils.getValue("momentCounts_" + id);
+        User user = userMapper.selectById(id);
+        if(ck2 == null){
+            redisUtils.saveByHoursTime("momentCounts_" + id,user.getMomentCounts().toString(),12);
+        }
+        redisUtils.addKeyByTime("momentCounts_" + id,12);
         //插入发布
         for(String x:label){
             Circle circle = circleMapper.selectById(x);
@@ -450,7 +487,7 @@ public class CosServiceImpl implements CosService {
             cosComment1 = cosCommentList.get(0);
         }
         //添加父级评论评论数
-        if(fatherNumber != null && fatherNumber != 0){
+        if(fatherNumber != 0){
             String ck = redisUtils.getValue("cosCommentCommentCounts_" + fatherNumber);
             if(ck == null){
                 CosComment cosComment = cosCommentMapper.selectById(fatherNumber);
@@ -471,7 +508,7 @@ public class CosServiceImpl implements CosService {
         redisUtils.addKeyByTime("cosCommentCounts_" + cosNumber,12);
         //推送
         User user = userMapper.selectById(id);
-        if(fatherNumber == null || fatherNumber == 0){
+        if(fatherNumber == 0){
             //是cos下的评论
             CosPlay cosPlay = cosPlayMapper.selectById(cosNumber);
             //这个number给评论编号
@@ -479,7 +516,7 @@ public class CosServiceImpl implements CosService {
             rabbitmqProducerService.sendCommentMessage(new CommentMsg(cosComment1.getNumber(), cosPlay.getId(),user.getUsername(),description));
         }else{
             CosComment cosComment;
-            if(replyNumber == null || replyNumber == 0){
+            if(replyNumber == 0){
                 //评论下的评论，给父级评论
                 cosComment = cosCommentMapper.selectById(fatherNumber);
             }else{

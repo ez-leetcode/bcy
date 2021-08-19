@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface CosPlayMapper extends BaseMapper<CosPlay> {
 
-    @Select("SELECT b.username,b.photo,b.id,a.description,b.number,b.create_time FROM cos_play as a , user as b WHERE b.id = #{id} AND a.id = b.id ORDER BY a.create_time DESC")
+    @Select("SELECT b.username,b.photo,b.id,a.description,a.number,a.create_time FROM cos_play as a , user as b WHERE b.id = #{id} AND a.id = b.id ORDER BY a.create_time DESC")
     List<CosHomePageForList> getUserCosList(@Param("id") Long id, Page<CosHomePageForList> page);
 
 }

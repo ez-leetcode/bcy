@@ -204,4 +204,7 @@ public interface AcgFeignService {
     @GetMapping("/acg/qaAnswerCountsList")
     Result<JSONObject> getQaAnswerCountsList(@RequestParam(value = "id",required = false) Long id,
                                                     @RequestParam("numbers") List<Long> numbers);
+
+    @DeleteMapping("/acg/cosOwner")
+    Result<JSONObject> deleteCosByOwner(@RequestParam("id") Long id,@RequestParam("number") Long number);
 }

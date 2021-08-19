@@ -46,6 +46,7 @@ public class FavorServiceImpl implements FavorService{
             if(cosPlay != null){
                 x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
                 x.setDescription(cosPlay.getDescription());
+                x.setCreateTime(cosPlay.getCreateTime());
             }
         }
         jsonObject.put("favorList",cosForFavorList);

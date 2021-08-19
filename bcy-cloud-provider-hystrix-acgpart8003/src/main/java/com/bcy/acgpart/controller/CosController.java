@@ -41,11 +41,23 @@ public class CosController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "numbers",value = "讨论编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "批量删除Cos（管理员用，如果违反规定就删除）（只有一个也扔这个接口~）",notes = "existWrong：讨论不存在 success：成功")
+    @ApiOperation(value = "批量删除Cos（管理员用，如果违反规定就删除）（只有一个也扔这个接口~）",notes = "existWrong：cos不存在 success：成功")
     @DeleteMapping("/acg/cos")
     public Result<JSONObject> deleteCos(@RequestParam("numbers")List<Long> numbers){
-        log.info("正在批量删除讨论");
+        log.info("正在批量删除cos");
         return ResultUtils.getResult(new JSONObject(), cosService.deleteCos(numbers));
+    }
+
+    @HystrixCommand
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "number",value = "cos编号",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "作者删除cos",notes = "userWrong：用户不正确 existWrong：cos不存在 success：成功")
+    @DeleteMapping("/acg/cosOwner")
+    public Result<JSONObject> deleteCosByOwner(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        log.info("正在作者删除cos，用户：" + id + " cos：" + number);
+        return ResultUtils.getResult(new JSONObject(),cosService.deleteCosByOwner(id, number));
     }
 
     @HystrixCommand

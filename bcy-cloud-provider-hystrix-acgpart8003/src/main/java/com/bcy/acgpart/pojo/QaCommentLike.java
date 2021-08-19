@@ -1,6 +1,8 @@
 package com.bcy.acgpart.pojo;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -31,6 +33,7 @@ public class QaCommentLike implements Serializable {
     @ApiModelProperty("点赞人id")
     private Long id;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty("点赞时间")
     private Date createTime;
 

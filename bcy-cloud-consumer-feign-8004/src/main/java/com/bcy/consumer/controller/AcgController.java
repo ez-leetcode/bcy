@@ -313,4 +313,9 @@ public class AcgController {
                                                     @RequestParam("numbers") List<Long> numbers){
         return acgFeignService.getQaAnswerCountsList(id, numbers);
     }
+
+    @DeleteMapping("/acg/cosOwner")
+    public Result<JSONObject> deleteCosByOwner(@RequestParam("id") Long id,@RequestParam("number") Long number){
+        return acgFeignService.deleteCosByOwner(id, number);
+    }
 }

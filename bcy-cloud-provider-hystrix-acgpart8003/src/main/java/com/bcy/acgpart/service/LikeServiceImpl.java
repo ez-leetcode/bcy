@@ -160,6 +160,7 @@ public class LikeServiceImpl implements LikeService{
             CosPlay cosPlay = cosPlayMapper.selectById(x.getNumber());
             if(cosPlay != null){
                 x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
+                x.setCreateTime(cosPlay.getCreateTime());
             }
         }
         jsonObject.put("likeCosList",cosLikeForList);

@@ -30,6 +30,6 @@ public class CosForFavor implements Serializable {
 
     private List<String> cosPhoto;
 
-    private Date create_time;
+    private Date createTime;
 
 }

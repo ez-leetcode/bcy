@@ -51,7 +51,7 @@ public class HomePageController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
-    @HystrixCommand
+    //@HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId",value = "该用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),

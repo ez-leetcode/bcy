@@ -57,8 +57,18 @@ public class FansServiceImpl implements FansService{
         //添加关注
         fansMapper.insert(new Fans(null,fromId,toId,null));
         //修改数量
+        String ck = redisUtils.getValue("fansCounts_" + toId);
+        if(ck == null){
+            User user = userMapper.selectById(toId);
+            redisUtils.saveByHoursTime("fansCounts_" + toId,user.getFansCounts().toString(),12);
+        }
+        String ck1 = redisUtils.getValue("followCounts_" + fromId);
+        if(ck1 == null){
+            User user = userMapper.selectById(fromId);
+            redisUtils.saveByHoursTime("followCounts_" + fromId,user.getFollowCounts().toString(),12);
+        }
         redisUtils.addKeyByTime("fansCounts_" + toId,12);
-        redisUtils.subKeyByTime("followCounts_" + fromId,12);
+        redisUtils.addKeyByTime("followCounts_" + fromId,12);
         //推送添加粉丝信息
         UserSetting userSetting = userSettingMapper.selectById(toId);
         if(userSetting != null && userSetting.getPushFans() == 1){
@@ -83,10 +93,20 @@ public class FansServiceImpl implements FansService{
             log.error("移除关注失败，用户未被关注");
             return "repeatWrong";
         }
-        fansMapper.delete(wrapper);
+        fansMapper.deleteById(fans.getNumber());
+        String ck1 = redisUtils.getValue("followCounts_" + fromId);
+        if(ck1 == null){
+            User user = userMapper.selectById(fromId);
+            redisUtils.saveByHoursTime("followCounts_" + fromId,user.getFollowCounts().toString(),12);
+        }
+        String ck = redisUtils.getValue("fansCounts_" + toId);
+        if(ck == null){
+            User user = userMapper.selectById(toId);
+            redisUtils.saveByHoursTime("fansCounts_" + toId,user.getFansCounts().toString(),12);
+        }
         //修改数量
         redisUtils.subKeyByTime("fansCounts_" + toId,12);
-        redisUtils.addKeyByTime("followCounts_" + fromId,12);
+        redisUtils.subKeyByTime("followCounts_" + fromId,12);
         log.info("取消关注成功");
         return "success";
     }

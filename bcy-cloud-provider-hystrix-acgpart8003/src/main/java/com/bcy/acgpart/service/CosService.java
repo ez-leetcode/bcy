@@ -9,6 +9,8 @@ public interface CosService {
 
     String deleteCos(List<Long> numbers);
 
+    String deleteCosByOwner(Long id,Long number);
+
     JSONObject getCosCountsList(Long id,List<Long> number);
 
     String cosPhotoUpload(MultipartFile file);
