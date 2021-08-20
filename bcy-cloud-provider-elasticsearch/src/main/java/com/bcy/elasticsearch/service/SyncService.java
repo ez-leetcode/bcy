@@ -1,16 +1,11 @@
 package com.bcy.elasticsearch.service;
 
-import com.bcy.elasticsearch.dto.CosPlay;
-import com.bcy.elasticsearch.dto.CosPlayForEs;
-import com.bcy.elasticsearch.dto.Qa;
-import com.bcy.elasticsearch.dto.QaForEs;
-import com.bcy.elasticsearch.mapper.CircleCosMapper;
-import com.bcy.elasticsearch.mapper.CosPlayMapper;
-import com.bcy.elasticsearch.mapper.QaLabelMapper;
-import com.bcy.elasticsearch.mapper.QaMapper;
+import com.bcy.elasticsearch.dto.*;
+import com.bcy.elasticsearch.mapper.*;
 import com.bcy.elasticsearch.utils.EsUtils;
 import com.bcy.utils.PhotoUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.common.recycler.Recycler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +31,9 @@ public class SyncService {
 
     @Autowired
     private EsUtils esUtils;
+
+    @Autowired
+    private CircleMapper circleMapper;
 
     //1.cosplay 2.qa
     public void update(Long number,Integer type) throws IOException {
@@ -64,9 +62,31 @@ public class SyncService {
         log.info("更新es数据成功，类型：" + type + " 编号：" + number);
     }
 
+    //3.circle
+    public void updateCircle(String circleName)throws IOException{
+        Circle circle = circleMapper.selectById(circleName);
+        if(circle != null){
+            CircleForEs circleForEs = new CircleForEs(circle.getCircleName(),circle.getDescription(),circle.getPhoto(),circle.getNickName(),
+                    circle.getPostCounts(),circle.getFollowCounts(),circle.getCreateTime());
+            log.info(circleForEs.toString());
+            //时间作为主键好了
+            esUtils.insertData(circleForEs,3,circle.getCreateTime().getTime());
+        }
+        log.info("更新圈子数据成功，圈子：" + circleName);
+    }
+
     public void delete(Long number,Integer type) throws IOException{
         esUtils.deleteData(type,number);
         log.info("删除es数据成功，类型：" + type + " 编号：" + number);
+    }
+
+
+    public void deleteCircleName(String circleName)throws IOException{
+        Circle circle = circleMapper.selectById(circleName);
+        if(circle != null){
+            esUtils.deleteData(3,circle.getCreateTime().getTime());
+        }
+        log.info("删除es圈子数据成功，圈子：" + circleName);
     }
 
 }

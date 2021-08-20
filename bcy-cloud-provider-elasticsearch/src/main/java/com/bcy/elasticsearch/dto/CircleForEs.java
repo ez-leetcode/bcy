@@ -1,9 +1,5 @@
 package com.bcy.elasticsearch.dto;
 
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,29 +11,26 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Data
-public class CosPlayForEs {
+public class CircleForEs {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long number;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long id;
+    private String circleName;
 
     private String description;
 
     private String photo;
 
-    //标签内容
-    private String label;
+    private String nickName;
+
+    private Integer postCounts;
+
+    private Integer followCounts;
 
     private Date createTime;
-
-    private Date updateTime;
 
 }
 // es索引创建如下 拼音分词器 + 细粒度ik分词器
 /*
-PUT cosplay
+PUT circle
 {
       "settings": {
         "analysis": {
@@ -56,6 +49,7 @@ PUT cosplay
             }
         }
     },
+
     "mappings" : {
       "dynamic_templates" : [
         {
@@ -97,23 +91,25 @@ PUT cosplay
           "type" : "text",
           "analyzer" : "ik_pinyin_analyzer"
         },
-        "label" : {
+        "nickName" : {
           "type" : "text",
           "analyzer" : "ik_pinyin_analyzer"
         },
-        "id" : {
-          "type" : "long"
-        },
-        "number" : {
-          "type" : "long"
+        "circleName" : {
+          "type" : "text",
+          "analyzer" : "ik_pinyin_analyzer"
         },
         "photo" : {
           "type" : "keyword"
         },
-        "updateTime" : {
-          "type" : "text"
+        "postCounts" : {
+          "type" : "long"
+        },
+        "followCounts" : {
+          "type" : "long"
         }
       }
   }
 }
+
  */

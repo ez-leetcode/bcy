@@ -51,7 +51,7 @@ public class HomePageController {
         return ResultUtils.getResult(jsonObject,"success");
     }
 
-    //@HystrixCommand
+    @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId",value = "该用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
@@ -73,7 +73,7 @@ public class HomePageController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "keyword",value = "搜索关键词（不能给空）",required = true,dataType = "string",paramType = "query")
     })
-    @ApiOperation(value = "搜索用户（默认搜索不到自己）",notes = "success：成功 返回data searchUserList（id：用户id username：昵称 photo：头像 粉丝数和是否关注在统一接口里获取 ）")
+    @ApiOperation(value = "搜索用户（默认搜索不到自己，用户未登录不能用）",notes = "success：成功 返回data searchUserList（id：用户id username：昵称 photo：头像 粉丝数和是否关注在统一接口里获取 ）")
     @GetMapping("/community/searchUser")
     public Result<JSONObject> searchUser(@RequestParam("id") Long id,@RequestParam("page") Long page,
                                          @RequestParam("cnt") Long cnt,@RequestParam("keyword") String keyword){

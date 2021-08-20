@@ -74,4 +74,10 @@ public class RabbitmqConfig {
     public static final String ES_EXCHANGE_NAME = "es_exchange";
 
     public static final String ES_ROUTING_KEY = "es_routing_key";
+
+    public static final String ES_CIRCLE_QUEUE_NAME = "es_circle_queue";
+
+    public static final String ES_CIRCLE_EXCHANGE_NAME = "es_circle_exchange";
+
+    public static final String ES_CIRCLE_ROUTING_KEY = "es_circle_routing_key";
 }

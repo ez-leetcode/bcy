@@ -5,9 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.acgpart.mapper.CircleFollowMapper;
 import com.bcy.acgpart.mapper.CircleMapper;
+import com.bcy.acgpart.mapper.SearchHistoryMapper;
 import com.bcy.acgpart.pojo.Circle;
 import com.bcy.acgpart.pojo.CircleFollow;
+import com.bcy.acgpart.pojo.SearchHistory;
 import com.bcy.acgpart.utils.OssUtils;
+import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.mq.EsMsgForCircle;
 import com.bcy.vo.CircleInfoForSearchList;
 import com.bcy.vo.PersonalCircleForList;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +31,15 @@ public class CircleServiceImpl implements CircleService{
     @Autowired
     private CircleFollowMapper circleFollowMapper;
 
+    @Autowired
+    private SearchHistoryMapper searchHistoryMapper;
+
+    @Autowired
+    private RabbitmqProducerService rabbitmqProducerService;
+
+    @Autowired
+    private RedisUtils redisUtils;
+
     @Override
     public String circlePhotoUpload(MultipartFile file, Long id) {
         return OssUtils.uploadPhoto(file,"circlePhoto");
@@ -41,6 +54,8 @@ public class CircleServiceImpl implements CircleService{
         }
         //创建圈子
         circleMapper.insert(new Circle(circleName,description,photo,nickName,0,0,null));
+        //es数据同步
+        rabbitmqProducerService.sendEsCircleMessage(new EsMsgForCircle(circleName,1));
         return "success";
     }
 
@@ -49,6 +64,7 @@ public class CircleServiceImpl implements CircleService{
         Circle circle = circleMapper.selectById(circleName);
         if(circle == null){
             log.error("关注圈子失败，圈子不存在");
+            return "existWrong";
         }
         QueryWrapper<CircleFollow> wrapper = new QueryWrapper<>();
         wrapper.eq("id",id)
@@ -62,6 +78,7 @@ public class CircleServiceImpl implements CircleService{
         circle.setFollowCounts(circle.getFollowCounts() + 1);
         circleMapper.updateById(circle);
         circleFollowMapper.insert(new CircleFollow(null,circleName,id,null));
+        rabbitmqProducerService.sendEsCircleMessage(new EsMsgForCircle(circleName,1));
         log.info("关注圈子成功");
         return "success";
     }
@@ -84,6 +101,7 @@ public class CircleServiceImpl implements CircleService{
         circle.setFollowCounts(circle.getFollowCounts() - 1);
         circleMapper.updateById(circle);
         circleFollowMapper.delete(wrapper);
+        rabbitmqProducerService.sendEsCircleMessage(new EsMsgForCircle(circleName,1));
         log.info("取消关注圈子成功");
         return "success";
     }
@@ -121,6 +139,22 @@ public class CircleServiceImpl implements CircleService{
         JSONObject jsonObject = new JSONObject();
         Page<CircleInfoForSearchList> page1 = new Page<>(page,cnt);
         List<CircleInfoForSearchList> circleInfoForSearchListList = circleMapper.searchCircle(keyword,page1);
+        //存入搜索历史
+        QueryWrapper<SearchHistory> wrapper = new QueryWrapper<>();
+        wrapper.eq("id",id)
+                .eq("keyword",keyword);
+        SearchHistory searchHistory = searchHistoryMapper.selectOne(wrapper);
+        if(searchHistory != null){
+            searchHistory.setReClick(searchHistory.getReClick() + 1);
+            searchHistoryMapper.updateById(searchHistory);
+        }else{
+            //插入历史
+            searchHistoryMapper.insert(new SearchHistory(null,id,keyword,0,null));
+            //维护redis
+            Page<String> page2 = new Page<>(1,20);
+            List<String> historyList = searchHistoryMapper.getHistoryKeywordList(id,page2);
+            redisUtils.saveByHoursTime("keyword_" + id,historyList.toString(),48);
+        }
         jsonObject.put("searchCircleList",circleInfoForSearchListList);
         jsonObject.put("counts",page1.getTotal());
         jsonObject.put("pages",page1.getPages());

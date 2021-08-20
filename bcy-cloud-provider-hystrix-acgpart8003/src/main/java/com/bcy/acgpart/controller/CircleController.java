@@ -133,7 +133,7 @@ public class CircleController {
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "keyword",value = "关键词（不要带空）",required = true,dataType = "string",paramType = "query")
     })
-    @ApiOperation(value = "搜索圈子",notes = "success：成功 返回searchCircleList（circleName：圈子名 photo：圈子图片 description：圈子描述）")
+    @ApiOperation(value = "搜索圈子（屏蔽圈子搜不到，所以要带id）",notes = "success：成功 返回searchCircleList（circleName：圈子名 photo：圈子图片 description：圈子描述）")
     @GetMapping("/acg/searchCircle")
     public Result<JSONObject> searchCircle(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                            @RequestParam("page") Long page,@RequestParam("keyword") String keyword){

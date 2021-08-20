@@ -7,6 +7,7 @@ import com.bcy.acgpart.mapper.*;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
+import com.bcy.mq.AtMsg;
 import com.bcy.mq.CommentMsg;
 import com.bcy.mq.EsMsg;
 import com.bcy.mq.LikeMsg;
@@ -522,6 +523,7 @@ public class CosServiceImpl implements CosService {
             }else{
                 //评论下的回复评论
                 cosComment = cosCommentMapper.selectById(replyNumber);
+                rabbitmqProducerService.sendAtMessage(new AtMsg(fatherNumber,user.getUsername(),toId));
             }
             rabbitmqProducerService.sendCommentMessage(new CommentMsg(fatherNumber,cosComment.getFromId(),user.getUsername(),description));
         }

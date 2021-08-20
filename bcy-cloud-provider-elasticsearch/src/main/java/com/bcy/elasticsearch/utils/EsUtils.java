@@ -4,17 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bcy.elasticsearch.dto.*;
 import com.bcy.elasticsearch.mapper.UserMapper;
-import com.bcy.utils.PhotoUtils;
 import com.bcy.vo.CosForSearchList;
 import com.bcy.vo.QaForSearchList;
-import io.micrometer.core.instrument.search.Search;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -22,13 +19,10 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.FuzzyQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -76,6 +70,10 @@ public class EsUtils {
             request.index("cosplay");
         }else if(type == 2){
             request.index("qa");
+        }else if(type == 3){
+            request.index("circle");
+        }else{
+            request.index("user");
         }
         String jsonString = JSON.toJSONString(object);
         log.info("待插入数据：" + jsonString);
@@ -93,6 +91,10 @@ public class EsUtils {
             request.index("cosplay");
         }else if(type == 2){
             request.index("qa");
+        }else if(type == 3){
+            request.index("circle");
+        }else{
+            request.index("user");
         }
         log.info("待删除数据类型：" + type + " 编号：" + number);
         DeleteResponse response = restHighLevelClient.delete(request,RequestOptions.DEFAULT);
@@ -144,6 +146,42 @@ public class EsUtils {
         }
         jsonObject.put("counts",response.getHits().totalHits);
         log.info("搜索问答成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    //circle根据圈子名 描述 昵称搜索
+    public JSONObject RecommendCircle(String searchWord,Integer cnt,Integer page)throws IOException{
+        JSONObject jsonObject = new JSONObject();
+        SearchRequest request = new SearchRequest("circle");
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        //分页
+        sourceBuilder.from(page - 1);
+        sourceBuilder.size(cnt);
+        //搜索条件
+        sourceBuilder.query(QueryBuilders.multiMatchQuery(searchWord,"circleName","nickName","description"));
+        request.source(sourceBuilder);
+        SearchResponse response = restHighLevelClient.search(request,RequestOptions.DEFAULT);
+        log.info(response.toString());
+        log.info("搜索情况：" + response.status().toString() + " 共：" + response.getHits().totalHits + "条记录");
+        List<CircleForEs> circleForEsList = new LinkedList<>();
+        if(response.getHits().totalHits > 0){
+            SearchHits searchHits = response.getHits();
+            for(SearchHit hit:searchHits){
+                CircleForEs circleForEs = JSON.parseObject(hit.getSourceAsString(),CircleForEs.class);
+                circleForEsList.add(circleForEs);
+                log.info(circleForEs.toString());
+            }
+        }
+        long ck = response.getHits().totalHits / cnt;
+        long ck1 = response.getHits().totalHits % cnt;
+        if(ck1 != 0){
+            ck ++;
+        }
+        jsonObject.put("recommendCircleList",circleForEsList);
+        jsonObject.put("pages",ck);
+        jsonObject.put("counts",response.getHits().totalHits);
+        log.info("获取推荐圈子成功");
         log.info(jsonObject.toString());
         return jsonObject;
     }

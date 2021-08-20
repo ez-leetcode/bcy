@@ -1,10 +1,7 @@
 package com.bcy.acgpart.service;
 
 import com.bcy.config.RabbitmqConfig;
-import com.bcy.mq.AtMsg;
-import com.bcy.mq.CommentMsg;
-import com.bcy.mq.EsMsg;
-import com.bcy.mq.LikeMsg;
+import com.bcy.mq.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -49,6 +46,13 @@ public class RabbitmqProducerService {
         log.info(esMsg.toString());
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
         rabbitTemplate.convertAndSend(RabbitmqConfig.ES_EXCHANGE_NAME,RabbitmqConfig.ES_ROUTING_KEY,esMsg,correlationData);
+    }
+
+    public void sendEsCircleMessage(EsMsgForCircle esMsgForCircle){
+        log.info("正在向消息队列中推送es圈子更新");
+        log.info(esMsgForCircle.toString());
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend(RabbitmqConfig.ES_CIRCLE_EXCHANGE_NAME,RabbitmqConfig.ES_CIRCLE_ROUTING_KEY,esMsgForCircle,correlationData);
     }
 
 }

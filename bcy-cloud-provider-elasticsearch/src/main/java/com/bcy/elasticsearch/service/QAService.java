@@ -6,6 +6,6 @@ import java.io.IOException;
 
 public interface QAService {
 
-    JSONObject searchQa(String keyword,Integer cnt,Integer page)throws IOException;
+    JSONObject searchQa(Long id, String keyword,Integer cnt,Integer page)throws IOException;
 
 }
