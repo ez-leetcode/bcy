@@ -8,6 +8,8 @@ public interface FavorService {
 
     JSONObject getFavorList(Long id, Long page, Long cnt);
 
+    JSONObject getFavorQaList(Long id,Long page,Long cnt);
+
     String addFavor(Long id,Long number);
 
     String deleteFavor(Long id,Long number);

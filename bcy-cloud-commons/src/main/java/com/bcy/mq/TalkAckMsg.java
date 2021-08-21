@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class TalkAckMsg implements Serializable {
+public class TalkAckMsg implements Serializable{
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;

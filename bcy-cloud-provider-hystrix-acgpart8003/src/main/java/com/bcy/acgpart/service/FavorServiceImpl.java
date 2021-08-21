@@ -3,17 +3,16 @@ package com.bcy.acgpart.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.bcy.acgpart.mapper.CircleCosMapper;
-import com.bcy.acgpart.mapper.CosCountsMapper;
-import com.bcy.acgpart.mapper.CosPlayMapper;
-import com.bcy.acgpart.mapper.FavorMapper;
+import com.bcy.acgpart.mapper.*;
 import com.bcy.acgpart.pojo.CosPlay;
 import com.bcy.acgpart.pojo.CosCounts;
 import com.bcy.acgpart.pojo.Favor;
+import com.bcy.acgpart.pojo.Qa;
 import com.bcy.acgpart.utils.RedisUtils;
 import com.bcy.utils.PhotoUtils;
 import com.bcy.vo.CosForFavor;
 import com.bcy.vo.CosJudgeFavorForList;
+import com.bcy.vo.QaFollowForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +38,15 @@ public class FavorServiceImpl implements FavorService{
 
     @Autowired
     private CircleCosMapper circleCosMapper;
+
+    @Autowired
+    private QaFollowMapper qaFollowMapper;
+
+    @Autowired
+    private QaLabelMapper qaLabelMapper;
+
+    @Autowired
+    private QaMapper qaMapper;
 
     @Override
     public JSONObject getFavorList(Long id, Long page, Long cnt) {
@@ -168,6 +176,30 @@ public class FavorServiceImpl implements FavorService{
         jsonObject.put("judgeFavorList",judgeFavorList);
         log.info("获取收藏情况成功");
         log.info(judgeFavorList.toString());
+        return jsonObject;
+    }
+
+    @Override
+    public JSONObject getFavorQaList(Long id, Long page, Long cnt) {
+        JSONObject jsonObject = new JSONObject();
+        Page<QaFollowForList> page1 = new Page<>(page,cnt);
+        List<QaFollowForList> qaFollowForListList = qaFollowMapper.getQaFollowList(id,page1);
+        for(QaFollowForList x:qaFollowForListList){
+            List<String> qaList = qaLabelMapper.getAllCircleNameFromQaNumber(x.getQaNumber());
+            if(qaList != null){
+                x.setLabel(qaList);
+            }
+            Qa qa = qaMapper.selectById(x.getQaNumber());
+            if(qa != null){
+                x.setTitle(qa.getTitle());
+                x.setDescription(qa.getDescription());
+            }
+        }
+        jsonObject.put("qaFollowList",qaFollowForListList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取收藏问答列表成功");
+        log.info(jsonObject.toString());
         return jsonObject;
     }
 

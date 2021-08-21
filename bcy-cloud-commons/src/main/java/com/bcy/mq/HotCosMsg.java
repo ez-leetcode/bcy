@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ToString
 @Data
-public class HotCosMsg implements Serializable {
+public class HotCosMsg implements Serializable{
 
     private Long number;
 

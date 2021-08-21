@@ -16,7 +16,7 @@ import java.util.List;
 public interface AcgFeignService {
 
     @PostMapping(value = "/acg/circlePhoto",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Result<JSONObject> circlePhotoUpload(@RequestPart("photo") MultipartFile file, @RequestParam("id") Long id);
+    Result<JSONObject> circlePhotoUpload(@RequestPart("photo") MultipartFile file, @RequestParam("id") String id);
 
     @PostMapping("/acg/circle")
     Result<JSONObject> createCircle(@RequestParam("id") Long id, @RequestParam("circleName") String circleName,
@@ -207,4 +207,12 @@ public interface AcgFeignService {
 
     @DeleteMapping("/acg/cosOwner")
     Result<JSONObject> deleteCosByOwner(@RequestParam("id") Long id,@RequestParam("number") Long number);
+
+    @GetMapping("/acg/favorQaList")
+    Result<JSONObject> getFavorQaList(@RequestParam("id") Long id,@RequestParam("page") Long page,
+                                             @RequestParam("cnt") Long cnt);
+
+    @GetMapping("/acg/judgeCircle")
+    Result<JSONObject> judgeCircle(@RequestParam("id") Long id, @RequestParam("circleNames")List<String> circleNames);
+
 }

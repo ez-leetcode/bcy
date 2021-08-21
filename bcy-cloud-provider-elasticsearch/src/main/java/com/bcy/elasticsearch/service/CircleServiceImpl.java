@@ -25,13 +25,16 @@ public class CircleServiceImpl implements CircleService{
         //获取关键词
         JSONObject jsonObject1 = cosService.getSearchKeywordList(id);
         SearchWordForJson searchWordForJson = JSONObject.parseObject(jsonObject1.toString(),SearchWordForJson.class);
+        String s = searchWordForJson.getKeywordList();
+        if(s == null || s.equals("[]")){
+            s += "cos,绘画,写作";
+        }
         try {
-            jsonObject = esUtils.RecommendCircle(searchWordForJson.getKeywordList(),cnt,page);
+            log.info(s);
+            jsonObject = esUtils.RecommendCircle(s,cnt,page);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.info("获取推荐圈子成功");
-        log.info(jsonObject.toString());
         return jsonObject;
     }
 

@@ -29,8 +29,8 @@ public class WebsocketService {
     @Resource
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
 
-    @Autowired
-    private RabbitmqProducerService rabbitmqProducerService;
+    @Resource
+    private RabbitmqProducerService rabbitmqProducerService = SpringUtils.getBean(RabbitmqProducerService.class);
 
     @Autowired
     private UserSettingMapper userSettingMapper;
@@ -92,6 +92,7 @@ public class WebsocketService {
         //把message转成talkMsg
         //rabbitmqWebsocketProductConfig.sendMessageToFanoutExchange(message);
         TalkMsg talkMsg = JSON.parseObject(message,TalkMsg.class);
+        log.info(talkMsg.toString());
         rabbitmqProducerService.sendTalkMsg(talkMsg);
         log.info("rabbitmq发送信息成功");
     }

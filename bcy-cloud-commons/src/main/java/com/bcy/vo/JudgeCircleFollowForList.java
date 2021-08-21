@@ -1,4 +1,4 @@
-package com.bcy.mq;
+package com.bcy.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,12 +11,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class HotQAMsg implements Serializable{
+public class JudgeCircleFollowForList implements Serializable {
 
-    private Long number;
+    private String circleName;
 
-    private String title;
-
-    private String fromUsername;
+    private Integer isFollow;
 
 }

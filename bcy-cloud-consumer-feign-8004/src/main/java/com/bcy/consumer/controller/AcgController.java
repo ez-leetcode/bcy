@@ -19,7 +19,7 @@ public class AcgController {
     private AcgFeignService acgFeignService;
 
     @PostMapping("/acg/circlePhoto")
-    public Result<JSONObject> circlePhotoUpload(@RequestParam("photo") MultipartFile file, @RequestParam("id") Long id){
+    public Result<JSONObject> circlePhotoUpload(@RequestParam("photo") MultipartFile file, @RequestParam("id") String id){
         return acgFeignService.circlePhotoUpload(file,id);
     }
 
@@ -317,5 +317,16 @@ public class AcgController {
     @DeleteMapping("/acg/cosOwner")
     public Result<JSONObject> deleteCosByOwner(@RequestParam("id") Long id,@RequestParam("number") Long number){
         return acgFeignService.deleteCosByOwner(id, number);
+    }
+
+    @GetMapping("/acg/favorQaList")
+    public Result<JSONObject> getFavorQaList(@RequestParam("id") Long id,@RequestParam("page") Long page,
+                                             @RequestParam("cnt") Long cnt){
+        return acgFeignService.getFavorQaList(id, page, cnt);
+    }
+
+    @GetMapping("/acg/judgeCircle")
+    public Result<JSONObject> judgeCircle(@RequestParam("id") Long id, @RequestParam("circleNames")List<String> circleNames){
+        return acgFeignService.judgeCircle(id, circleNames);
     }
 }

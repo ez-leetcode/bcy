@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class EsMsg implements Serializable {
+public class EsMsg implements Serializable{
 
     //cos/qa编号
     @JsonFormat(shape = JsonFormat.Shape.STRING)

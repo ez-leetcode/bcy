@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ToString
 @Data
-public class EsMsgForCircle implements Serializable {
+public class EsMsgForCircle implements Serializable{
 
     //圈子名
     private String circleName;

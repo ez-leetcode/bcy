@@ -13,18 +13,16 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class TalkMsg implements Serializable {
+public class TalkMsg implements Serializable{
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long fromId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long toId;
 
     private String msg;
 
     private String uuId;
-
-    private Date createTime;
 
 }

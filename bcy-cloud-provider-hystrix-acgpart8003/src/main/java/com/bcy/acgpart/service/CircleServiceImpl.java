@@ -13,12 +13,14 @@ import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
 import com.bcy.mq.EsMsgForCircle;
 import com.bcy.vo.CircleInfoForSearchList;
+import com.bcy.vo.JudgeCircleFollowForList;
 import com.bcy.vo.PersonalCircleForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -160,6 +162,27 @@ public class CircleServiceImpl implements CircleService{
         jsonObject.put("counts",page1.getTotal());
         jsonObject.put("pages",page1.getPages());
         log.info("搜索圈子成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    @Override
+    public JSONObject judgeCircleList(Long id, List<String> circleNames) {
+        JSONObject jsonObject = new JSONObject();
+        List<JudgeCircleFollowForList> judgeCircleFollowForListList = new LinkedList<>();
+        for(String x:circleNames){
+            QueryWrapper<CircleFollow> wrapper = new QueryWrapper<>();
+            wrapper.eq("id",id)
+                    .eq("circle_name",x);
+            CircleFollow circleFollow = circleFollowMapper.selectOne(wrapper);
+            if(circleFollow == null){
+                judgeCircleFollowForListList.add(new JudgeCircleFollowForList(x,0));
+            }else{
+                judgeCircleFollowForListList.add(new JudgeCircleFollowForList(x,1));
+            }
+        }
+        jsonObject.put("judgeCircleList",judgeCircleFollowForListList);
+        log.info("判断圈子是否关注成功");
         log.info(jsonObject.toString());
         return jsonObject;
     }

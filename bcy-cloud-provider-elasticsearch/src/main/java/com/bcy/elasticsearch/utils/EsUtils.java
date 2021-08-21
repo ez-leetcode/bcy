@@ -30,6 +30,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 @Slf4j
@@ -184,6 +185,45 @@ public class EsUtils {
         jsonObject.put("counts",response.getHits().totalHits);
         log.info("获取推荐圈子成功");
         log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+
+    public JSONObject recommendQa(String keyword,Integer cnt)throws IOException{
+        JSONObject jsonObject = new JSONObject();
+        SearchRequest request = new SearchRequest("qa");
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(QueryBuilders.multiMatchQuery(keyword,"title","description","label"));
+        request.source(sourceBuilder);
+        SearchResponse response = restHighLevelClient.search(request,RequestOptions.DEFAULT);
+        log.info(response.toString());
+        log.info("搜索情况：" + response.status().toString() + " 共：" + response.getHits().totalHits + "条记录" + " 正在随机提取：" + cnt + "条");
+        List<QaForEs> qaForEsList = new LinkedList<>();
+        if(response.getHits().totalHits > 0){
+            SearchHits searchHits = response.getHits();
+            Random random = new Random();
+            while(cnt > 0){
+                cnt --;
+                int pos = random.nextInt((int)response.getHits().totalHits);
+                SearchHit searchHit = searchHits.getAt(pos);
+                QaForEs qaForEs = JSON.parseObject(searchHit.getSourceAsString(),QaForEs.class);
+                qaForEsList.add(qaForEs);
+                log.info(qaForEs.toString());
+            }
+        }
+        List<QaForSearchList> qaForSearchListList = new LinkedList<>();
+        for(QaForEs x:qaForEsList){
+            QaForSearchList qaForSearchList = new QaForSearchList(x.getNumber(),x.getId(),null,null,x.getDescription(),
+                    x.getTitle(),x.getLabel(),x.getPhoto(),x.getCreateTime());
+            User user = userMapper.selectById(x.getId());
+            if(user != null){
+                qaForSearchList.setUsername(user.getUsername());
+                qaForSearchList.setPhoto(user.getPhoto());
+                log.info(qaForSearchList.toString());
+            }
+            qaForSearchListList.add(qaForSearchList);
+        }
+        jsonObject.put("qaList",qaForSearchListList);
         return jsonObject;
     }
 

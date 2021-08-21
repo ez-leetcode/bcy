@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.elasticsearch.dto.SearchHistory;
+import com.bcy.elasticsearch.mapper.CircleFollowMapper;
 import com.bcy.elasticsearch.mapper.SearchHistoryMapper;
 import com.bcy.elasticsearch.utils.EsUtils;
 import com.bcy.elasticsearch.utils.RedisUtils;
@@ -26,6 +27,9 @@ public class QAServiceImpl implements QAService{
 
     @Autowired
     private RedisUtils redisUtils;
+
+    @Autowired
+    private CircleFollowMapper circleFollowMapper;
 
     @Override
     public JSONObject searchQa(Long id,String keyword, Integer cnt, Integer page) throws IOException {
@@ -52,4 +56,17 @@ public class QAServiceImpl implements QAService{
         return esUtils.QaSearch(keyword, cnt, page);
     }
 
+
+    @Override
+    public JSONObject getRecommendQa(Long id, Integer cnt) throws IOException {
+        //先获取关注圈子
+        List<String> followCircleList = circleFollowMapper.getCircleFollowList(id);
+        followCircleList.add("是 否 吗 么 能 不 还 如何 怎么 可以 测试 test 1 2 3 4 5 6 7 8 9 0");
+        String keyword = followCircleList.toString();
+        log.info(keyword);
+        JSONObject jsonObject = esUtils.recommendQa(keyword,cnt);
+        log.info("获取推荐问答成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
 }

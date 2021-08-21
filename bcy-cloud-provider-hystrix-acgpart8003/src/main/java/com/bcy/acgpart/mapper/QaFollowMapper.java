@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bcy.acgpart.pojo.QaFollow;
 import com.bcy.vo.FollowQAForList;
+import com.bcy.vo.QaFollowForList;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -19,4 +20,6 @@ public interface QaFollowMapper extends BaseMapper<QaFollow> {
     @Select("SELECT b.* FROM qa_follow as a, user as b WHERE a.qa_number = #{number} AND a.id = b.id ORDER BY a.create_time DESC")
     List<FollowQAForList> getFollowQAList(@Param("number") Long number, Page<FollowQAForList> page);
 
+    @Select("SELECT b.username,b.photo,b.id,a.create_time,a.qa_number FROM qa_follow as a , user as b WHERE a.id = #{id} AND b.id = a.id ORDER BY a.create_time DESC")
+    List<QaFollowForList> getQaFollowList(@Param("id") Long id,Page<QaFollowForList> page);
 }

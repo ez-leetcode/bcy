@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONPObject;
 import com.bcy.acgpart.service.CircleService;
 import com.bcy.acgpart.service.TimeoutService;
 import com.bcy.pojo.Result;
+import com.bcy.utils.BngelUtils;
 import com.bcy.utils.ResultUtils;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -17,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @Api(tags = "圈子管理类")
@@ -39,15 +42,17 @@ public class CircleController {
 
     @HystrixCommand
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "photo",value = "圈子图片",required = true,dataType = "file",paramType = "query")
     })
     @ApiOperation(value = "上传圈子图片P",notes = "fileWrong：文件为空 typeWrong：上传格式错误 success：成功 成功后返回json：url（图片url）")
     @PostMapping("/acg/circlePhoto")
-    public Result<JSONObject> circlePhotoUpload(@RequestParam("photo")MultipartFile file,@RequestParam("id") Long id){
+    public Result<JSONObject> circlePhotoUpload(@RequestParam("photo")MultipartFile file,@RequestParam("id") String id){
         log.info("正在上传圈子图片，用户：" + id);
-        String url = circleService.circlePhotoUpload(file,id);
-        if(url.length() > 12){
+        String realId = BngelUtils.getRealFileName(id);
+        log.info(realId);
+        String url = circleService.circlePhotoUpload(file,Long.parseLong(realId));
+        if(url.length() < 12){
             return ResultUtils.getResult(new JSONObject(),url);
         }
         JSONObject jsonObject = new JSONObject();
@@ -123,6 +128,18 @@ public class CircleController {
                                                 @RequestParam("page") Long page){
         log.info("正在获取个人圈子列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
         return ResultUtils.getResult(circleService.getPersonalCircle(id, cnt, page),"success");
+    }
+
+    @HystrixCommand
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "circleNames",value = "圈子名",allowMultiple = true,required = true,dataType = "string",paramType = "query")
+    })
+    @ApiOperation(value = "批量判断圈子是否关注（一个也用这个接口）",notes = "success：成功 judgeCircleList（circleName：圈子名 isFollow：1关注 0未关注）")
+    @GetMapping("/acg/judgeCircle")
+    public Result<JSONObject> judgeCircle(@RequestParam("id") Long id, @RequestParam("circleNames")List<String> circleNames){
+        log.info("正在判断圈子是否关注，用户：" + id);
+        return ResultUtils.getResult(circleService.judgeCircleList(id, circleNames),"success");
     }
 
 

@@ -1,4 +1,4 @@
-package com.bcy.mq;
+package com.bcy.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -7,21 +7,30 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class AskMsg implements Serializable{
+public class QaFollowForList implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long number;
+    private Long qaNumber;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long toId;
+    private Long id;
 
     private String username;
 
-    private String question;
+    private String photo;
 
+    private String description;
+
+    private String title;
+
+    private List<String> label;
+
+    private Date createTime;
 }

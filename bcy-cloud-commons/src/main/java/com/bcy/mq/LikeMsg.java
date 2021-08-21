@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class LikeMsg implements Serializable {
+public class LikeMsg implements Serializable{
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long number;

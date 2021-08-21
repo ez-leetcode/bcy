@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class FansMsg implements Serializable {
+public class FansMsg implements Serializable{
 
     private Long fromId;
 

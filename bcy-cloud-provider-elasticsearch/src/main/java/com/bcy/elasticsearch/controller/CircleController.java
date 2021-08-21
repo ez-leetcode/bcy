@@ -27,7 +27,7 @@ public class CircleController {
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "int",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "int",paramType = "query")
     })
-    @ApiOperation(value = "获取推荐圈子列表（根据历史搜索推荐的，所以要登录才能用）",notes = "success：成功 返回recommendCircleList（circleName：圈子名 description：描述 " +
+    @ApiOperation(value = "获取推荐圈子列表（未登录给0）",notes = "success：成功 返回recommendCircleList（circleName：圈子名 description：描述 " +
             "photo：图片 nickName：昵称 postCounts：发布数 followCounts：关注数 createTime：创建时间） ")
     @GetMapping("/es/recommendCircle")
     public Result<JSONObject> getRecommendCircle(@RequestParam("id") Long id,@RequestParam("cnt") Integer cnt,

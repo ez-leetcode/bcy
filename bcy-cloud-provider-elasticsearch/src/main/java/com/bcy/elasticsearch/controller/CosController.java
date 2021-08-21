@@ -48,7 +48,7 @@ public class CosController {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "id",value = "用户id（游客带0）",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "int",paramType = "query")
     })
     @ApiOperation(value = "发现（推荐cos，在不同的获取是会有重复推荐的）",notes = "success：成功 （这里没有pages和counts参数 直接获取就行） cosList（参数和cos搜索接口那里的一样）")

@@ -49,6 +49,22 @@ public class FavorController {
         return ResultUtils.getResult(favorService.getFavorList(id,page,cnt),"success");
     }
 
+    //@HystrixCommand
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取关注问答列表",notes = "success：成功 返回qaFollowList （qaNumber：问答编号 id：发布用户id username：发布用户昵称 " +
+            "photo：头像 description：内容 title：标题 label：标签 createTime：创建时间）")
+    @GetMapping("/acg/favorQaList")
+    public Result<JSONObject> getFavorQaList(@RequestParam("id") Long id,@RequestParam("page") Long page,
+                                             @RequestParam("cnt") Long cnt){
+        log.info("正在获取收藏问答列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(favorService.getFavorQaList(id, page, cnt),"success");
+    }
+
+
     @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
