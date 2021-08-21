@@ -1,6 +1,8 @@
 package com.bcy.acgpart.pojo;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -32,6 +34,7 @@ public class CircleFollow implements Serializable {
     @ApiModelProperty("用户id")
     private Long id;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty("创建时间")
     private Date createTime;
 

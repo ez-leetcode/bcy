@@ -26,6 +26,8 @@ public class CosMonthHot implements Serializable {
 
     private Integer rank;
 
+    private Integer type;
+
     private String createTime;
 
 }

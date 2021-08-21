@@ -248,13 +248,13 @@ public class AcgController {
     }
 
     @GetMapping("/acg/hotDayCos")
-    public Result<JSONObject> getHotDayCos(@RequestParam("time") String time){
-        return acgFeignService.getHotDayCos(time);
+    public Result<JSONObject> getHotDayCos(@RequestParam("time") String time,@RequestParam("type") Integer type){
+        return acgFeignService.getHotDayCos(time,type);
     }
 
     @GetMapping("/acg/hotWeekCos")
-    public Result<JSONObject> getHotMonthCos(@RequestParam("time") String time){
-        return acgFeignService.getHotMonthCos(time);
+    public Result<JSONObject> getHotMonthCos(@RequestParam("time") String time,@RequestParam("type") Integer type){
+        return acgFeignService.getHotMonthCos(time,type);
     }
 
     @GetMapping("/acg/followCos")

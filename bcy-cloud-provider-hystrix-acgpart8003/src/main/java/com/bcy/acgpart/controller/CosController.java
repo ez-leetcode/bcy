@@ -249,27 +249,29 @@ public class CosController {
 
     @HystrixCommand
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "time",value = "日期（请带yyyy-MM-dd格式）",required = true,dataType = "string",paramType = "query")
+            @ApiImplicitParam(name = "time",value = "日期（请带yyyy-MM-dd格式）",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "类型（1.cos 2.绘画 3.写作）",required = true,dataType = "int",paramType = "query")
     })
-    @ApiOperation(value = "获取日榜热门cos列表",notes = "success：成功 返回hotCosList：（cosNumber：cos编号 id：用户id username：昵称 photo：头像 cosPhoto：cos图片列表" +
+    @ApiOperation(value = "获取日榜热门cos列表",notes = "success：成功 返回hotCosList：（cosNumber：cos编号 id：用户id username：昵称 photo：头像 description：描述 cosPhoto：cos图片列表" +
             "cosLabel：cos标签 createTime：cos发布时间）")
     @GetMapping("/acg/hotDayCos")
-    public Result<JSONObject> getHotDayCos(@RequestParam("time") String time){
-        log.info("正在获取日榜热门cos列表，时间：" + time);
-        return ResultUtils.getResult(cosService.getCosDayHotList(time),"success");
+    public Result<JSONObject> getHotDayCos(@RequestParam("time") String time,@RequestParam("type") Integer type){
+        log.info("正在获取日榜热门cos列表，时间：" + time + " 类型：" + type);
+        return ResultUtils.getResult(cosService.getCosDayHotList(time,type),"success");
     }
 
     //这里week写成month了 其实是周榜
     @HystrixCommand
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "time",value = "日期（请带yyyy-MM-dd格式）请给周一的日期",required = true,dataType = "string",paramType = "query")
+            @ApiImplicitParam(name = "time",value = "日期（请带yyyy-MM-dd格式）请给周一的日期",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "类型（1.cos 2.绘画 3.习作）",required = true,dataType = "int",paramType = "query")
     })
-    @ApiOperation(value = "获取周榜热门cos列表",notes = "success：成功 返回hotCosList：（cosNumber：cos编号 id：用户id username：昵称 photo：头像 cosPhoto：cos图片列表" +
+    @ApiOperation(value = "获取周榜热门cos列表",notes = "success：成功 返回hotCosList：（cosNumber：cos编号 id：用户id username：昵称 photo：头像 description：描述 cosPhoto：cos图片列表" +
             "cosLabel：cos标签 createTime：cos发布时间）")
     @GetMapping("/acg/hotWeekCos")
-    public Result<JSONObject> getHotMonthCos(@RequestParam("time") String time){
-        log.info("正在获取周榜热门cos列表，时间：" + time);
-        return ResultUtils.getResult(cosService.getCosMonthHotList(time),"success");
+    public Result<JSONObject> getHotMonthCos(@RequestParam("time") String time,@RequestParam("type") Integer type){
+        log.info("正在获取周榜热门cos列表，时间：" + time + " 类型：" + time);
+        return ResultUtils.getResult(cosService.getCosMonthHotList(time,type),"success");
     }
 
     @HystrixCommand

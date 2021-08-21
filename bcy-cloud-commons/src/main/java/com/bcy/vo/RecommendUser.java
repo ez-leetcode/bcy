@@ -7,30 +7,18 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Data
-public class CosForHot implements Serializable {
+public class RecommendUser implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long cosNumber;
-
     private Long id;
 
     private String username;
 
     private String photo;
-
-    private String description;
-
-    private List<String> cosPhoto;
-
-    private List<String> cosLabel;
-
-    private Date createTime;
 
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface SearchHistoryMapper extends BaseMapper<SearchHistory> {
 
-    @Select("SELECT a.keyword FROM search_history as a WHERE a.id = #{id} ORDER BY a.update_time DESC")
+    @Select("SELECT a.keyword FROM search_history as a WHERE a.id = #{id} AND a.deleted = 0 ORDER BY a.update_time DESC")
     List<String> getHistoryKeywordList(@Param("id") Long id, Page<String> page);
 
 }

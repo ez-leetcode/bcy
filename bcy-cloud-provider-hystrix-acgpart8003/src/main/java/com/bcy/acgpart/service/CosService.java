@@ -33,9 +33,9 @@ public interface CosService {
 
     JSONObject getRecommendLabelList();
 
-    JSONObject getCosDayHotList(String time);
+    JSONObject getCosDayHotList(String time,Integer type);
 
-    JSONObject getCosMonthHotList(String time);
+    JSONObject getCosMonthHotList(String time,Integer type);
 
     JSONObject getFollowList(Long id,Long page,Long cnt);
 

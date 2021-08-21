@@ -43,42 +43,82 @@ public class CosHotCountsJob implements Job {
     //删除
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        Map<Long,Integer> likeMap = redisUtils.getAllRedisDataByKeys("cosHotLikeCounts");
-        Map<Long,Integer> favorMap = redisUtils.getAllRedisDataByKeys("cosHotFavorCounts");
+        Map<Long,Integer> likeMap1 = redisUtils.getAllRedisDataByKeys("cosHotLikeCounts1");
+        Map<Long,Integer> favorMap1 = redisUtils.getAllRedisDataByKeys("cosHotFavorCounts1");
+        Map<Long,Integer> likeMap2 = redisUtils.getAllRedisDataByKeys("cosHotLikeCounts2");
+        Map<Long,Integer> favorMap2 = redisUtils.getAllRedisDataByKeys("cosHotFavorCounts2");
+        Map<Long,Integer> likeMap3 = redisUtils.getAllRedisDataByKeys("cosHotLikeCounts3");
+        Map<Long,Integer> favorMap3 = redisUtils.getAllRedisDataByKeys("cosHotFavorCounts3");
         //数据哈希表
         Date currentTime = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = formatter.format(currentTime);
-        Map<Long,Integer> map = new HashMap<>();
-        for(Long x:likeMap.keySet()){
-            map.put(x,likeMap.get(x) * 3);
-            redisUtils.delete("cosHotLikeCounts_" + x);
+        Map<Long,Integer> map1 = new HashMap<>();
+        Map<Long,Integer> map2 = new HashMap<>();
+        Map<Long,Integer> map3 = new HashMap<>();
+        for(Long x:likeMap1.keySet()){
+            map1.put(x,likeMap1.get(x) * 3);
+            redisUtils.delete("cosHotLikeCounts1_" + x);
         }
-        for(Long x:favorMap.keySet()){
-            Integer ck = map.get(x);
+        for(Long x:likeMap2.keySet()){
+            map2.put(x,likeMap2.get(x) * 3);
+            redisUtils.delete("cosHotLikeCounts2_" + x);
+        }
+        for(Long x:likeMap3.keySet()){
+            map3.put(x,likeMap3.get(x) * 3);
+            redisUtils.delete("cosHotLikeCounts3_" + x);
+        }
+        for(Long x:favorMap1.keySet()){
+            Integer ck = map1.get(x);
             if(ck == null){
-                map.put(x,favorMap.get(x) * 5);
+                map1.put(x,favorMap1.get(x) * 5);
             }else{
-                map.put(x,favorMap.get(x) * 5 + ck);
+                map1.put(x,favorMap1.get(x) * 5 + ck);
             }
-            redisUtils.delete("cosHotFavorCounts_" + x);
+            redisUtils.delete("cosHotFavorCounts1_" + x);
         }
-        List<Map.Entry<Long,Integer>> list = new ArrayList<>(map.entrySet());
-        list.sort((Comparator.comparingInt(Map.Entry::getValue)));
+        for(Long x:favorMap2.keySet()){
+            Integer ck = map2.get(x);
+            if(ck == null){
+                map2.put(x,favorMap2.get(x) * 5);
+            }else{
+                map2.put(x,favorMap2.get(x) * 5 + ck);
+            }
+            redisUtils.delete("cosHotFavorCounts2_" + x);
+        }
+        for(Long x:favorMap3.keySet()){
+            Integer ck = map3.get(x);
+            if(ck == null){
+                map3.put(x,favorMap3.get(x) * 5);
+            }else{
+                map3.put(x,favorMap3.get(x) * 5 + ck);
+            }
+            redisUtils.delete("cosHotFavorCounts3_" + x);
+        }
+        List<Map.Entry<Long,Integer>> list1 = new ArrayList<>(map1.entrySet());
+        list1.sort((Comparator.comparingInt(Map.Entry::getValue)));
+
+        List<Map.Entry<Long,Integer>> list2 = new ArrayList<>(map2.entrySet());
+        list2.sort((Comparator.comparingInt(Map.Entry::getValue)));
+
+        List<Map.Entry<Long,Integer>> list3 = new ArrayList<>(map3.entrySet());
+        list3.sort((Comparator.comparingInt(Map.Entry::getValue)));
         for(int i = 1; i <= 10; i++){
             //清空原cos列表
-            redisUtils.delete("hotCos" + i);
+            redisUtils.delete("hotCos1" + i);
+            redisUtils.delete("hotCos2" + i);
+            redisUtils.delete("hotCos3" + i);
         }
         for(int i = 1 ; i <= 10; i++){
-            if(map.size() - i < 0){
+            if(map1.size() - i < 0){
                 break;
             }
-            cosDayHotMapper.insert(new CosDayHot(null,list.get(map.size() - i).getKey(),i,dateString));
-            redisUtils.saveByHoursTime("hotCos" + i,list.get(map.size() - i).getKey().toString(),48);
-            log.info("新日榜热门cos编号：" + list.get(map.size() - i).toString());
+            cosDayHotMapper.insert(new CosDayHot(null,list1.get(map1.size() - i).getKey(),i,1,dateString));
+            redisUtils.saveByHoursTime("hotCos1" + i,list1.get(map1.size() - i).getKey().toString(),48);
+            log.info("新日榜热门cos编号：" + list1.get(map1.size() - i).toString());
             if(i == 1){
                 //推送最火的
-                CosPlay cosPlay = cosPlayMapper.selectById(list.get(map.size() - i).getKey());
+                CosPlay cosPlay = cosPlayMapper.selectById(list1.get(map1.size() - i).getKey());
                 if(cosPlay != null){
                     User user = userMapper.selectById(cosPlay.getId());
                     if(user != null){
@@ -86,6 +126,22 @@ public class CosHotCountsJob implements Job {
                     }
                 }
             }
+        }
+        for(int i = 1 ; i <= 10; i++){
+            if(map2.size() - i < 0){
+                break;
+            }
+            cosDayHotMapper.insert(new CosDayHot(null,list2.get(map2.size() - i).getKey(),i,2,dateString));
+            redisUtils.saveByHoursTime("hotCos2" + i,list2.get(map2.size() - i).getKey().toString(),48);
+            log.info("新日榜热门绘画编号：" + list2.get(map2.size() - i).toString());
+        }
+        for(int i = 1 ; i <= 10; i++){
+            if(map3.size() - i < 0){
+                break;
+            }
+            cosDayHotMapper.insert(new CosDayHot(null,list3.get(map3.size() - i).getKey(),i,3,dateString));
+            redisUtils.saveByHoursTime("hotCos3" + i,list3.get(map3.size() - i).getKey().toString(),48);
+            log.info("新日榜热门写作编号：" + list3.get(map3.size() - i).toString());
         }
         log.info("日榜热门cos更新成功");
     }

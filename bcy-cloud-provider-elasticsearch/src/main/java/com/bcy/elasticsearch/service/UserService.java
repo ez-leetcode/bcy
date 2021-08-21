@@ -4,6 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface UserService {
 
-    JSONObject getRecommendUser();
+    JSONObject getRecommendUser(Long page,Long cnt);
 
 }

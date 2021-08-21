@@ -48,6 +48,32 @@ public class CosController {
     }
 
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "int",paramType = "query")
+    })
+    @ApiOperation(value = "发现（推荐cos，在不同的获取是会有重复推荐的）",notes = "success：成功 （这里没有pages和counts参数 直接获取就行） cosList（参数和cos搜索接口那里的一样）")
+    @GetMapping("/es/recommendCos")
+    public Result<JSONObject> getRecommendCos(@RequestParam("id") Long id,@RequestParam("cnt") Integer cnt) throws IOException {
+        log.info("正在获取发现cos，用户：" + id + " 页面数据量：" + cnt);
+        return ResultUtils.getResult(cosService.getRecommendCos(id, cnt),"success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "keyword",value = "关键词（写死绘画/cos/写作）",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "int",paramType = "query")
+    })
+    @ApiOperation(value = "获取标题（绘画 cos 写作）下的cos内容（也是推荐制的，随机）",notes = "success：成功 cosList（参数和cos搜索接口那里的一样）")
+    @GetMapping("/es/labelCos")
+    public Result<JSONObject> getLabelCos(@RequestParam("id") Long id,@RequestParam("keyword") String keyword,
+                                          @RequestParam("cnt") Integer cnt,@RequestParam("page") Integer page) throws IOException {
+        log.info("获取标签下的cos列表，用户：" + id + " 关键词：" + keyword + " 当前页面：" + page + " 页面数据量：" + cnt);
+        return ResultUtils.getResult(cosService.getLabelCos(id, keyword, cnt, page),"success");
+    }
+
+
+    @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "获取搜索历史",notes = "success：成功 keywordList（至多20个历史搜索）")

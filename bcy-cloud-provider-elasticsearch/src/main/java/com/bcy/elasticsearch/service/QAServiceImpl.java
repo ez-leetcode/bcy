@@ -36,11 +36,12 @@ public class QAServiceImpl implements QAService{
                     .eq("keyword",keyword);
             SearchHistory searchHistory = searchHistoryMapper.selectOne(wrapper);
             if(searchHistory != null){
+                searchHistory.setDeleted(0);
                 searchHistory.setReClick(searchHistory.getReClick() + 1);
                 searchHistoryMapper.updateById(searchHistory);
             }else{
                 //插入历史
-                searchHistoryMapper.insert(new SearchHistory(null,id,keyword,0,null));
+                searchHistoryMapper.insert(new SearchHistory(null,id,keyword,0,0,null));
             }
             log.info("正在添加问答历史搜索");
             //维护redis

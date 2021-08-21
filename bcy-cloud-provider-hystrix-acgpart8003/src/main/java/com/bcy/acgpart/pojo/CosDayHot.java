@@ -25,6 +25,9 @@ public class CosDayHot implements Serializable {
 
     private Integer rank;
 
+    //1.cos 2.绘画 3.写作
+    private Integer type;
+
     //这里特别地用string存日期，方便一点，不用转格式
     private String createTime;
 

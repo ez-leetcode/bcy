@@ -3,6 +3,7 @@ package com.bcy.acgpart.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bcy.acgpart.mapper.CircleCosMapper;
 import com.bcy.acgpart.mapper.CosCountsMapper;
 import com.bcy.acgpart.mapper.CosPlayMapper;
 import com.bcy.acgpart.mapper.FavorMapper;
@@ -35,6 +36,9 @@ public class FavorServiceImpl implements FavorService{
 
     @Autowired
     private RedisUtils redisUtils;
+
+    @Autowired
+    private CircleCosMapper circleCosMapper;
 
     @Override
     public JSONObject getFavorList(Long id, Long page, Long cnt) {
@@ -76,21 +80,27 @@ public class FavorServiceImpl implements FavorService{
         favorMapper.insert(new Favor(null,number,id,null));
         //收藏数扔给redis
         String ck = redisUtils.getValue("cosFavorCounts_" + number);
-        String ck1 = redisUtils.getValue("cosHotFavorCounts_" + number);
-        String ck2 = redisUtils.getValue("cosHotFavorWeekCounts_" + number);
         if(ck == null){
             //redis里没有，存入
             redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),48);
         }
-        if(ck1 == null){
-            redisUtils.saveByHoursTime("cosHotFavorCounts_" + number,"0",12);
-        }
-        if(ck2 == null){
-            redisUtils.saveByHoursTime("cosHotFavorWeekCounts_" + number, "0",24 * 8);
-        }
-        redisUtils.addKeyByTime("cosHotFavorCounts_" + number,48);
         redisUtils.addKeyByTime("cosFavorCounts_" + number,12);
-        redisUtils.addKeyByTime("cosHotFavorWeekCounts_" + number,24 * 8);
+        //分段缓存
+        Long cosExist = circleCosMapper.judgeCircleCosExist("cos",number);
+        Long drawExist = circleCosMapper.judgeCircleCosExist("绘画",number);
+        Long writeExist = circleCosMapper.judgeCircleCosExist("写作",number);
+        if(cosExist != null){
+            redisUtils.addKeyByTime("cosHotFavorCounts1_" + number,48);
+            redisUtils.addKeyByTime("cosHotFavorWeekCounts1_" + number,24 * 8);
+        }
+        if(drawExist != null){
+            redisUtils.addKeyByTime("cosHotFavorCounts2_" + number,48);
+            redisUtils.addKeyByTime("cosHotFavorWeekCounts2_" + number,24 * 8);
+        }
+        if(writeExist != null){
+            redisUtils.addKeyByTime("cosHotFavorCounts3_" + number,48);
+            redisUtils.addKeyByTime("cosHotFavorWeekCounts3_" + number,24 * 8);
+        }
         log.info("添加收藏成功");
         return "success";
     }
@@ -113,22 +123,27 @@ public class FavorServiceImpl implements FavorService{
         //清除收藏记录
         favorMapper.deleteById(favor.getNumber());
         //收藏数扔给redis
-        String ck1 = redisUtils.getValue("cosHotFavorCounts_" + number);
-        String ck2 = redisUtils.getValue("cosHotFavorWeekCounts_" + number);
         String ck = redisUtils.getValue("cosFavorCounts_" + number);
         if(ck == null){
             //redis没有，存入
             redisUtils.saveByHoursTime("cosFavorCounts_" + number,cosCounts.getFavorCounts().toString(),48);
         }
-        if(ck2 == null){
-            redisUtils.saveByHoursTime("cosHotFavorWeekCounts_" + number,"0",24 * 8);
-        }
-        if(ck1 == null){
-            redisUtils.saveByHoursTime("cosHotFavorCounts_" + number,"0",12);
-        }
-        redisUtils.subKeyByTime("cosHotFavorCounts_" + number,48);
         redisUtils.subKeyByTime("cosFavorCounts_" + number,12);
-        redisUtils.subKeyByTime("cosHotFavorWeekCounts_" + number,24 * 8);
+        Long cosExist = circleCosMapper.judgeCircleCosExist("cos",number);
+        Long drawExist = circleCosMapper.judgeCircleCosExist("绘画",number);
+        Long writeExist = circleCosMapper.judgeCircleCosExist("写作",number);
+        if(cosExist != null){
+            redisUtils.subKeyByTime("cosHotFavorCounts1_" + number,48);
+            redisUtils.subKeyByTime("cosHotFavorWeekCounts1_" + number,24 * 8);
+        }
+        if(drawExist != null){
+            redisUtils.subKeyByTime("cosHotFavorCounts2_" + number,48);
+            redisUtils.subKeyByTime("cosHotFavorWeekCounts2_" + number,24 * 8);
+        }
+        if(writeExist != null){
+            redisUtils.subKeyByTime("cosHotFavorCounts3_" + number,48);
+            redisUtils.subKeyByTime("cosHotFavorWeekCounts3_" + number,24 * 8);
+        }
         log.info("取消收藏成功");
         return "success";
     }

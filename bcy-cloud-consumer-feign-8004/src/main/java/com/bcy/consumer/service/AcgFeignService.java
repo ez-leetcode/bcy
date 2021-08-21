@@ -162,10 +162,10 @@ public interface AcgFeignService {
     Result<JSONObject> getRecommendList();
 
     @GetMapping("/acg/hotDayCos")
-    Result<JSONObject> getHotDayCos(@RequestParam("time") String time);
+    Result<JSONObject> getHotDayCos(@RequestParam("time") String time,@RequestParam("type") Integer type);
 
     @GetMapping("/acg/hotWeekCos")
-    Result<JSONObject> getHotMonthCos(@RequestParam("time") String time);
+    Result<JSONObject> getHotMonthCos(@RequestParam("time") String time,@RequestParam("type") Integer type);
 
     @GetMapping("/acg/followCos")
     Result<JSONObject> getFollowList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,

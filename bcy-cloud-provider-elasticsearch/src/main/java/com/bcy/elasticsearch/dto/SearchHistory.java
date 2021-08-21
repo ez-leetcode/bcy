@@ -34,6 +34,9 @@ public class SearchHistory{
     @ApiModelProperty("点击次数")
     private Integer reClick;
 
+    @ApiModelProperty("是否删除")
+    private Integer deleted;
+
     @ApiModelProperty("搜索更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;

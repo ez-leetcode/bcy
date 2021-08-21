@@ -1,45 +1,41 @@
-package com.bcy.acgpart.pojo;
-
+package com.bcy.elasticsearch.dto;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class SearchHistory{
+@Data
+@ApiModel(description = "圈子关注类")
+public class CircleFollow implements Serializable {
 
-    @ApiModelProperty("历史编号")
-    @TableId(type = IdType.ID_WORKER)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("圈子关注编号")
+    @TableId(type = IdType.ID_WORKER)
     private Long number;
 
-    @ApiModelProperty("用户id")
+    @ApiModelProperty("圈子名")
+    private String circleName;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @ApiModelProperty("用户id")
     private Long id;
 
-    @ApiModelProperty("搜索关键词")
-    private String keyword;
-
-    @ApiModelProperty("点击次数")
-    private Integer reClick;
-
-    @ApiModelProperty("是否删除")
-    private Integer deleted;
-
-    @ApiModelProperty("搜索更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
+    @ApiModelProperty("创建时间")
+    private Date createTime;
 
 }

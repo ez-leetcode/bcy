@@ -30,6 +30,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @Component
@@ -183,6 +184,45 @@ public class EsUtils {
         jsonObject.put("counts",response.getHits().totalHits);
         log.info("获取推荐圈子成功");
         log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    public JSONObject recommendCos(String keyword,Integer cnt)throws IOException{
+        JSONObject jsonObject = new JSONObject();
+        SearchRequest request = new SearchRequest("cosplay");
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(QueryBuilders.multiMatchQuery(keyword,"description","label"));
+        request.source(sourceBuilder);
+        SearchResponse response = restHighLevelClient.search(request,RequestOptions.DEFAULT);
+        log.info(response.toString());
+        log.info("搜索情况：" + response.status().toString() + " 共：" + response.getHits().totalHits + "条记录" + " 正在随机提取：" + cnt + "条");
+        List<CosPlayForEs> cosPlayForEsList = new LinkedList<>();
+        if(response.getHits().totalHits > 0){
+            SearchHits searchHits = response.getHits();
+            Random random = new Random();
+            while(cnt > 0){
+                cnt --;
+                int pos = random.nextInt((int)response.getHits().totalHits);
+                SearchHit searchHit = searchHits.getAt(pos);
+                CosPlayForEs cosPlayForEs = JSON.parseObject(searchHit.getSourceAsString(),CosPlayForEs.class);
+                cosPlayForEsList.add(cosPlayForEs);
+                log.info(cosPlayForEs.toString());
+            }
+        }
+        List<CosForSearchList> cosForSearchListList = new LinkedList<>();
+        log.info(cosPlayForEsList.toString());
+        for(CosPlayForEs x:cosPlayForEsList){
+            User user = userMapper.selectById(x.getId());
+            CosForSearchList cosForSearchList = new CosForSearchList(x.getNumber(),x.getId(),null,null,x.getDescription(),x.getLabel(),
+                    x.getPhoto(), x.getCreateTime());
+            if(user != null){
+                cosForSearchList.setUsername(user.getUsername());
+                cosForSearchList.setPhoto(user.getPhoto());
+            }
+            log.info(cosForSearchList.toString());
+            cosForSearchListList.add(cosForSearchList);
+        }
+        jsonObject.put("cosList",cosForSearchListList);
         return jsonObject;
     }
 

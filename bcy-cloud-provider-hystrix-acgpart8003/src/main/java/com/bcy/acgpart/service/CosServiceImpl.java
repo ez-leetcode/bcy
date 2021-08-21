@@ -562,9 +562,9 @@ public class CosServiceImpl implements CosService {
 
 
     @Override
-    public JSONObject getCosDayHotList(String time) {
+    public JSONObject getCosDayHotList(String time,Integer type) {
         JSONObject jsonObject = new JSONObject();
-        List<CosForHot> cosForHotList = cosDayHotMapper.getDayHotList(time);
+        List<CosForHot> cosForHotList = cosDayHotMapper.getDayHotList(time,type);
         for(CosForHot x:cosForHotList){
             User user = userMapper.selectById(x.getId());
             if(user != null){
@@ -574,6 +574,7 @@ public class CosServiceImpl implements CosService {
             CosPlay cosPlay = cosPlayMapper.selectById(x.getCosNumber());
             if(cosPlay != null){
                 x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
+                x.setDescription(cosPlay.getDescription());
             }
             List<String> circleNameList = circleCosMapper.getAllCircleNameFromCosNumber(x.getCosNumber());
             x.setCosLabel(circleNameList);
@@ -585,13 +586,14 @@ public class CosServiceImpl implements CosService {
     }
 
     @Override
-    public JSONObject getCosMonthHotList(String time) {
+    public JSONObject getCosMonthHotList(String time,Integer type) {
         JSONObject jsonObject = new JSONObject();
-        List<CosForHot> cosForHotList = cosMonthMapper.getMonthHotList(time);
+        List<CosForHot> cosForHotList = cosMonthMapper.getMonthHotList(time,type);
         for(CosForHot x:cosForHotList){
             CosPlay cosPlay = cosPlayMapper.selectById(x.getCosNumber());
             if(cosPlay != null){
                 x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
+                x.setDescription(cosPlay.getDescription());
             }
             User user = userMapper.selectById(x.getId());
             if(user != null){

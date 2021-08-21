@@ -3,10 +3,7 @@ package com.bcy.acgpart.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.bcy.acgpart.mapper.CosCountsMapper;
-import com.bcy.acgpart.mapper.CosPlayMapper;
-import com.bcy.acgpart.mapper.LikesMapper;
-import com.bcy.acgpart.mapper.UserMapper;
+import com.bcy.acgpart.mapper.*;
 import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.RedisUtils;
 import com.bcy.mq.LikeMsg;
@@ -40,6 +37,9 @@ public class LikeServiceImpl implements LikeService{
     private CosPlayMapper cosPlayMapper;
 
     @Autowired
+    private CircleCosMapper circleCosMapper;
+
+    @Autowired
     private RabbitmqProducerService rabbitmqProducerService;
 
     @Override
@@ -60,22 +60,27 @@ public class LikeServiceImpl implements LikeService{
         //添加likes
         likesMapper.insert(new Likes(null,number,id,null));
         //redis记录
-        String ck2 = redisUtils.getValue("cosHotLikeWeekCounts_" + number);
         String ck = redisUtils.getValue("cosLikeCounts_" + number);
-        String ck1 = redisUtils.getValue("cosHotLikeCounts_" + number);
         if(ck == null){
             //redis存入
             redisUtils.saveByHoursTime("cosLikeCounts_" + number,cosCounts.getLikeCounts().toString(),12);
         }
-        if(ck2 == null){
-            redisUtils.saveByHoursTime("cosHotLikeWeekCounts_" + number,"0",24 * 8);
-        }
-        if(ck1 == null){
-            redisUtils.saveByHoursTime("cosHotLikeCounts_" + number,"0",48);
-        }
         redisUtils.addKeyByTime("cosLikeCounts_" + number,12);
-        redisUtils.addKeyByTime("cosHotLikeCounts_" + number,48);
-        redisUtils.addKeyByTime("cosHotLikeWeekCounts_" + number,24 * 8);
+        Long cosExist = circleCosMapper.judgeCircleCosExist("cos",number);
+        Long drawExist = circleCosMapper.judgeCircleCosExist("绘画",number);
+        Long writeExist = circleCosMapper.judgeCircleCosExist("写作",number);
+        if(cosExist != null){
+            redisUtils.addKeyByTime("cosHotLikeCounts1_" + number,48);
+            redisUtils.addKeyByTime("cosHotLikeWeekCounts1_" + number,24 * 8);
+        }
+        if(drawExist != null){
+            redisUtils.addKeyByTime("cosHotLikeCounts2_" + number,48);
+            redisUtils.addKeyByTime("cosHotLikeWeekCounts2_" + number,24 * 8);
+        }
+        if(writeExist != null){
+            redisUtils.addKeyByTime("cosHotLikeCounts3_" + number,48);
+            redisUtils.addKeyByTime("cosHotLikeWeekCounts3_" + number,24 * 8);
+        }
         //websocket推送
         CosPlay cosPlay = cosPlayMapper.selectById(number);
         User user = userMapper.selectById(id);
@@ -105,21 +110,26 @@ public class LikeServiceImpl implements LikeService{
         likesMapper.deleteById(likes.getNumber());
         //redis记录
         String ck = redisUtils.getValue("cosLikeCounts_" + number);
-        String ck1 = redisUtils.getValue("cosHotLikeCounts_" + number);
-        String ck2 = redisUtils.getValue("cosHotLikeWeekCounts_" + number);
         if(ck == null){
             //redis存入
             redisUtils.saveByHoursTime("cosLikeCounts_" + number,cosCounts.getLikeCounts().toString(),12);
         }
-        if(ck1 == null){
-            redisUtils.saveByHoursTime("cosHotLikeCounts_" + number,"0",48);
+        Long cosExist = circleCosMapper.judgeCircleCosExist("cos",number);
+        Long drawExist = circleCosMapper.judgeCircleCosExist("绘画",number);
+        Long writeExist = circleCosMapper.judgeCircleCosExist("写作",number);
+        if(cosExist != null){
+            redisUtils.subKeyByTime("cosHotLikeCounts1_" + number,48);
+            redisUtils.subKeyByTime("cosHotLikeWeekCounts1_" + number,24 * 8);
         }
-        if(ck2 == null){
-            redisUtils.saveByHoursTime("cosHotLikeWeekCounts_" + number,"0",24 * 8);
+        if(drawExist != null){
+            redisUtils.subKeyByTime("cosHotLikeCounts2_" + number,48);
+            redisUtils.subKeyByTime("cosHotLikeWeekCounts2_" + number,24 * 8);
+        }
+        if(writeExist != null){
+            redisUtils.subKeyByTime("cosHotLikeCounts3_" + number,48);
+            redisUtils.subKeyByTime("cosHotLikeWeekCounts3_" + number,24 * 8);
         }
         redisUtils.subKeyByTime("cosLikeCounts_" + number,12);
-        redisUtils.subKeyByTime("cosHotLikeCounts_" + number,48);
-        redisUtils.subKeyByTime("cosHotLikeWeekCounts_" + number, 24 * 8);
         log.info("取消cos点赞成功");
         return "success";
     }

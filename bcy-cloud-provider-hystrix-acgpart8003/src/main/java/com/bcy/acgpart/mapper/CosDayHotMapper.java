@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface CosDayHotMapper extends BaseMapper<CosDayHot> {
 
-    @Select("SELECT a.cos_number,b.id FROM cos_day_hot as a , cos_play as b WHERE a.create_time = #{time} AND a.cos_number = b.number ORDER BY a.rank ASC")
-    List<CosForHot> getDayHotList(@Param("time") String time);
+    @Select("SELECT a.cos_number,b.id FROM cos_day_hot as a , cos_play as b WHERE a.create_time = #{time} AND a.cos_number = b.number AND a.type = #{type} ORDER BY a.rank ASC")
+    List<CosForHot> getDayHotList(@Param("time") String time,@Param("type") Integer type);
 
 }

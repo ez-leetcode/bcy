@@ -68,11 +68,12 @@ public class HomePageServiceImpl implements HomePageService{
                 .eq("keyword",keyword);
         SearchHistory searchHistory = searchHistoryMapper.selectOne(wrapper);
         if(searchHistory != null){
+            searchHistory.setDeleted(0);
             searchHistory.setReClick(searchHistory.getReClick() + 1);
             searchHistoryMapper.updateById(searchHistory);
         }else{
             //插入历史
-            searchHistoryMapper.insert(new SearchHistory(null,id,keyword,0,null));
+            searchHistoryMapper.insert(new SearchHistory(null,id,keyword,0,0,null));
             //维护redis
             Page<String> page2 = new Page<>(1,20);
             List<String> historyList = searchHistoryMapper.getHistoryKeywordList(id,page2);
