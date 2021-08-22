@@ -36,9 +36,6 @@ public class FansServiceImpl implements FansService{
     private UserSettingMapper userSettingMapper;
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
-
-    @Autowired
     private UserMapper userMapper;
 
     @Autowired
@@ -48,7 +45,7 @@ public class FansServiceImpl implements FansService{
     public String addFollow(Long fromId, Long toId) {
         QueryWrapper<Fans> wrapper = new QueryWrapper<>();
         wrapper.eq("from_id",fromId)
-                .eq("to_id",fromId);
+                .eq("to_id",toId);
         Fans fans = fansMapper.selectOne(wrapper);
         if(fans != null){
             log.error("关注用户失败，用户已被关注");

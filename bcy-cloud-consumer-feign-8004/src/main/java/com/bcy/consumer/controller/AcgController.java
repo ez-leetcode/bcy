@@ -329,4 +329,9 @@ public class AcgController {
     public Result<JSONObject> judgeCircle(@RequestParam("id") Long id, @RequestParam("circleNames")List<String> circleNames){
         return acgFeignService.judgeCircle(id, circleNames);
     }
+
+    @GetMapping("/acg/judgeQa")
+    public Result<JSONObject> judgeQaFollow(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers){
+        return acgFeignService.judgeQaFollow(id, numbers);
+    }
 }

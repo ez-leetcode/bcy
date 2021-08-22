@@ -102,4 +102,8 @@ public interface CommunityFeignService {
     @GetMapping("/community/cosList")
     Result<JSONObject> getUserCosList(@RequestParam("userId") Long userId,@RequestParam("cnt") Long cnt,
                                              @RequestParam("page") Long page);
+
+    @GetMapping("/community/p2pTalkList")
+    Result<JSONObject> getP2PTalk(@RequestParam("id") Long id,@RequestParam("toId") Long toId,
+                                         @RequestParam("cnt") Long cnt,@RequestParam("page") Long page);
 }

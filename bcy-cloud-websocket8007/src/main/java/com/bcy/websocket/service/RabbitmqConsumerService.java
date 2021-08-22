@@ -7,6 +7,7 @@ import com.bcy.websocket.mapper.TalkMessageMapper;
 import com.bcy.websocket.mapper.TalkUserMapper;
 import com.bcy.websocket.mapper.UserSettingMapper;
 import com.bcy.websocket.pojo.UserSetting;
+import com.bcy.websocket.utils.RedisUtils;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -23,6 +24,9 @@ public class RabbitmqConsumerService {
     @Autowired
     private WebsocketService websocketService;
 
+    @Autowired
+    private RedisUtils redisUtils;
+
     //黑名单待完成
     @RabbitListener(bindings = @QueueBinding(value = @Queue(value = RabbitmqConfig.WEBSOCKET_FANOUT_QUEUE_NAME,durable = "true"),
             exchange = @Exchange(value = RabbitmqConfig.WEBSOCKET_FANOUT_EXCHANGE_NAME,type = "fanout"),key = RabbitmqConfig.WEBSOCKET_FANOUT_ROUTING_KEY))
@@ -31,8 +35,18 @@ public class RabbitmqConsumerService {
         log.info("已接收到用户消息");
         log.info(message.toString());
         log.info(talkMsg.toString());
-        //待完成
+        //先判断uuid是否存在，确保消息队列幂等性
+        String judgeRepeat = redisUtils.getValue(talkMsg.getUuId());
+        if(judgeRepeat == null){
+            log.warn("聊天消息重复消费或为ack回执，直接返回ack不做处理");
+            return;
+        }else{
+            //移除uuid
+            log.info("已移除uuid");
+            redisUtils.delete(talkMsg.getUuId());
+        }
         websocketService.getTalk(talkMsg);
+        //先给ack  因为要sql耗时会重复消费
         channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
         log.info("接收用户数据成功");
     }

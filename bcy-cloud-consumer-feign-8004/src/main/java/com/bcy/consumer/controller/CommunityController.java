@@ -154,4 +154,10 @@ public class CommunityController {
         return communityFeignService.getUserCosList(userId, cnt, page);
     }
 
+    @GetMapping("/community/p2pTalkList")
+    public Result<JSONObject> getP2PTalk(@RequestParam("id") Long id,@RequestParam("toId") Long toId,
+                                         @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
+        return communityFeignService.getP2PTalk(id, toId, cnt, page);
+    }
+
 }

@@ -11,6 +11,7 @@ import com.bcy.community.pojo.TalkUser;
 import com.bcy.community.pojo.User;
 import com.bcy.community.utils.RedisUtils;
 import com.bcy.vo.JudgeOnlineForList;
+import com.bcy.vo.P2PTalkForList;
 import com.bcy.vo.TalkCountsForList;
 import com.bcy.vo.TalkForList;
 import lombok.extern.slf4j.Slf4j;
@@ -179,6 +180,7 @@ public class TalkServiceImpl implements TalkService{
         Page<TalkUser> page1 = new Page<>(page,cnt);
         talkUserMapper.selectPage(page1,wrapper);
         List<TalkUser> talkUserList = page1.getRecords();
+        log.info(page1.getRecords().toString());
         List<TalkForList> talkForLists = new LinkedList<>();
         for(TalkUser x:talkUserList){
             User user;
@@ -196,6 +198,21 @@ public class TalkServiceImpl implements TalkService{
         log.info(jsonObject.toString());
         return jsonObject;
     }
+
+
+    @Override
+    public JSONObject getP2PTalkList(Long id, Long toId, Long cnt, Long page) {
+        JSONObject jsonObject = new JSONObject();
+        Page<P2PTalkForList> page1 = new Page<>(page,cnt);
+        List<P2PTalkForList> p2PTalkForLists = talkMessageMapper.getP2PTalkList(id,toId,page1);
+        jsonObject.put("p2pTalkList",p2PTalkForLists);
+        jsonObject.put("counts",page1.getTotal());
+        jsonObject.put("pages",page1.getPages());
+        log.info("获取一对一聊天列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
 
     @Override
     public String allRead(Long id, Long toId) {

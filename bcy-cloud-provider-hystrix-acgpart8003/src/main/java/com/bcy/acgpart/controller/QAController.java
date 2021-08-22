@@ -304,4 +304,16 @@ public class QAController {
         return ResultUtils.getResult(qaService.getQACountsList(id, numbers),"success");
     }
 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+        @ApiImplicitParam(name = "numbers",value = "问答编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取问答关注情况",notes = "success：成功 返回qaJudgeList：（number：问答编号 isFollow：1关注 0未关注）")
+    @GetMapping("/acg/judgeQa")
+    public Result<JSONObject> judgeQaFollow(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers){
+        log.info("正在获取问答关注情况，用户：" + id);
+        return ResultUtils.getResult(qaService.qaJudgeList(id, numbers),"success");
+    }
+
+
 }

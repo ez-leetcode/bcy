@@ -343,6 +343,7 @@ public class QAServiceImpl implements QAService{
                 qaAnswerForList1.setPhoto(user.getPhoto());
                 qaAnswerForList1.setUsername(user.getUsername());
             }
+            qaAnswerForList.add(qaAnswerForList1);
         }
         jsonObject.put("answerList",qaAnswerForList);
         jsonObject.put("pages",page1.getPages());
@@ -650,4 +651,25 @@ public class QAServiceImpl implements QAService{
         return url;
     }
 
+
+    @Override
+    public JSONObject qaJudgeList(Long id, List<Long> numbers) {
+        JSONObject jsonObject = new JSONObject();
+        List<JudgeQaFollowForList> judgeQaFollowForLists = new LinkedList<>();
+        for(Long x:numbers){
+            QueryWrapper<QaFollow> wrapper = new QueryWrapper<>();
+            wrapper.eq("qa_number",x)
+                    .eq("id",id);
+            QaFollow qaFollow = qaFollowMapper.selectOne(wrapper);
+            if(qaFollow == null){
+                judgeQaFollowForLists.add(new JudgeQaFollowForList(x,0));
+            }else{
+                judgeQaFollowForLists.add(new JudgeQaFollowForList(x,1));
+            }
+        }
+        jsonObject.put("qaJudgeList",judgeQaFollowForLists);
+        log.info("获取是否关注成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
 }

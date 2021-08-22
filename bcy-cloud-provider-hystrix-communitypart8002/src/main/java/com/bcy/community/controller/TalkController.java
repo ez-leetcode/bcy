@@ -90,7 +90,7 @@ public class TalkController {
     public Result<JSONObject> getTalkList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                           @RequestParam("page") Long page){
         log.info("正在获取用户聊天列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return ResultUtils.getResult(talkService.getTalkList(id, cnt, page),"success");
+        return ResultUtils.getResult(talkService.getTalkList(id,page,cnt),"success");
     }
 
     @HystrixCommand
@@ -103,6 +103,21 @@ public class TalkController {
     public Result<JSONObject> allRead(@RequestParam("id") Long id,@RequestParam("toId") Long toId){
         log.info("正在添加全部聊天为已读，用户：" + id + " 对方id：" + toId);
         return ResultUtils.getResult(new JSONObject(),talkService.allRead(id, toId));
+    }
+
+    @HystrixCommand
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "toId",value = "对方id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取一对一聊天列表（注意这里的数据是时间最近的在前面，展示的时候要倒着展示）",notes = "success：成功 p2pTalkList（fromId：发送方id toId：接收方id uuid：流水号 message：内容 createTime：时间")
+    @GetMapping("/community/p2pTalkList")
+    public Result<JSONObject> getP2PTalk(@RequestParam("id") Long id,@RequestParam("toId") Long toId,
+                                         @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
+        log.info("正在获取1对1聊天列表，用户：" + id + " 对方id：" + toId + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(talkService.getP2PTalkList(id, toId, cnt, page),"success");
     }
 
     /*

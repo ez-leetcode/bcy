@@ -1,6 +1,7 @@
 package com.bcy.websocket.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bcy.mq.*;
 import com.bcy.pojo.SystemInfo;
@@ -100,12 +101,6 @@ public class WebsocketService {
 
     public void getTalk(TalkMsg talkMsg){
         log.info("正在消费聊天消息");
-        //先判断uuid是否存在，确保消息队列幂等性
-        String judgeRepeat = redisUtils.getValue(talkMsg.getUuId());
-        if(judgeRepeat != null){
-            log.warn("聊天消息重复消费，直接返回ack不做处理");
-            return;
-        }
         WebsocketService websocketService = websocketServiceConcurrentHashMap.get(talkMsg.getToId().toString());
         if(websocketService != null){
             UserSetting userSetting = userSettingMapper.selectById(talkMsg.getToId());
@@ -113,48 +108,59 @@ public class WebsocketService {
                 //非免打扰直接推送
                 User user = userMapper.selectById(talkMsg.getFromId());
                 SystemInfo systemInfo = new SystemInfo(user.getUsername(),talkMsg.getMsg());
-                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"talkInfo",talkMsg.getFromId().toString()).toString());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("title",systemInfo.getTitle());
+                jsonObject.put("content",systemInfo.getContent());
+                log.info(jsonObject.toString());
+                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(jsonObject,"talkInfo",talkMsg.getFromId().toString()).toString());
                 log.info("聊天推送成功");
             }
-            //查询是否被拉黑
-            QueryWrapper<BlackUser> wrapper1 = new QueryWrapper<>();
-            wrapper1.eq("id",talkMsg.getToId())
-                    .eq("black_id",talkMsg.getFromId());
-            BlackUser blackUser = blackUserMapper.selectOne(wrapper1);
-            if(blackUser == null){
-                //未被屏蔽
-                //插入聊天列表
-                QueryWrapper<TalkUser> wrapper = new QueryWrapper<>();
-                wrapper.eq("id1",talkMsg.getFromId())
-                        .eq("id2",talkMsg.getToId())
-                        .or()
-                        .eq("id1",talkMsg.getToId())
-                        .eq("id2",talkMsg.getFromId());
-                TalkUser talkUser = talkUserMapper.selectOne(wrapper);
-                if(talkUser == null){
-                    //新建聊天
-                    talkUserMapper.insert(new TalkUser(talkMsg.getFromId(),talkMsg.getToId(),0,1,0,0,talkMsg.getMsg(),null,null));
-                }else{
-                    //更新时间
-                    talkUser.setUpdateTime(new Date());
-                    talkUserMapper.updateById(talkUser);
-                    //redis更新
-                    redisUtils.updateTalkTime(talkMsg.getFromId(),talkMsg.getToId());
-                    //更新最后聊天的信息，不直接更新 定期更新回mysql
-                    redisUtils.updateTalkInfo(talkMsg.getFromId(),talkMsg.getToId(),talkMsg.getMsg());
-                }
-                //插入聊天
-                talkMessageMapper.insert(new TalkMessage(null,talkMsg.getFromId(),talkMsg.getToId(),talkMsg.getMsg(),talkMsg.getUuId(),0,0,null));
-                //如果websocket实例在这个服务器上，保存聊天记录并返回ack，可能不行！！！！还是要广播消息队列
-                //把uuid当ack发回去
-                rabbitmqProducerService.sendAckMsg(new TalkAckMsg(talkMsg.getFromId(),talkMsg.getUuId(),1));
-
-            }else{
-                //把被屏蔽的消息发回去
-                rabbitmqProducerService.sendAckMsg(new TalkAckMsg(talkMsg.getFromId(),talkMsg.getUuId(),0));
-            }
-            log.info("聊天信息消费成功");
         }
+        //查询是否被拉黑
+        QueryWrapper<BlackUser> wrapper1 = new QueryWrapper<>();
+        wrapper1.eq("id",talkMsg.getToId())
+                .eq("black_id",talkMsg.getFromId());
+        BlackUser blackUser = blackUserMapper.selectOne(wrapper1);
+        if(blackUser == null){
+            //未被屏蔽
+            //插入聊天列表
+            rabbitmqProducerService.sendAckMsg(new TalkAckMsg(talkMsg.getFromId(),talkMsg.getUuId(),1));
+            log.info("正在插入聊天列表");
+            QueryWrapper<TalkUser> wrapper = new QueryWrapper<>();
+            wrapper.eq("id1",talkMsg.getFromId())
+                    .eq("id2",talkMsg.getToId())
+                    .or()
+                    .eq("id1",talkMsg.getToId())
+                    .eq("id2",talkMsg.getFromId());
+            TalkUser talkUser = talkUserMapper.selectOne(wrapper);
+            if(talkUser == null){
+                //新建聊天
+                talkUserMapper.insert(new TalkUser(talkMsg.getFromId(),talkMsg.getToId(),0,1,0,0,talkMsg.getMsg(),null,null));
+            }else{
+                //更新时间
+                if(talkUser.getId1().equals(talkMsg.getFromId())){
+                    talkUser.setId2Deleted(0);
+                    talkUser.setId2Read(talkUser.getId2Read() + 1);
+                }else{
+                    talkUser.setId2Deleted(0);
+                    talkUser.setId1Read(talkUser.getId1Read() + 1);
+                }
+                log.info("正在更新--------------------------------------------------------");
+                talkUserMapper.update(talkUser,wrapper);
+                log.info("正在插入----------------------------------------------------");
+                talkMessageMapper.insert(new TalkMessage(null,talkMsg.getFromId(),talkMsg.getToId(),talkMsg.getMsg(),talkMsg.getUuId(),0,0,null));
+                //redis更新
+                redisUtils.updateTalkTime(talkMsg.getFromId(),talkMsg.getToId());
+                //更新最后聊天的信息，不直接更新 定期更新回mysql
+                redisUtils.updateTalkInfo(talkMsg.getFromId(),talkMsg.getToId(),talkMsg.getMsg());
+            }
+            //插入聊天
+            //把uuid当ack发出去
+        }else{
+            //把屏蔽的消息发出去
+            rabbitmqProducerService.sendAckMsg(new TalkAckMsg(talkMsg.getFromId(),talkMsg.getUuId(),0));
+        }
+        log.info("聊天信息消费成功--------------------------------------------------------------");
     }
 
     public void sendAckMessage(TalkAckMsg talkAckMsg){
@@ -163,7 +169,11 @@ public class WebsocketService {
         WebsocketService websocketService = websocketServiceConcurrentHashMap.get(talkAckMsg.getId().toString());
         if(websocketService != null){
             log.info("正在返回ack");
-            websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(talkAckMsg.toString()),"talkReceive",null).toString());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uuId",talkAckMsg.getUuId());
+            jsonObject.put("isSuccess",talkAckMsg.getIsSuccess());
+            log.info(jsonObject.toString());
+            websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(jsonObject,"talkReceive","0").toString());
             log.info("ack返回成功");
         }
     }
@@ -176,7 +186,11 @@ public class WebsocketService {
         if(websocketService != null){
             log.info("正在向用户" + websocketService.session.getId() + "推送粉丝添加信息");
             SystemInfo systemInfo = new SystemInfo("您有新的粉丝关注","用户" + fansMsg.getFromUsername() + "关注了您");
-            websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"fansInfo", fansMsg.getFromId().toString()).toString());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("title",systemInfo.getTitle());
+            jsonObject.put("content",systemInfo.getContent());
+            log.info(jsonObject.toString());
+            websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(jsonObject,"fansInfo", fansMsg.getFromId().toString()).toString());
             log.info("粉丝添加推送成功");
         }
     }
@@ -190,7 +204,11 @@ public class WebsocketService {
             if(userSetting != null && userSetting.getPushInfo() == 1){
                 log.info("正在向用户推送@消息");
                 SystemInfo systemInfo = new SystemInfo("有新的用户@您", atMsg.getFromUsername() + "刚刚在评论中@了您");
-                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"atInfo",atMsg.getNumber().toString()).toString());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("title",systemInfo.getTitle());
+                jsonObject.put("content",systemInfo.getContent());
+                log.info(jsonObject.toString());
+                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(jsonObject,"atInfo",atMsg.getNumber().toString()).toString());
                 log.info("@推送成功");
             }
         }
@@ -205,7 +223,11 @@ public class WebsocketService {
             if(userSetting != null && userSetting.getPushComment() == 1){
                 log.info("正在向用户推送评论");
                 SystemInfo systemInfo = new SystemInfo("有新的用户评论了您",commentMsg.getUsername() + "：" + commentMsg.getDescription());
-                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"commentInfo",commentMsg.getNumber().toString()).toString());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("title",systemInfo.getTitle());
+                jsonObject.put("content",systemInfo.getContent());
+                log.info(jsonObject.toString());
+                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(jsonObject,"commentInfo",commentMsg.getNumber().toString()).toString());
                 log.info("评论推送成功");
             }
         }
@@ -231,7 +253,11 @@ public class WebsocketService {
                 }else{
                     systemInfo = new SystemInfo("您有新的cos评论点赞",likeMsg.getUsername() + "点赞了您的cos评论");
                 }
-                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"likeInfo",likeMsg.getNumber().toString()).toString());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("title",systemInfo.getTitle());
+                jsonObject.put("content",systemInfo.getContent());
+                log.info(jsonObject.toString());
+                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(jsonObject,"likeInfo",likeMsg.getNumber().toString()).toString());
                 log.info("点赞推送成功");
             }
         }
@@ -244,7 +270,11 @@ public class WebsocketService {
         if(websocketService != null){
             log.info("正在向用户推送提问");
             SystemInfo systemInfo = new SystemInfo("您有新的用户提问待回答","用户" + askMsg.getUsername() + "向您提问：" + askMsg.getQuestion());
-            websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"askInfo",askMsg.getNumber().toString()).toString());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("title",systemInfo.getTitle());
+            jsonObject.put("content",systemInfo.getContent());
+            log.info(jsonObject.toString());
+            websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(jsonObject,"askInfo",askMsg.getNumber().toString()).toString());
         }
     }
 
@@ -255,7 +285,11 @@ public class WebsocketService {
             if (websocketService != null){
                 log.info("正在向用户" + websocketService.session.getId() + "推送热门cos");
                 SystemInfo systemInfo = new SystemInfo("新的热帖推送","用户" + hotCosMsg.getFromUsername() + "发布了新热帖：" + hotCosMsg.getDescription());
-                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"hotCosInfo", hotCosMsg.getNumber().toString()).toString());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("title",systemInfo.getTitle());
+                jsonObject.put("content",systemInfo.getContent());
+                log.info(jsonObject.toString());
+                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(jsonObject,"hotCosInfo", hotCosMsg.getNumber().toString()).toString());
                 log.info("推送热门cos成功");
             }
         }
@@ -268,7 +302,11 @@ public class WebsocketService {
             if (websocketService != null){
                 log.info("正在向用户" + websocketService.session.getId() + "推送热门问答");
                 SystemInfo systemInfo = new SystemInfo("新的问答推送","用户" + hotQAMsg.getFromUsername() + "发布了新问题：" + hotQAMsg.getTitle());
-                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(JSON.parseObject(systemInfo.toString()),"hotQAInfo", hotQAMsg.getNumber().toString()).toString());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("title",systemInfo.getTitle());
+                jsonObject.put("content",systemInfo.getContent());
+                log.info(jsonObject.toString());
+                websocketService.session.getAsyncRemote().sendText(WebsocketResultUtils.getResult(jsonObject,"hotQAInfo", hotQAMsg.getNumber().toString()).toString());
                 log.info("推送热门cos成功");
             }
         }

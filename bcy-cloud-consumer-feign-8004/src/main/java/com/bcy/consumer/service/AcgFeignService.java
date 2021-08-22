@@ -215,4 +215,6 @@ public interface AcgFeignService {
     @GetMapping("/acg/judgeCircle")
     Result<JSONObject> judgeCircle(@RequestParam("id") Long id, @RequestParam("circleNames")List<String> circleNames);
 
+    @GetMapping("/acg/judgeQa")
+    Result<JSONObject> judgeQaFollow(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers);
 }

@@ -10,8 +10,11 @@ public class WebsocketResultUtils {
     private static final HashMap<String,Integer> talkResultMap = new HashMap<>();
 
     static {
+        //私聊通知
         talkResultMap.put("talkInfo",1);
+        //发送成功ack
         talkResultMap.put("talkReceive",2);
+        //系统 粉丝 问答 点赞 评论 @ 通知
         talkResultMap.put("systemInfo",3);
         talkResultMap.put("fansInfo",4);
         talkResultMap.put("askInfo",5);

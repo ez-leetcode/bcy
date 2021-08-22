@@ -18,5 +18,7 @@ public interface TalkService {
 
     JSONObject getTalkList(Long id,Long page,Long cnt);
 
+    JSONObject getP2PTalkList(Long id,Long toId,Long cnt,Long page);
+
     String allRead(Long id,Long toId);
 }

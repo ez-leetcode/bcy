@@ -99,6 +99,7 @@ public class RedisUtils {
     }
 
     public void updateTalkTime(Long id1,Long id2){
+        log.info("正在更新聊天时间");
         String updateTime = redisTemplate.opsForValue().get("updateTime_" + id1 + id2);
         String updateTime1 = redisTemplate.opsForValue().get("updateTime_" + id2 + id1);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -112,6 +113,7 @@ public class RedisUtils {
     }
 
     public void updateTalkInfo(Long id1,Long id2,String lastInfo){
+        log.info("正在更新聊天消息");
         String lastInfo1 = redisTemplate.opsForValue().get("lastInfo_" + id1 + id2);
         String lastInfo2 = redisTemplate.opsForValue().get("lastInfo_" + id2 + id1);
         if(lastInfo1 == null && lastInfo2 == null){
