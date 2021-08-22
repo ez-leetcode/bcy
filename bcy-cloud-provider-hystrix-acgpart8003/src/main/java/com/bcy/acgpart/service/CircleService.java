@@ -22,4 +22,6 @@ public interface CircleService {
     JSONObject searchCircle(Long id,Long cnt,Long page,String keyword);
 
     JSONObject judgeCircleList(Long id, List<String> circleNames);
+
+    JSONObject getCircleCosList(String circleName,Integer type,Long cnt,Long page);
 }

@@ -334,4 +334,10 @@ public class AcgController {
     public Result<JSONObject> judgeQaFollow(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers){
         return acgFeignService.judgeQaFollow(id, numbers);
     }
+
+    @GetMapping("/acg/circleCosList")
+    public Result<JSONObject> getCircleCosList(@RequestParam("circleName") String circleName,@RequestParam("type") Integer type,
+                                               @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
+        return acgFeignService.getCircleCosList(circleName, type, cnt, page);
+    }
 }

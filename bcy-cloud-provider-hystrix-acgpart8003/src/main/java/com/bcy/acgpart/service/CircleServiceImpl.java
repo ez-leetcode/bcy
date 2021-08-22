@@ -3,15 +3,13 @@ package com.bcy.acgpart.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.bcy.acgpart.mapper.CircleFollowMapper;
-import com.bcy.acgpart.mapper.CircleMapper;
-import com.bcy.acgpart.mapper.SearchHistoryMapper;
-import com.bcy.acgpart.pojo.Circle;
-import com.bcy.acgpart.pojo.CircleFollow;
-import com.bcy.acgpart.pojo.SearchHistory;
+import com.bcy.acgpart.mapper.*;
+import com.bcy.acgpart.pojo.*;
 import com.bcy.acgpart.utils.OssUtils;
 import com.bcy.acgpart.utils.RedisUtils;
 import com.bcy.mq.EsMsgForCircle;
+import com.bcy.utils.PhotoUtils;
+import com.bcy.vo.CircleCosForList;
 import com.bcy.vo.CircleInfoForSearchList;
 import com.bcy.vo.JudgeCircleFollowForList;
 import com.bcy.vo.PersonalCircleForList;
@@ -31,10 +29,19 @@ public class CircleServiceImpl implements CircleService{
     private CircleMapper circleMapper;
 
     @Autowired
+    private CosPlayMapper cosPlayMapper;
+
+    @Autowired
     private CircleFollowMapper circleFollowMapper;
 
     @Autowired
     private SearchHistoryMapper searchHistoryMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private CircleCosMapper circleCosMapper;
 
     @Autowired
     private RabbitmqProducerService rabbitmqProducerService;
@@ -187,5 +194,34 @@ public class CircleServiceImpl implements CircleService{
         return jsonObject;
     }
 
+
+    @Override
+    public JSONObject getCircleCosList(String circleName, Integer type, Long cnt, Long page) {
+        JSONObject jsonObject = new JSONObject();
+        Page<CircleCosForList> page1 = new Page<>(page,cnt);
+        List<CircleCosForList> circleCosForListList;
+        if(type == 1){
+            circleCosForListList = circleCosMapper.getCircleCosListByHot(circleName,page1);
+        }else{
+            circleCosForListList = circleCosMapper.getCircleCosListByTime(circleName,page1);
+        }
+        for(CircleCosForList x:circleCosForListList){
+            User user = userMapper.selectById(x.getId());
+            if(user != null){
+                x.setUsername(user.getUsername());
+                x.setPhoto(user.getPhoto());
+            }
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getNumber());
+            if(cosPlay != null){
+                x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
+            }
+        }
+        jsonObject.put("circleCosList",circleCosForListList);
+        jsonObject.put("counts",page1.getTotal());
+        jsonObject.put("pages",page1.getPages());
+        log.info("获取圈子下cos列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
 
 }

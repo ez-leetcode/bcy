@@ -158,4 +158,20 @@ public class CircleController {
         return ResultUtils.getResult(circleService.searchCircle(id,cnt,page,keyword),"success");
     }
 
+    //@HystrixCommand
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "circleName",value = "圈子名",required = true,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "排序方式（0：按时间 1：按热度）",required = true,dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取圈子下cos列表",notes = "返回data circleCosList（number：cos编号 id：发布者id username：昵称 " +
+            "photo：头像 description：描述内容 cosPhoto：图片列表（list） createTime：发布时间")
+    @GetMapping("/acg/circleCosList")
+    public Result<JSONObject> getCircleCosList(@RequestParam("circleName") String circleName,@RequestParam("type") Integer type,
+                                               @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
+        log.info("正在获取圈子下的cos列表，圈子：" + circleName + " 排序方式：" + type + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(circleService.getCircleCosList(circleName,type,cnt,page),"success");
+    }
+
 }

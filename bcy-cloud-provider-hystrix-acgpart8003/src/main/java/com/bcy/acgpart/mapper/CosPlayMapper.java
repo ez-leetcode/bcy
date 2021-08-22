@@ -17,4 +17,5 @@ public interface CosPlayMapper extends BaseMapper<CosPlay> {
     @Select("SELECT a.id,a.number,a.description FROM cos_play as a , fans as b WHERE b.from_id = #{id} AND a.id = b.to_id AND a.permission != 3 ORDER BY a.create_time DESC")
     List<CosForFollow> getFollowCosList(@Param("id") Long id, Page<CosForFollow> page);
 
+
 }
