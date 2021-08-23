@@ -40,6 +40,9 @@ public class LikeServiceImpl implements LikeService{
     private CircleCosMapper circleCosMapper;
 
     @Autowired
+    private LikeMessageMapper likeMessageMapper;
+
+    @Autowired
     private RabbitmqProducerService rabbitmqProducerService;
 
     @Override
@@ -86,6 +89,10 @@ public class LikeServiceImpl implements LikeService{
         User user = userMapper.selectById(id);
         if(cosPlay != null && user != null){
             rabbitmqProducerService.sendLikeMessage(new LikeMsg(number,1,user.getUsername(), cosPlay.getId()));
+        }
+        //插入点赞消息
+        if(user != null){
+            likeMessageMapper.insert(new LikeMessage(null,id,cosPlay.getId(),cosPlay.getNumber(),1,0,null));
         }
         log.info("添加cos点赞成功");
         return "success";

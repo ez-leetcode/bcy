@@ -17,7 +17,7 @@ public class RabbitmqWebsocketProductConfig {
     @Bean
     public Queue broadcastQueue(){
         log.info("创建了广播队列");
-        //持久化，确保消息不易丢失
+        //持久化
         return new Queue(RabbitmqConfig.WEBSOCKET_FANOUT_QUEUE_NAME,true);
     }
 

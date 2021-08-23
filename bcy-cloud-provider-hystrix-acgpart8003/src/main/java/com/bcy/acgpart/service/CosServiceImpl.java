@@ -13,6 +13,7 @@ import com.bcy.mq.EsMsg;
 import com.bcy.mq.LikeMsg;
 import com.bcy.utils.CommentUtils;
 import com.bcy.utils.PhotoUtils;
+import com.bcy.utils.RecommendUtils;
 import com.bcy.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,15 @@ public class CosServiceImpl implements CosService {
 
     @Autowired
     private FansMapper fansMapper;
+
+    @Autowired
+    private LikeMessageMapper likeMessageMapper;
+
+    @Autowired
+    private CommentMessageMapper commentMessageMapper;
+
+    @Autowired
+    private AtMessageMapper atMessageMapper;
 
     //这个接口暂时不用
     @Override
@@ -390,6 +400,10 @@ public class CosServiceImpl implements CosService {
         if(user != null){
             rabbitmqProducerService.sendLikeMessage(new LikeMsg(cosComment.getNumber(),4,user.getUsername(),cosComment.getFromId()));
         }
+        CosPlay cosPlay = cosPlayMapper.selectById(cosComment.getCosNumber());
+        if(cosPlay != null){
+            likeMessageMapper.insert(new LikeMessage(null,id,cosPlay.getId(),cosPlay.getNumber(),2,0,null));
+        }
         log.info("点赞cos下评论成功");
         return "success";
     }
@@ -515,17 +529,23 @@ public class CosServiceImpl implements CosService {
             //这个number给评论编号
             log.info(cosPlay.toString());
             rabbitmqProducerService.sendCommentMessage(new CommentMsg(cosComment1.getNumber(), cosPlay.getId(),user.getUsername(),description));
+            //添加评论
+            commentMessageMapper.insert(new CommentMessage(null,id,cosPlay.getId(),description,cosPlay.getNumber(),0,1,null));
         }else{
             CosComment cosComment;
             if(replyNumber == 0){
                 //评论下的评论，给父级评论
                 cosComment = cosCommentMapper.selectById(fatherNumber);
+                rabbitmqProducerService.sendCommentMessage(new CommentMsg(fatherNumber,toId,user.getUsername(),description));
+                commentMessageMapper.insert(new CommentMessage(null,id,cosComment.getFromId(),description,cosComment.getNumber(),0,1,null));
             }else{
                 //评论下的回复评论
                 cosComment = cosCommentMapper.selectById(replyNumber);
+                log.info(user.getUsername());
                 rabbitmqProducerService.sendAtMessage(new AtMsg(fatherNumber,user.getUsername(),toId));
+                //@
+                atMessageMapper.insert(new AtMessage(null,id,cosComment.getFromId(),description,cosComment.getNumber(),0,1,null));
             }
-            rabbitmqProducerService.sendCommentMessage(new CommentMsg(fatherNumber,cosComment.getFromId(),user.getUsername(),description));
         }
         log.info("添加cos下的评论成功");
         return "success";
@@ -553,6 +573,12 @@ public class CosServiceImpl implements CosService {
             if(ck != null){
                 labelList.add(ck.substring(15));
             }
+        }
+        int cnt = 0;
+        //标签不够，补足20个
+        while(labelList.size() < 20){
+            labelList.add(RecommendUtils.recommendList.get(cnt));
+            cnt ++;
         }
         jsonObject.put("cosRecommendLabelList",labelList);
         log.info("获取当前推荐标签成功");
@@ -626,6 +652,7 @@ public class CosServiceImpl implements CosService {
             CosPlay cosPlay = cosPlayMapper.selectById(x.getNumber());
             if(cosPlay != null){
                 x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
+                x.setCreateTime(cosPlay.getCreateTime());
             }
             //标签
             List<String> label = circleCosMapper.getAllCircleNameFromCosNumber(x.getNumber());

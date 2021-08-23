@@ -1,12 +1,7 @@
 package com.bcy.websocket.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.bcy.config.RabbitmqConfig;
 import com.bcy.mq.*;
-import com.bcy.websocket.mapper.TalkMessageMapper;
-import com.bcy.websocket.mapper.TalkUserMapper;
-import com.bcy.websocket.mapper.UserSettingMapper;
-import com.bcy.websocket.pojo.UserSetting;
 import com.bcy.websocket.utils.RedisUtils;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;

@@ -184,7 +184,7 @@ public class WebsocketService {
         //免打扰在上游处理过了
         WebsocketService websocketService = websocketServiceConcurrentHashMap.get(fansMsg.getToId().toString());
         if(websocketService != null){
-            log.info("正在向用户" + websocketService.session.getId() + "推送粉丝添加信息");
+            log.info("正在向用户" + fansMsg.getToId().toString() + "推送粉丝添加信息");
             SystemInfo systemInfo = new SystemInfo("您有新的粉丝关注","用户" + fansMsg.getFromUsername() + "关注了您");
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("title",systemInfo.getTitle());
