@@ -106,4 +106,8 @@ public interface CommunityFeignService {
     @GetMapping("/community/p2pTalkList")
     Result<JSONObject> getP2PTalk(@RequestParam("id") Long id,@RequestParam("toId") Long toId,
                                          @RequestParam("cnt") Long cnt,@RequestParam("page") Long page);
+
+    @GetMapping("/community/blackCircleList")
+    Result<JSONObject> getBlackCircleList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                                 @RequestParam("page") Long page);
 }

@@ -13,6 +13,6 @@ import java.util.List;
 @Mapper
 public interface BlackUserMapper extends BaseMapper<BlackUser> {
 
-    @Select("SELECT b.id,b.username,b.photo FROM black_user as a AND user as b WHERE b.id = a.black_id AND a.id = #{id} ORDER BY a.create_time DESC")
+    @Select("SELECT b.id,b.username,b.photo FROM black_user as a , user as b WHERE b.id = a.black_id AND a.id = #{id} ORDER BY a.create_time DESC")
     List<BlackUserForList> getBlackList(@Param("id") Long id, Page<BlackUserForList> page);
 }

@@ -69,8 +69,24 @@ public class BlackController {
     public Result<JSONObject> getBlackList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                            @RequestParam("page") Long page){
         log.info("正在获取用户屏蔽列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return ResultUtils.getResult(blackService.getBlackList(id, cnt, page),"success");
+        return ResultUtils.getResult(blackService.getBlackList(id, page, cnt),"success");
     }
+
+
+    @HystrixCommand
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取被屏蔽圈子列表",notes = "success：成功 返回data blackCircleList（circleName：圈子名 photo：圈子图片 description：描述 createTime：拉黑时间）")
+    @GetMapping("/community/blackCircleList")
+    public Result<JSONObject> getBlackCircleList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                                 @RequestParam("page") Long page){
+        log.info("正在获取被屏蔽圈子列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
+        return ResultUtils.getResult(blackService.getBlackCircleList(id,page,cnt),"success");
+    }
+
 
     @HystrixCommand
     @ApiImplicitParams({

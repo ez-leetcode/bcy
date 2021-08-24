@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface CosPlayMapper extends BaseMapper<CosPlay> {
 
-    @Select("SELECT a.id,a.description,a.create_time,a.number FROM cos as a,history as b WHERE b.id = #{id} AND b.cos_number = a.number ORDER BY b.update_time DESC")
+    @Select("SELECT a.id,a.description,a.create_time,a.number FROM cos_play as a,history as b WHERE b.id = #{id} AND b.cos_number = a.number ORDER BY b.update_time DESC")
     List<CosHistoryForList> getCosHistoryForList(@Param("id") Long id, Page<CosHistoryForList> page);
 
 }

@@ -160,4 +160,10 @@ public class CommunityController {
         return communityFeignService.getP2PTalk(id, toId, cnt, page);
     }
 
+    @GetMapping("/community/blackCircleList")
+    public Result<JSONObject> getBlackCircleList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
+                                                 @RequestParam("page") Long page){
+        return communityFeignService.getBlackCircleList(id, cnt, page);
+    }
+
 }

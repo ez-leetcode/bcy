@@ -14,6 +14,8 @@ public interface BlackService {
 
     JSONObject getBlackList(Long id,Long page,Long cnt);
 
+    JSONObject getBlackCircleList(Long id,Long page,Long cnt);
+
     JSONObject judgeBlack(Long id,Long toId);
 
     JSONObject judgeBlackCircle(Long id,String circleName);

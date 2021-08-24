@@ -8,6 +8,7 @@ import com.bcy.community.mapper.BlackUserMapper;
 import com.bcy.community.mapper.UserMapper;
 import com.bcy.community.pojo.BlackCircle;
 import com.bcy.community.pojo.BlackUser;
+import com.bcy.vo.BlackCircleForList;
 import com.bcy.vo.BlackUserForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,22 @@ public class BlackServiceImpl implements BlackService{
         log.info(jsonObject.toString());
         return jsonObject;
     }
+
+
+    @Override
+    public JSONObject getBlackCircleList(Long id, Long page, Long cnt) {
+        JSONObject jsonObject = new JSONObject();
+        Page<BlackCircleForList> page1 = new Page<>(page,cnt);
+        List<BlackCircleForList> blackCircleForListList = blackCircleMapper.getBlackCircleList(id,page1);
+        jsonObject.put("blackCircleList",blackCircleForListList);
+        jsonObject.put("pages",page1.getPages());
+        jsonObject.put("counts",page1.getTotal());
+        log.info("获取拉黑圈子列表成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+
 
     @Override
     public String addBlackCircle(Long id, String circleName) {

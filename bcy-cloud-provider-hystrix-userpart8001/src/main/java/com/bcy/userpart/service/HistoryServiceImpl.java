@@ -52,7 +52,7 @@ public class HistoryServiceImpl implements HistoryService{
                 x.setUsername(user.getUsername());
                 x.setPhoto(user.getPhoto());
             }
-            CosPlay cosPlay = cosPlayMapper.selectById(x.getId());
+            CosPlay cosPlay = cosPlayMapper.selectById(x.getNumber());
             if(cosPlay != null){
                 x.setCosPhoto(PhotoUtils.photoStringToList(cosPlay.getPhoto()));
             }
@@ -71,7 +71,7 @@ public class HistoryServiceImpl implements HistoryService{
         Page<QaHistoryForList> page1 = new Page<>(page,cnt);
         List<QaHistoryForList> qaHistoryForListList = qaHistoryMapper.getQaHistory(id,page1);
         for(QaHistoryForList x:qaHistoryForListList){
-            Qa qa = qaMapper.selectById(x.getId());
+            Qa qa = qaMapper.selectById(x.getNumber());
             if(qa != null){
                 x.setQaPhoto(PhotoUtils.photoStringToList(qa.getPhoto()));
             }

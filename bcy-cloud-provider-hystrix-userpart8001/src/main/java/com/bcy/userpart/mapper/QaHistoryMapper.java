@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface QaHistoryMapper extends BaseMapper<QaHistory> {
 
-    @Select("SELECT b.id,b.number,b.description,b.title,b.create_time FROM qa_history as a AND qa as b WHERE b.number = a.qa_number AND a.id = #{id} ORDER BY a.update_time DESC")
+    @Select("SELECT b.id,b.number,b.description,b.title,b.create_time FROM qa_history as a , qa as b WHERE b.number = a.qa_number AND a.id = #{id} ORDER BY a.update_time DESC")
     List<QaHistoryForList> getQaHistory(@Param("id") Long id, Page<QaHistoryForList> page);
 
 }
