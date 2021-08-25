@@ -196,6 +196,28 @@ public class QuartzConfig {
                 .build();
     }
 
+    @Bean
+    public Trigger circleCountsTrigger(){
+        //十五分钟一刷新
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 8/15 * * * ?");
+        return TriggerBuilder.newTrigger()
+                //关联上述JobDetail
+                .forJob(circleCountsJobDetail())
+                .withIdentity("circleCountsTrigger")
+                .withSchedule(cronScheduleBuilder)
+                .build();
+    }
+
+    @Bean
+    public JobDetail circleCountsJobDetail(){
+        //关联业务类
+        return JobBuilder.newJob(CircleCountsJob.class)
+                //给JobDetail起名字
+                .withIdentity("circleCountsDetail")
+                .storeDurably()
+                .build();
+    }
+
 
     @Bean
     public Trigger cosHotCountsTrigger(){

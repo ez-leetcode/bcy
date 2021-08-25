@@ -24,6 +24,7 @@ public class CosCommentsCountsJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        log.info("正在更新cos评论计数数据");
         Map<Long,Integer> likeCountsMap = redisUtils.getAllRedisDataByKeys("cosCommentLikeCounts");
         Map<Long,Integer> commentCountsMap = redisUtils.getAllRedisDataByKeys("cosCommentCommentCounts");
         Long startTime = System.nanoTime();

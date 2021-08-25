@@ -22,10 +22,11 @@ public class CosRecommendLabelJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        log.info("正在更新推荐标签");
         Map<String,Integer> map = redisUtils.getAllStringRedisDataByKeys("recommendLabel");
         for(String x:map.keySet()){
             //移除旧数据
-            redisUtils.delete("recommendLabel_" + x);
+            redisUtils.delete(x);
         }
         List<Map.Entry<String,Integer>> list = new ArrayList<>(map.entrySet());
         list.sort((Comparator.comparingInt(Map.Entry::getValue)));

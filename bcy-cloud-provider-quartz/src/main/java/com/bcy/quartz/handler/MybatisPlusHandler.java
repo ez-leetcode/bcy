@@ -15,7 +15,7 @@ public class MybatisPlusHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         log.info("正在插入数据并更新时间字段");
-        this.setFieldValByName("createTime",new Date(),metaObject);
+        //this.setFieldValByName("createTime",new Date(),metaObject);
         this.setFieldValByName("updateTime",new Date(),metaObject);
         this.setFieldValByName("orderTime",new Date(),metaObject);
         log.info("插入数据并更新时间字段成功");

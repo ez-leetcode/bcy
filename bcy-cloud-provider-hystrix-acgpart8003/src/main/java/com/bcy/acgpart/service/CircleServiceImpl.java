@@ -61,8 +61,12 @@ public class CircleServiceImpl implements CircleService{
             log.error("创建圈子失败，圈子已存在");
             return "repeatWrong";
         }
+        //查找数量
+        QueryWrapper<CircleCos> wrapper = new QueryWrapper<>();
+        wrapper.eq("circle_name",circleName);
+        List<CircleCos> circleCosList = circleCosMapper.selectList(wrapper);
         //创建圈子
-        circleMapper.insert(new Circle(circleName,description,photo,nickName,0,0,null));
+        circleMapper.insert(new Circle(circleName,description,photo,nickName,circleCosList.size(),0,null));
         //es数据同步
         rabbitmqProducerService.sendEsCircleMessage(new EsMsgForCircle(circleName,1));
         return "success";

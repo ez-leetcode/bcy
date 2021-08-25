@@ -31,6 +31,4 @@ public class RecommendUtils {
         recommendList.add("场照");
     }
 
-
-
 }

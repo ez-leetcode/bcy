@@ -14,6 +14,7 @@ import com.bcy.userpart.mapper.UserSettingMapper;
 import com.bcy.userpart.pojo.User;
 import com.bcy.userpart.pojo.UserSetting;
 import com.bcy.userpart.utils.OssUtils;
+import com.bcy.vo.UserCommunityInfo;
 import com.bcy.vo.UserCountsForList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -221,6 +222,22 @@ public class PersonalServiceImpl implements PersonalService{
         userLoginMapper.updateById(userLogin);
         log.info("新用户设置密码成功");
         return "success";
+    }
+
+
+    @Override
+    public JSONObject getCommunityInfo(Long id) {
+        JSONObject jsonObject = new JSONObject();
+        UserLogin userLogin = userLoginMapper.selectById(id);
+        if(userLogin != null){
+            UserCommunityInfo userCommunityInfo = new UserCommunityInfo(userLogin.getId(),userLogin.getPhone(),userLogin.getWeiboId());
+            jsonObject.put("userCommunityInfo",userCommunityInfo);
+        }else{
+            jsonObject.put("userCommunityInfo",null);
+        }
+        log.info("获取用户社交信息成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
     }
 
 }

@@ -45,7 +45,7 @@ public class MessageController {
     public Result<JSONObject> getAtMessage(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                            @RequestParam("page") Long page){
         log.info("正在获取消息盒子中At我的列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return ResultUtils.getResult(messageService.getAtMessageList(id, cnt, page),"success");
+        return ResultUtils.getResult(messageService.getAtMessageList(id, page, cnt),"success");
     }
 
     @HystrixCommand
@@ -60,7 +60,7 @@ public class MessageController {
     public Result<JSONObject> getLikeMessage(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                              @RequestParam("page") Long page){
         log.info("正在获取消息盒子中点赞我的列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return ResultUtils.getResult(messageService.getLikeMessageList(id, cnt, page),"success");
+        return ResultUtils.getResult(messageService.getLikeMessageList(id,page,cnt),"success");
     }
 
     @HystrixCommand
@@ -75,7 +75,7 @@ public class MessageController {
     public Result<JSONObject> getCommentList(@RequestParam("id") Long id,@RequestParam("cnt") Long cnt,
                                              @RequestParam("page") Long page){
         log.info("正在获取消息盒子中评论我的列表，用户：" + id + " 页面数据量：" + cnt + " 当前页面：" + page);
-        return ResultUtils.getResult(messageService.getCommentMessageList(id, cnt, page),"success");
+        return ResultUtils.getResult(messageService.getCommentMessageList(id,page,cnt),"success");
     }
 
     @HystrixCommand

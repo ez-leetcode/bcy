@@ -43,6 +43,7 @@ public class CosHotCountsJob implements Job {
     //删除
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        log.info("正在更新cos日榜数据");
         Map<Long,Integer> likeMap1 = redisUtils.getAllRedisDataByKeys("cosHotLikeCounts1");
         Map<Long,Integer> favorMap1 = redisUtils.getAllRedisDataByKeys("cosHotFavorCounts1");
         Map<Long,Integer> likeMap2 = redisUtils.getAllRedisDataByKeys("cosHotLikeCounts2");

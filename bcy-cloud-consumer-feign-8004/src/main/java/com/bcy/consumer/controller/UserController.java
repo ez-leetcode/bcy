@@ -179,6 +179,11 @@ public class UserController {
         return userFeignService.changePhone(id, phone, code);
     }
 
+    @GetMapping("/user/communityInfo")
+    public Result<JSONObject> getCommunityInfo(@RequestParam("id") Long id){
+        return userFeignService.getCommunityInfo(id);
+    }
+
     @GetMapping("/user/timeout")
     public Result<JSONObject> globalTimeout(){
         return null;

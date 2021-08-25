@@ -160,6 +160,18 @@ public class PersonalController {
 
     @HystrixCommand
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取用户社交信息（手机 和 微博号）",notes = "success：成功 返回data userCommunityInfo（id：用户id phone：电话 weiboId：微博id）")
+    @GetMapping("/user/communityInfo")
+    public Result<JSONObject> getCommunityInfo(@RequestParam("id") Long id){
+        log.info("正在获取用户社交信息，用户：" + id);
+        return ResultUtils.getResult(personalService.getCommunityInfo(id),"success");
+    }
+
+
+    @HystrixCommand
+    @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "password",value = "新密码",required = true,dataType = "Long",paramType = "query")
     })

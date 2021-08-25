@@ -21,5 +21,7 @@ public interface PersonalService {
 
     JSONObject judgeNew(Long id);
 
+    JSONObject getCommunityInfo(Long id);
+
     String setPassword(Long id,String password);
 }

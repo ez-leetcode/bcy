@@ -70,7 +70,7 @@ public class TalkController {
     @HystrixCommand
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
-            @ApiImplicitParam(name = "toId",value = "对方id（list）",required = true,dataType = "Long",paramType = "query")
+            @ApiImplicitParam(name = "toId",value = "对方id（list）",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
     })
     @ApiOperation(value = "获取未读条数和最后一条消息和更新时间（用于聊天列表）",notes = "success：成功 返回data talkCountsList：（id：对方id lastInfo：最后一条消息，用户于列表呈现 noReadCounts：未读条数 updateTime：更新时间 ）")
     @GetMapping("/community/talkCounts")
@@ -129,7 +129,5 @@ public class TalkController {
     public Result<JSONObject> setTop(){
 
     }
-
-
      */
 }

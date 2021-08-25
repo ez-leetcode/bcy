@@ -119,4 +119,7 @@ public interface UserFeignService {
     @PostMapping("/user/changePhone")
     Result<JSONObject> changePhone(@RequestParam("id") Long id,@RequestParam("phone") String phone,
                                           @RequestParam("code") String code);
+
+    @GetMapping("/user/communityInfo")
+    Result<JSONObject> getCommunityInfo(@RequestParam("id") Long id);
 }
