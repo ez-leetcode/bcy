@@ -43,7 +43,8 @@ public class SmsController {
             return ResultUtils.getResult(new JSONObject(),status);
         }
         Random random = new Random();
-        int yzm = random.nextInt(999999);
+        //保证5位
+        int yzm = random.nextInt(89999) + 10000;
         String code = Integer.toString(yzm);
         boolean isSend = smsService.sendSms(phone,code,type);
         if(isSend){

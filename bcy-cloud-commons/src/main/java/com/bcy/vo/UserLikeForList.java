@@ -25,7 +25,7 @@ public class UserLikeForList implements Serializable {
     private Integer type;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long number;
+    private Long cosOrQaNumber;
 
     private String info;
 

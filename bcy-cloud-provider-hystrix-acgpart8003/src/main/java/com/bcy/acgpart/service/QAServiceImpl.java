@@ -66,6 +66,9 @@ public class QAServiceImpl implements QAService{
     private LikeMessageMapper likeMessageMapper;
 
     @Autowired
+    private UserMessageMapper userMessageMapper;
+
+    @Autowired
     private RabbitmqProducerService rabbitmqProducerService;
 
     @Override
@@ -154,7 +157,15 @@ public class QAServiceImpl implements QAService{
             rabbitmqProducerService.sendLikeMessage(new LikeMsg(qaAnswer.getNumber(),2,user.getUsername(),qaAnswer.getId()));
         }
         //插入点赞
-        likeMessageMapper.insert(new LikeMessage(null,id,qaAnswer.getId(),qaAnswer.getQaNumber(),3,0,null));
+        likeMessageMapper.insert(new LikeMessage(null,id,qaAnswer.getId(),qaAnswer.getQaNumber(),2,0,null));
+        String ck1 = redisUtils.getValue("likeCounts_" + qaAnswer.getId());
+        if(ck1 == null){
+            UserMessage userMessage = userMessageMapper.selectById(qaAnswer.getId());
+            if(userMessage != null){
+                redisUtils.saveByHoursTime("likeCounts_" + qaAnswer.getId(),userMessage.getLikeCounts().toString(),12);
+            }
+        }
+        redisUtils.addKeyByTime("likeCounts_" + qaAnswer.getId(),12);
         log.info("点赞回答成功");
         return "success";
     }
@@ -218,7 +229,15 @@ public class QAServiceImpl implements QAService{
         }
         QaAnswer qaAnswer = qaAnswerMapper.selectById(qaComment.getAnswerNumber());
         if(qaAnswer != null){
-            likeMessageMapper.insert(new LikeMessage(null,id,qaComment.getFromId(),qaAnswer.getQaNumber(),4,0,null));
+            likeMessageMapper.insert(new LikeMessage(null,id,qaComment.getFromId(),qaAnswer.getQaNumber(),2,0,null));
+            String ck1 = redisUtils.getValue("likeCounts_" + qaComment.getFromId());
+            if(ck1 == null){
+                UserMessage userMessage = userMessageMapper.selectById(qaComment.getFromId());
+                if(userMessage != null){
+                    redisUtils.saveByHoursTime("likeCounts_" + qaComment.getFromId(),userMessage.getLikeCounts().toString(),12);
+                }
+            }
+            redisUtils.addKeyByTime("likeCounts_" + qaComment.getFromId(),12);
         }
         log.info("点赞评论成功");
         return "success";
@@ -508,6 +527,14 @@ public class QAServiceImpl implements QAService{
             rabbitmqProducerService.sendCommentMessage(new CommentMsg(number,qa.getId(),user.getUsername(),description));
         }
         commentMessageMapper.insert(new CommentMessage(null,id,qa.getId(),description,qa.getNumber(),0,2,null));
+        String ck1 = redisUtils.getValue("commentCounts_" + qa.getId());
+        if(ck1 == null){
+            UserMessage userMessage = userMessageMapper.selectById(qa.getId());
+            if(userMessage != null){
+                redisUtils.saveByHoursTime("commentCounts_" + qa.getId(),userMessage.getCommentCounts().toString(),12);
+            }
+            redisUtils.addKeyByTime("commentCounts_" + qa.getId(),12);
+        }
         log.info("添加回答成功");
         return "success";
     }
@@ -569,7 +596,16 @@ public class QAServiceImpl implements QAService{
         if(fatherNumber == 0){
             //首评论
             rabbitmqProducerService.sendCommentMessage(new CommentMsg(qaComment.getNumber(),toId,user.getUsername(),description));
-            commentMessageMapper.insert(new CommentMessage(null,id,toId,description,qaNumber,0,3,null));
+            commentMessageMapper.insert(new CommentMessage(null,id,toId,description,qaNumber,0,2,null));
+            log.info("已插入一级评论");
+            String ck1 = redisUtils.getValue("commentCounts_" + toId);
+            if(ck1 == null){
+                UserMessage userMessage = userMessageMapper.selectById(toId);
+                if(userMessage != null){
+                    redisUtils.saveByHoursTime("commentCounts_" + toId,userMessage.getCommentCounts().toString(),12);
+                }
+            }
+            redisUtils.addKeyByTime("commentCounts_" + toId,12);
         }else{
             //二级评论
             if(replyNumber == 0){
@@ -577,12 +613,30 @@ public class QAServiceImpl implements QAService{
                 //评论推送
                 rabbitmqProducerService.sendCommentMessage(new CommentMsg(qaComment.getNumber(),toId,user.getUsername(),description));
                 //评论插入
-                commentMessageMapper.insert(new CommentMessage(null,id,toId,description,qaNumber,0,3,null));
+                commentMessageMapper.insert(new CommentMessage(null,id,toId,description,qaNumber,0,2,null));
+                log.info("已插入无回复二级评论");
+                String ck1 = redisUtils.getValue("commentCounts_" + toId);
+                if(ck1 == null){
+                    UserMessage userMessage = userMessageMapper.selectById(toId);
+                    if(userMessage != null){
+                        redisUtils.saveByHoursTime("commentCounts_" + toId,userMessage.getCommentCounts().toString(),12);
+                    }
+                }
+                redisUtils.addKeyByTime("commentCounts_" + toId,12);
             }else{
                 //At评论推送
                 rabbitmqProducerService.sendAtMessage(new AtMsg(fatherNumber,user.getUsername(),toId));
                 //At插入
                 atMessageMapper.insert(new AtMessage(null,id,toId,description,qaNumber,0,2,null));
+                log.info("已插入有回复二级评论");
+                String ck1 = redisUtils.getValue("atCounts_" + toId);
+                if(ck1 == null){
+                    UserMessage userMessage = userMessageMapper.selectById(toId);
+                    if(userMessage != null){
+                        redisUtils.saveByHoursTime("atCounts_" + toId,userMessage.getAtCounts().toString(),12);
+                    }
+                }
+                redisUtils.addKeyByTime("atCounts_" + toId,12);
             }
         }
         log.info("添加回答评论成功");

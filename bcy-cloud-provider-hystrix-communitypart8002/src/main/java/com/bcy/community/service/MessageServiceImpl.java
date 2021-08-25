@@ -33,6 +33,12 @@ public class MessageServiceImpl implements MessageService{
     private UserMessageMapper userMessageMapper;
 
     @Autowired
+    private CosPlayMapper cosPlayMapper;
+
+    @Autowired
+    private QaMapper qaMapper;
+
+    @Autowired
     private RedisUtils redisUtils;
 
     @Override
@@ -40,6 +46,19 @@ public class MessageServiceImpl implements MessageService{
         JSONObject jsonObject = new JSONObject();
         Page<UserAtForList> page1 = new Page<>(page,cnt);
         List<UserAtForList> userAtForList = atMessageMapper.getUserLikeList(id,page1);
+        for(UserAtForList x:userAtForList){
+            if(x.getType() == 1){
+                CosPlay cosPlay = cosPlayMapper.selectById(x.getCosOrQaNumber());
+                if(cosPlay != null){
+                    x.setInfo(cosPlay.getDescription());
+                }
+            }else{
+                Qa qa = qaMapper.selectById(x.getCosOrQaNumber());
+                if(qa != null){
+                    x.setInfo(qa.getTitle());
+                }
+            }
+        }
         //获取具体信息待完成
         jsonObject.put("atList",userAtForList);
         jsonObject.put("pages",page1.getPages());
@@ -54,6 +73,19 @@ public class MessageServiceImpl implements MessageService{
         JSONObject jsonObject = new JSONObject();
         Page<UserLikeForList> page1 = new Page<>(page,cnt);
         List<UserLikeForList> userLikeForList = likeMessageMapper.getUserLikeList(id,page1);
+        for(UserLikeForList x:userLikeForList){
+            if(x.getType() == 1){
+                CosPlay cosPlay = cosPlayMapper.selectById(x.getCosOrQaNumber());
+                if(cosPlay != null){
+                    x.setInfo(cosPlay.getDescription());
+                }
+            }else if(x.getType() == 2){
+                Qa qa = qaMapper.selectById(x.getCosOrQaNumber());
+                if(qa != null){
+                    x.setInfo(qa.getTitle());
+                }
+            }
+        }
         jsonObject.put("likeList",userLikeForList);
         jsonObject.put("pages",page1.getPages());
         jsonObject.put("counts",page1.getTotal());
@@ -68,6 +100,19 @@ public class MessageServiceImpl implements MessageService{
         Page<UserCommentForList> page1 = new Page<>(page,cnt);
         List<UserCommentForList> userCommentForList = commentMessageMapper.getUserCommentList(id,page1);
         //获取具体信息待完成
+        for(UserCommentForList x:userCommentForList){
+            if(x.getType() == 1){
+                CosPlay cosPlay = cosPlayMapper.selectById(x.getCosOrQaNumber());
+                if(cosPlay != null){
+                    x.setInfo(cosPlay.getDescription());
+                }
+            }else if(x.getType() == 2){
+                Qa qa = qaMapper.selectById(x.getCosOrQaNumber());
+                if(qa != null){
+                    x.setInfo(qa.getTitle());
+                }
+            }
+        }
         jsonObject.put("commentList",userCommentForList);
         jsonObject.put("pages",page1.getPages());
         jsonObject.put("counts",page1.getTotal());

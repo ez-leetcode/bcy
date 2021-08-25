@@ -43,6 +43,9 @@ public class LikeServiceImpl implements LikeService{
     private LikeMessageMapper likeMessageMapper;
 
     @Autowired
+    private UserMessageMapper userMessageMapper;
+
+    @Autowired
     private RabbitmqProducerService rabbitmqProducerService;
 
     @Override
@@ -89,10 +92,17 @@ public class LikeServiceImpl implements LikeService{
         User user = userMapper.selectById(id);
         if(cosPlay != null && user != null){
             rabbitmqProducerService.sendLikeMessage(new LikeMsg(number,1,user.getUsername(), cosPlay.getId()));
-        }
-        //插入点赞消息
-        if(user != null){
+            //插入点赞消息
             likeMessageMapper.insert(new LikeMessage(null,id,cosPlay.getId(),cosPlay.getNumber(),1,0,null));
+            //更新点赞次数
+            String ck1 = redisUtils.getValue("likeCounts_" + cosPlay.getId());
+            if(ck1 == null){
+                UserMessage userMessage = userMessageMapper.selectById(cosPlay.getId());
+                if(userMessage != null){
+                    redisUtils.saveByHoursTime("likeCounts_" + cosPlay.getId(),userMessage.getLikeCounts().toString(),12);
+                }
+                redisUtils.addKeyByTime("likeCounts_" + cosPlay.getId(),12);
+            }
         }
         log.info("添加cos点赞成功");
         return "success";

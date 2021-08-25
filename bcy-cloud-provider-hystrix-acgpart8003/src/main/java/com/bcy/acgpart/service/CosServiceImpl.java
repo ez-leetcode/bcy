@@ -75,6 +75,9 @@ public class CosServiceImpl implements CosService {
     @Autowired
     private AtMessageMapper atMessageMapper;
 
+    @Autowired
+    private UserMessageMapper userMessageMapper;
+
     //这个接口暂时不用
     @Override
     public String deleteCos(List<Long> numbers) {
@@ -403,7 +406,16 @@ public class CosServiceImpl implements CosService {
         CosPlay cosPlay = cosPlayMapper.selectById(cosComment.getCosNumber());
         if(cosPlay != null){
             likeMessageMapper.insert(new LikeMessage(null,id,cosPlay.getId(),cosPlay.getNumber(),2,0,null));
+            String ck1 = redisUtils.getValue("likeCounts_" + cosPlay.getId());
+            if(ck1 == null){
+                UserMessage userMessage = userMessageMapper.selectById(cosPlay.getId());
+                if(userMessage != null){
+                    redisUtils.saveByHoursTime("likeCounts_" + cosPlay.getId(),userMessage.getLikeCounts().toString(),12);
+                }
+            }
+            redisUtils.addKeyByTime("likeCounts_" + cosPlay.getId(),12);
         }
+        //增加点赞数
         log.info("点赞cos下评论成功");
         return "success";
     }
@@ -523,28 +535,51 @@ public class CosServiceImpl implements CosService {
         redisUtils.addKeyByTime("cosCommentCounts_" + cosNumber,12);
         //推送
         User user = userMapper.selectById(id);
+        CosPlay cosPlay = cosPlayMapper.selectById(cosNumber);
         if(fatherNumber == 0){
             //是cos下的评论
-            CosPlay cosPlay = cosPlayMapper.selectById(cosNumber);
             //这个number给评论编号
-            log.info(cosPlay.toString());
             rabbitmqProducerService.sendCommentMessage(new CommentMsg(cosComment1.getNumber(), cosPlay.getId(),user.getUsername(),description));
             //添加评论
             commentMessageMapper.insert(new CommentMessage(null,id,cosPlay.getId(),description,cosPlay.getNumber(),0,1,null));
+            String ck1 = redisUtils.getValue("commentCounts_" + cosPlay.getId());
+            if(ck1 == null){
+                UserMessage userMessage = userMessageMapper.selectById(cosPlay.getId());
+                if(userMessage != null){
+                    redisUtils.saveByHoursTime("commentCounts_" + cosPlay.getId(),userMessage.getCommentCounts().toString(),12);
+                }
+                redisUtils.addKeyByTime("commentCounts_" + cosPlay.getId(),12);
+            }
         }else{
             CosComment cosComment;
             if(replyNumber == 0){
                 //评论下的评论，给父级评论
                 cosComment = cosCommentMapper.selectById(fatherNumber);
                 rabbitmqProducerService.sendCommentMessage(new CommentMsg(fatherNumber,toId,user.getUsername(),description));
-                commentMessageMapper.insert(new CommentMessage(null,id,cosComment.getFromId(),description,cosComment.getNumber(),0,1,null));
+                commentMessageMapper.insert(new CommentMessage(null,id,cosComment.getFromId(),description,cosPlay.getNumber(),0,1,null));
+                String ck1 = redisUtils.getValue("commentCounts_" + cosPlay.getId());
+                if(ck1 == null){
+                    UserMessage userMessage = userMessageMapper.selectById(cosPlay.getId());
+                    if(userMessage != null){
+                        redisUtils.saveByHoursTime("commentCounts_" + cosPlay.getId(),userMessage.getCommentCounts().toString(),12);
+                    }
+                    redisUtils.addKeyByTime("commentCounts_" + cosPlay.getId(),12);
+                }
             }else{
                 //评论下的回复评论
                 cosComment = cosCommentMapper.selectById(replyNumber);
                 log.info(user.getUsername());
                 rabbitmqProducerService.sendAtMessage(new AtMsg(fatherNumber,user.getUsername(),toId));
                 //@
-                atMessageMapper.insert(new AtMessage(null,id,cosComment.getFromId(),description,cosComment.getNumber(),0,1,null));
+                atMessageMapper.insert(new AtMessage(null,id,cosComment.getFromId(),description,cosPlay.getNumber(),0,1,null));
+                String ck1 = redisUtils.getValue("atCounts_" + cosComment.getFromId());
+                if(ck1 == null){
+                    UserMessage userMessage = userMessageMapper.selectById(cosPlay.getId());
+                    if(userMessage != null){
+                        redisUtils.saveByHoursTime("atCounts_" + cosComment.getFromId(),userMessage.getCommentCounts().toString(),12);
+                    }
+                    redisUtils.addKeyByTime("atCounts_" + cosComment.getFromId(),12);
+                }
             }
         }
         log.info("添加cos下的评论成功");
