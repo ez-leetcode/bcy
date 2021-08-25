@@ -194,6 +194,7 @@ public class EsUtils {
         SearchRequest request = new SearchRequest("qa");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(QueryBuilders.multiMatchQuery(keyword,"title","description","label"));
+        sourceBuilder.size(100);
         request.source(sourceBuilder);
         SearchResponse response = restHighLevelClient.search(request,RequestOptions.DEFAULT);
         log.info(response.toString());
@@ -232,6 +233,7 @@ public class EsUtils {
         SearchRequest request = new SearchRequest("cosplay");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(QueryBuilders.multiMatchQuery(keyword,"description","label"));
+        sourceBuilder.size(200);
         request.source(sourceBuilder);
         SearchResponse response = restHighLevelClient.search(request,RequestOptions.DEFAULT);
         log.info(response.toString());
