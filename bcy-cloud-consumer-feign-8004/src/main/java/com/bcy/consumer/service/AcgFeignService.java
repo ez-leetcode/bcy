@@ -221,4 +221,11 @@ public interface AcgFeignService {
     @GetMapping("/acg/circleCosList")
     Result<JSONObject> getCircleCosList(@RequestParam("circleName") String circleName,@RequestParam("type") Integer type,
                                                @RequestParam("cnt") Long cnt,@RequestParam("page") Long page);
+
+    @GetMapping("/acg/judgeQaAnswer")
+    Result<JSONObject> judgeQaAnswer(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers);
+
+    @GetMapping("/acg/judgeQaAnswer")
+    Result<JSONObject> judgeQaComment(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers);
+
 }

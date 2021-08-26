@@ -340,4 +340,14 @@ public class AcgController {
                                                @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){
         return acgFeignService.getCircleCosList(circleName, type, cnt, page);
     }
+
+    @GetMapping("/acg/judgeQaAnswer")
+    public Result<JSONObject> judgeQaAnswer(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers){
+        return acgFeignService.judgeQaAnswer(id, numbers);
+    }
+
+    @GetMapping("/acg/judgeQaAnswer")
+    public Result<JSONObject> judgeQaComment(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers){
+        return acgFeignService.judgeQaComment(id, numbers);
+    }
 }

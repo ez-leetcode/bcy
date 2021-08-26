@@ -45,4 +45,8 @@ public interface QAService {
     JSONObject getAnswerCommentCommentList(Long id,Long number,Long page,Long cnt,Integer type);
 
     JSONObject qaJudgeList(Long id,List<Long> numbers);
+
+    JSONObject qaAnswerJudgeList(Long id,List<Long> numbers);
+
+    JSONObject qaCommentJudgeList(Long id,List<Long> numbers);
 }

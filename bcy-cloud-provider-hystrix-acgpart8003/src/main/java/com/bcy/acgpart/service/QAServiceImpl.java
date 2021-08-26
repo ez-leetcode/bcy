@@ -770,4 +770,47 @@ public class QAServiceImpl implements QAService{
         log.info(jsonObject.toString());
         return jsonObject;
     }
+
+
+    @Override
+    public JSONObject qaAnswerJudgeList(Long id, List<Long> numbers) {
+        JSONObject jsonObject = new JSONObject();
+        List<QAAnswerJudgeForList> qaAnswerJudgeForLists = new LinkedList<>();
+        for(Long x:numbers){
+            QueryWrapper<QaAnswerLike> wrapper = new QueryWrapper<>();
+            wrapper.eq("id",id)
+                    .eq("answer_number",x);
+            QaAnswerLike qaAnswerLike = qaAnswerLikeMapper.selectOne(wrapper);
+            if(qaAnswerLike == null){
+                qaAnswerJudgeForLists.add(new QAAnswerJudgeForList(x,0));
+            }else{
+                qaAnswerJudgeForLists.add(new QAAnswerJudgeForList(x,1));
+            }
+        }
+        jsonObject.put("qaAnswerLikeList",qaAnswerJudgeForLists);
+        log.info("获取问答回答点赞情况成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
+
+    @Override
+    public JSONObject qaCommentJudgeList(Long id, List<Long> numbers) {
+        JSONObject jsonObject = new JSONObject();
+        List<QACommentJudgeForList> qaCommentJudgeForLists = new LinkedList<>();
+        for(Long x:numbers){
+            QueryWrapper<QaCommentLike> wrapper = new QueryWrapper<>();
+            wrapper.eq("id",id)
+                    .eq("comment_number",x);
+            QaCommentLike qaCommentLike = qaCommentLikeMapper.selectOne(wrapper);
+            if(qaCommentLike == null){
+                qaCommentJudgeForLists.add(new QACommentJudgeForList(x,0));
+            }else{
+                qaCommentJudgeForLists.add(new QACommentJudgeForList(x,1));
+            }
+        }
+        jsonObject.put("qaCommentLikeList",qaCommentJudgeForLists);
+        log.info("获取问答评论点赞情况成功");
+        log.info(jsonObject.toString());
+        return jsonObject;
+    }
 }

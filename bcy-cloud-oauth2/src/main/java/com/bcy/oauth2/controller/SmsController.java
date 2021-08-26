@@ -44,7 +44,7 @@ public class SmsController {
         }
         Random random = new Random();
         //保证5位
-        int yzm = random.nextInt(89999) + 10000;
+        int yzm = random.nextInt(899999) + 100000;
         String code = Integer.toString(yzm);
         boolean isSend = smsService.sendSms(phone,code,type);
         if(isSend){

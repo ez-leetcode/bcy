@@ -315,5 +315,27 @@ public class QAController {
         return ResultUtils.getResult(qaService.qaJudgeList(id, numbers),"success");
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "numbers",value = "回答编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取问答回答点赞情况",notes = "success：成功 返回qaAnswerLikeList：（number：回答编号 isLike：1：已点赞 0未点赞）")
+    @GetMapping("/acg/judgeQaAnswer")
+    public Result<JSONObject> judgeQaAnswer(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers){
+        log.info("正在获取问答回答点赞情况，用户：" + id);
+        return ResultUtils.getResult(qaService.qaAnswerJudgeList(id, numbers),"success");
+    }
+
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "用户id",required = true,dataType = "Long",paramType = "query"),
+            @ApiImplicitParam(name = "numbers",value = "评论编号",required = true,allowMultiple = true,dataType = "Long",paramType = "query")
+    })
+    @ApiOperation(value = "获取问答评论点赞情况",notes = "success：成功 返回qaCommentLikeList：（number：评论编号 isLike：1：已点赞 0未点赞）")
+    @GetMapping("/acg/judgeQaComment")
+    public Result<JSONObject> judgeQaComment(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers){
+        log.info("正在获取问答评论点赞情况，用户：" + id);
+        return ResultUtils.getResult(qaService.qaCommentJudgeList(id, numbers),"success");
+    }
 
 }
