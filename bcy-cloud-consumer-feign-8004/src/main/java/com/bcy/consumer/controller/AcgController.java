@@ -346,7 +346,7 @@ public class AcgController {
         return acgFeignService.judgeQaAnswer(id, numbers);
     }
 
-    @GetMapping("/acg/judgeQaAnswer")
+    @GetMapping("/acg/judgeQaComment")
     public Result<JSONObject> judgeQaComment(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers){
         return acgFeignService.judgeQaComment(id, numbers);
     }

@@ -225,7 +225,7 @@ public interface AcgFeignService {
     @GetMapping("/acg/judgeQaAnswer")
     Result<JSONObject> judgeQaAnswer(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers);
 
-    @GetMapping("/acg/judgeQaAnswer")
+    @GetMapping("/acg/judgeQaComment")
     Result<JSONObject> judgeQaComment(@RequestParam("id") Long id,@RequestParam("numbers") List<Long> numbers);
 
 }

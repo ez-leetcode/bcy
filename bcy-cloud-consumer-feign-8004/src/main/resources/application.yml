@@ -15,8 +15,8 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        connectTimeout: 6000
+        readTimeout: 6000
         loggerLevel: basic
 
 #日志
@@ -26,6 +26,13 @@ logging:
     name: bcy-feign.log
 
 ribbon:
+  #配置饥饿加载策略
+  eager-load:
+    enabled: true
+    clients:
+      - bcy-cloud-hystrix-acgpart
+      - bcy-cloud-hystrix-userpart
+      - bcy-cloud-hystrix-communitypart
   #建立连接后从服务器读到可用资源时间限制（空是显示bug）
   RedTimeout: 20000
   #建立连接所用的时间，适用于网络状况正常的情况下，两端连接所用时间限制
