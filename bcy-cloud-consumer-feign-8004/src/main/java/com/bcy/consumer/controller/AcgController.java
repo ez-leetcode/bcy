@@ -135,7 +135,7 @@ public class AcgController {
     }
 
     @GetMapping("/acg/followQAList")
-    public Result<JSONObject> getFollowQAList(@RequestParam("id") Long id,@RequestParam("number") Long number,
+    public Result<JSONObject> getFollowQAList(@RequestParam(value = "id",required = false) Long id,@RequestParam("number") Long number,
                                               @RequestParam("cnt") Long cnt,@RequestParam("page") Long page,
                                               @RequestParam("keyword") String keyword) {
         return acgFeignService.getFollowQAList(id, number, cnt, page, keyword);
@@ -160,6 +160,11 @@ public class AcgController {
     public Result<JSONObject> getFavorList(@RequestParam("id") Long id,
                                            @RequestParam("page") Long page,@RequestParam("cnt") Long cnt){
         return acgFeignService.getFavorList(id, page, cnt);
+    }
+
+    @PostMapping("/acg/photoUpload")
+    public Result<JSONObject> photoUpload1(@RequestParam("photo") MultipartFile file){
+        return acgFeignService.photoUpload1(file);
     }
 
     @PostMapping("/acg/likeCos")

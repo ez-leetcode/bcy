@@ -37,6 +37,9 @@ public interface AcgFeignService {
     @DeleteMapping("/acg/cos")
     Result<JSONObject> deleteCos(@RequestParam("numbers")List<Long> numbers);
 
+    @PostMapping(value = "/acg/photoUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    Result<JSONObject> photoUpload1(@RequestPart("photo") MultipartFile file);
+
     @GetMapping("/acg/cosCountsList")
     Result<JSONObject> getCosCountsList(@RequestParam(value = "id",required = false) Long id,@RequestParam("number") List<Long> number);
 

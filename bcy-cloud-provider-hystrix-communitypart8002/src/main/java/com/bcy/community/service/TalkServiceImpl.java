@@ -205,6 +205,22 @@ public class TalkServiceImpl implements TalkService{
         JSONObject jsonObject = new JSONObject();
         Page<P2PTalkForList> page1 = new Page<>(page,cnt);
         List<P2PTalkForList> p2PTalkForLists = talkMessageMapper.getP2PTalkList(id,toId,page1);
+        QueryWrapper<TalkUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("id1",id)
+                .eq("id2",toId)
+                .or()
+                .eq("id1",toId)
+                .eq("id2",id);
+        TalkUser talkUser = talkUserMapper.selectOne(wrapper);
+        if(talkUser != null){
+            if(talkUser.getId1().equals(id)){
+                talkUser.setId1Read(0);
+            }else{
+                talkUser.setId2Read(0);
+            }
+            talkUserMapper.update(talkUser,wrapper);
+        }
+        redisUtils.saveByMinutesTime("noReadTalk_" + toId + id,"0",48);
         jsonObject.put("p2pTalkList",p2PTalkForLists);
         jsonObject.put("counts",page1.getTotal());
         jsonObject.put("pages",page1.getPages());
@@ -217,9 +233,24 @@ public class TalkServiceImpl implements TalkService{
     @Override
     public String allRead(Long id, Long toId) {
         redisUtils.saveByHoursTime("noReadTalk_" + toId + id,"0",48);
+        QueryWrapper<TalkUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("id1",id)
+                .eq("id2",toId)
+                .or()
+                .eq("id1",toId)
+                .eq("id2",id);
+        TalkUser talkUser = talkUserMapper.selectOne(wrapper);
+        log.info("正在设置全部已读");
+        if(talkUser != null){
+            if(talkUser.getId1().equals(id)){
+                talkUser.setId1Read(0);
+            }else{
+                talkUser.setId2Read(0);
+            }
+            talkUserMapper.update(talkUser,wrapper);
+        }
         log.info("添加全部已读成功");
         return "success";
     }
-
 
 }

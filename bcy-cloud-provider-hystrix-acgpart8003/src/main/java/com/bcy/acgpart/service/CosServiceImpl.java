@@ -117,9 +117,9 @@ public class CosServiceImpl implements CosService {
             return "userWrong";
         }
         //删除cos
-        cosPlayMapper.deleteById(cosPlay.getId());
+        cosPlayMapper.deleteById(cosPlay.getNumber());
         //删除cosCounts
-        cosCountsMapper.deleteById(cosPlay.getId());
+        cosCountsMapper.deleteById(cosPlay.getNumber());
         //删除circleCos
         QueryWrapper<CircleCos> wrapper = new QueryWrapper<>();
         wrapper.eq("cos_number",number);

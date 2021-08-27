@@ -333,7 +333,7 @@ public class QAServiceImpl implements QAService{
             redisUtils.saveByHoursTime("answerQA_" + number,qa.getAnswerCounts().toString(),12);
             qaTopic.setAnswerCounts(qa.getAnswerCounts());
         }else{
-            qaTopic.setFollowCounts(Integer.parseInt(ck1));
+            qaTopic.setAnswerCounts(Integer.parseInt(ck1));
         }
         jsonObject.put("QATopic",qaTopic);
         //添加历史记录
