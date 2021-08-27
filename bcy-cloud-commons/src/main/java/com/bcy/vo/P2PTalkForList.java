@@ -16,6 +16,9 @@ import java.util.Date;
 public class P2PTalkForList implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long number;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long fromId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)

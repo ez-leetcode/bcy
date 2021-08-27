@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface TalkMessageMapper extends BaseMapper<TalkMessage> {
 
-    @Select("SELECT a.uu_id,a.from_id,a.to_id,a.create_time,a.message FROM talk_message as a WHERE a.from_id = #{id} AND a.to_id = #{toId} AND a.from_deleted = 0 OR a.to_id = #{id} AND a.from_id = #{toId} AND a.to_deleted = 0 ORDER BY a.create_time DESC")
+    @Select("SELECT a.uu_id,a.from_id,a.to_id,a.create_time,a.message,a.number FROM talk_message as a WHERE a.from_id = #{id} AND a.to_id = #{toId} AND a.from_deleted = 0 OR a.to_id = #{id} AND a.from_id = #{toId} AND a.to_deleted = 0 ORDER BY a.create_time DESC")
     List<P2PTalkForList> getP2PTalkList(@Param("id") Long id, @Param("toId") Long toId, Page<P2PTalkForList> page);
 
 }

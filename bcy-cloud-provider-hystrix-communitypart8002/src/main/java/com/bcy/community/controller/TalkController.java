@@ -112,7 +112,7 @@ public class TalkController {
             @ApiImplicitParam(name = "cnt",value = "页面数据量",required = true,dataType = "Long",paramType = "query"),
             @ApiImplicitParam(name = "page",value = "当前页面",required = true,dataType = "Long",paramType = "query")
     })
-    @ApiOperation(value = "获取一对一聊天列表（注意这里的数据是时间最近的在前面，展示的时候要倒着展示）",notes = "success：成功 p2pTalkList（fromId：发送方id toId：接收方id uuid：流水号 message：内容 createTime：时间")
+    @ApiOperation(value = "获取一对一聊天列表（注意这里的数据是时间最近的在前面，展示的时候要倒着展示）",notes = "success：成功 p2pTalkList（number：聊天编号 fromId：发送方id toId：接收方id uuid：流水号 message：内容 createTime：时间")
     @GetMapping("/community/p2pTalkList")
     public Result<JSONObject> getP2PTalk(@RequestParam("id") Long id,@RequestParam("toId") Long toId,
                                          @RequestParam("cnt") Long cnt,@RequestParam("page") Long page){

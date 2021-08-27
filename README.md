@@ -1,5 +1,5 @@
 # bcy
-An ACG lover's application
+一个ACG爱好者的APP~
 
 # 微服务解决方案：springcloud  
      1.eureka(服务注册与发现)  
@@ -8,7 +8,7 @@ An ACG lover's application
      4.hystrix(服务降级，服务熔断，服务限流)  
      5.oauth2(安全框架)  
 		 
-# 主要技术栈：  
+# 主要技术选型：  
      短信服务：腾讯云sms(阿里云去年开始就申请不了了，腾讯云可以注册微信公众号来申请)  
      搜索服务：elasticsearch + kibana(腾讯云不送logstash就只好用mq做数据同步了)  
      mysql数据库中间件：mycat  
@@ -31,7 +31,8 @@ An ACG lover's application
      47.115.128.193(bcy-cloud-eureka,bcy-cloud-gateway,bcy-cloud-feign)  
      47.107.108.55(bcy-cloud-userpart,bcy-cloud-community-part,bcy-cloud-acgpart,bcy-cloud-quartz,bcy-cloud-oauth2,bcy-cloud-websocket)  
      1.117.75.49(bcy-cloud-userpart,bcy-cloud-community-part,bcy-cloud-acgpart,bcy-cloud-elasticsearch,bcy-cloud-websocket)  
-     PS:主服务器上有mq和mycat等进程压力比较大就不部署别的provider服务了，两个副服务器内存不够，测试的时候三个部分通常只部署在一个服务器上  
+     PS:主服务器上有mq和mycat等进程压力比较大就不部署别的provider服务了，两个副服务器内存不够，
+     测试的时候三个部分(userpart,communitypart,acgpart)通常只部署在一个服务器上  
               
 # 微服务相关流程：  
      1.用统一域名请求过网关，检测token校验身份  
