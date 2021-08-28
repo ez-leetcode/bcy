@@ -1,10 +1,11 @@
 # bcy
-一个ACG爱好者的APP~
+一个ACG爱好者的APP~  
+下面有架构图哦~
 
 # 微服务解决方案：springcloud  
      1.eureka(服务注册与发现)  
      2.gateway(服务网关)  
-     3.feign(负载均衡)  
+     3.feign(内置ribbon负载均衡)  
      4.hystrix(服务降级，服务熔断，服务限流)  
      5.oauth2(安全框架)  
 		 
@@ -35,7 +36,7 @@
      测试的时候三个部分(userpart,communitypart,acgpart)通常只部署在一个服务器上  
               
 # 微服务相关流程：  
-     1.用统一域名请求过网关，检测token校验身份  
+     1.用统一域名请求过网关，通过过滤器校验id，token等  
      2.根据业务需求转发到feign/websocket/oauth2/elasticsearch  
      3.转发到feign的请求负载均衡地向服务提供者rpc远程调用  
      4.服务提供者根据处理情况(服务高峰熔断，出错降级等)返回数据  
@@ -56,7 +57,7 @@
      4.缓存穿透(用谷歌开源的guava做一个布隆过滤器，在生成用户id时存储，在服务网关处对id用布隆过滤器校验，防止恶意id攻击)  
      5.缓存雪崩(对于可能同时大面积失效的key，如每日热榜在第二天12点会失效，redis缓存失效时间加上一个随机值)  
      6.缓存击穿(对热点数据不设置过期时间)  
-     7.分页缓存(对超级高频数据)  
+     7.分页缓存(对超级高频数据，如推荐用户)  
                    
 # quartz：  
      1.对redis缓存的计数统一调度持久化到mysql  
@@ -76,4 +77,22 @@
 # oauth2：  
      1.采用了简单的密码模式(有sms和第三方登录了这里就简单一点)  
      2.用户登录时在oauth2拿到token在网关rpc校验即可  
-     3.对客户端的验证，密码的加密，跨域之类的支持  
+     3.对客户端的验证，密码的加密，校验等支持
+
+架构图:  
+![image](https://github.com/ez-leetcode/bcy/framework.jpg)
+
+
+
+附swagger链接:  
+用户部分:http://47.107.108.55:8001/swagger-ui.html  
+社交部分:http://1.117.75.49:8002/swagger-ui.html  
+ACG部分:http://1.117.75.49:8003/swagger-ui.html  
+oauth2部分:http://47.107.108.55:8006/swagger-ui.html  
+es部分:http://1.117.75.49:8008/swagger-ui.html  
+
+eureka链接:  
+http://47.115.128.193:8000  
+
+
+

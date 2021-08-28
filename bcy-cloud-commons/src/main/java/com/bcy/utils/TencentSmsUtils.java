@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 public class TencentSmsUtils {
 
-    public static final String ACCESS_ID = "AKIDPdbIjtmPkqfCSR9at2uVpsfBRRBepjMi";
+    public static final String ACCESS_ID = "AKIDPdbIjtmPkqfCSR9at2uVpsfBRRBepjMixxxxxxx";
 
-    public static final String ACCESS_KEY = "7wUllTu4xaw1pLabNs62i6D3cuzoMcbJ";
+    public static final String ACCESS_KEY = "7wUllTu4xaw1pLabNs62i6D3cuzoMcbJxxxxxxxx";
 
     public static final HashMap<Integer,String> TEMPLATE = new HashMap<>();
 

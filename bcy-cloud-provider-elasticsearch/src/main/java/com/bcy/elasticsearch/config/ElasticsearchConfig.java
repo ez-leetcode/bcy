@@ -22,7 +22,7 @@ public class ElasticsearchConfig{
 
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY,
-                new UsernamePasswordCredentials("elastic","Yqc3585435854"));
+                new UsernamePasswordCredentials("elastic","Yqcxxxxxxxxxx"));
 
         RestClientBuilder builder = RestClient.builder(
                 new HttpHost("es-k3rtclmf.public.tencentelasticsearch.com", 9200,"https"))

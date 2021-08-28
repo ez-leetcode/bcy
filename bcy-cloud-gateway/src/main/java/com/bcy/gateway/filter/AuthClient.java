@@ -52,8 +52,8 @@ public class AuthClient {
         //用布隆过滤器判断是否为恶意id
         if(id1 != null && !redisUtils.includeByBloomFilter(bloomFilterUtils,"bcy",id1)){
             log.info(id1);
-            log.error("布隆过滤器检测到恶意id，正在过滤（暂时不拦截了）");
-            return true;
+            log.error("布隆过滤器检测到恶意id，正在过滤");
+            return false;
         }
         if(phone != null){
             //关于手机号的直接通过

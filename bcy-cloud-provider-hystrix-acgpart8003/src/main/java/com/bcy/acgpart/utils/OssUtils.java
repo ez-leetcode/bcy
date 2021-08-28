@@ -15,9 +15,9 @@ public class OssUtils {
 
     private static final String endpoint = "oss-cn-shenzhen.aliyuncs.com";
 
-    private static final String accessKeyId = "LTAI5tAEUYp3P4DMn85ekabB";
+    private static final String accessKeyId = "LTAI5tAEUYp3P4DMn85ekabBxxxxxx";
 
-    private static final String accessKeySecret = "luRzwpshRD1AHqEldvXe4XSKhu8Fmm";
+    private static final String accessKeySecret = "luRzwpshRD1AHqEldvXe4XSKhu8Fmmxxxxxx";
 
     private static final String bucket = "rat-bcy";
 

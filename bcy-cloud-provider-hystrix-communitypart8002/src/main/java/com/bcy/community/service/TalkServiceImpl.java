@@ -96,7 +96,7 @@ public class TalkServiceImpl implements TalkService{
         }else{
             talkUser.setId2Deleted(1);
         }
-        talkUserMapper.updateById(talkUser);
+        talkUserMapper.update(talkUser,wrapper);
         log.info("删除用户聊天记录成功");
         return "success";
     }
