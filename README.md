@@ -80,7 +80,7 @@
      3.对客户端的验证，密码的加密，校验等支持
 
 架构图:  
-![image](https://github.com/ez-leetcode/bcy/framework.jpg)
+![image](https://github.com/ez-leetcode/bcy/blob/master/framework.jpg)
 
 
 
